@@ -4,8 +4,8 @@
   border: 1px solid transparent;
 }
 .color-selection-color{
-  width: 2em;
-  height: 2em;
+  width: 1.85em;
+  height: 1.85em;
   padding: 1px;
   border: 1px solid silver;
   display: inline-block;
@@ -21,7 +21,7 @@
   background-color: var(--hover-background-color);
   border: 1px solid var(--hover-border-color);
 }
-.color-selection_active{
+.color-selection_active, .color-selection:active{
   background-color: var(--active-background-color);
   border: 1px solid var(--active-border-color);
 }

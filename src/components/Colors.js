@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import './styles/Colors.css'
 
+import {rgbToHex} from '../helpers'
+
 import ColorPalette from './ColorPalette'
 import ColorSelection from './ColorSelection'
+import ColorInput from './ColorInput'
 
 class Colors extends Component {
   constructor () {
@@ -52,18 +55,42 @@ class Colors extends Component {
           active={this.state.activeColor === 'secondary'}
           onClick={() => this.setActiveColor('secondary')}
         />
-        <ColorPalette colors={this.state.colors} activeColor={this.state.colorSelections[this.state.activeColor]} onColorClick={this.setColor} />
+        <ColorPalette
+          colors={this.state.colors}
+          activeColor={this.state.colorSelections[this.state.activeColor]}
+          onColorClick={this.setColor}
+        />
+        <ColorInput onChange={this.customColorSelected} value={rgbToHex(this.state.colors[this.state.colorSelections[this.state.activeColor]])}/>
       </div>
     )
   }
   setActiveColor (color) {
     this.setState({ activeColor: color })
   }
-  setColor = (color) => {
-    console.log(color)
+  setColor = color => {
     this.setState(state => ({
-      colorSelections: { ...state.colorSelections, [this.state.activeColor]: color },
+      colorSelections: {
+        ...state.colorSelections,
+        [this.state.activeColor]: color
+      }
     }))
+    
+  }
+  customColorSelected = e => {
+    const hexRgb = e.target.value.match(/[A-Za-z0-9]{2}/g)
+    const rgb = hexRgb.map(v => parseInt(v, 16))
+    const rgbObject = { r: rgb[0], g: rgb[1], b: rgb[2] }
+    const rgbObjectString = JSON.stringify(rgbObject)
+    let found = false;
+    for (let i = 0; i<this.state.colors.length; i++){
+      if (JSON.stringify(this.state.colors[i])===rgbObjectString){
+        found=true
+        break
+      }
+    }
+    if (!found) {
+      this.setState(state=>({colors: [...state.colors, rgbObject], colorSelections: {...state.colorSelections, [state.activeColor]: state.colors.length}}))
+    }
   }
 }
 

@@ -1,0 +1,40 @@
+.color-input{
+  padding: 0.2em;
+  text-align: center;
+  border: 1px solid transparent;
+  position: relative;
+  align-self: stretch;
+  width: 5em;
+}
+.color-input:hover{
+  background-color: var(--hover-background-color);
+  border: 1px solid var(--hover-border-color);
+}
+.color-input:active{
+  background-color: var(--active-background-color);
+  border: 1px solid var(--active-border-color);
+}
+.color-input input{
+  visibility: hidden;
+}
+.color-input-wrapper{
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: transparent;
+  position: relative;
+  background-size: 1.8em 1.8em;
+  background-position: top;
+  background-repeat: no-repeat;
+}
+.color-input-header{
+  font: 0.8em sans-serif;
+  line-height: 1.1em;
+  margin: 0;
+  padding: 0.2em;
+  cursor: default;
+  user-select: none;
+  position: absolute;
+  bottom: 0;
+  pointer-events: none;
+}
