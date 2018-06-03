@@ -1,0 +1,13 @@
+.color {
+  border: 1px solid silver;
+  padding: 1px;
+  min-width: 1.2em;
+  min-height: 1.2em;
+  background-clip: content-box;
+}
+.color:hover:not(.color_undefined) {
+  border: 1px solid var(--hover-border-color);
+}
+.color_active {
+  border: 1px solid var(--active-border-color);
+}

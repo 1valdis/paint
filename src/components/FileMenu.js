@@ -3,16 +3,18 @@ import './styles/FileMenu.css'
 
 import classNames from 'classnames'
 
-import { onClickOutside } from '../helpers'
+import { addClickOutsideListener, removeClickOutsideListener } from '../helpers'
 
 class FileMenu extends Component {
   constructor () {
     super()
     this.state = { open: false }
+    this.clickOutsideListener = null
   }
   render () {
     return (
-      <div ref='menu'
+      <div
+        ref='menu'
         className={classNames('file-menu', {
           'file-menu_open': this.state.open
         })}
@@ -32,11 +34,13 @@ class FileMenu extends Component {
       </div>
     )
   }
-  componentDidMount(){
-    onClickOutside(this.refs.menu, ()=>this.setState({open: false})) 
+  componentDidMount () {
+    this.clickOutsideListener = addClickOutsideListener(this.refs.menu, () =>
+      this.setState({ open: false })
+    )
   }
-  toggleMenu = () => {
-    
+  componentWillUnmount () {
+    removeClickOutsideListener(this.clickOutsideListener)
   }
 }
 

@@ -1,0 +1,7 @@
+.color-palette{
+  display: grid;
+  grid-template-columns: repeat(10, auto);
+  grid-template-rows: repeat(3,auto);
+  gap: 2px;
+  width: 10em;
+}

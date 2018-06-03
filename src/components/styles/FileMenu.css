@@ -25,6 +25,7 @@
   position: absolute;
   top: 100%;
   box-shadow: 3px 3px 6px darkgrey;
+  background: white;
 }
 .file-menu_open .file-menu-items{
   display: block;
@@ -39,6 +40,6 @@
   border: 1px solid transparent;
 }
 .file-menu-item:hover{
-  background: #e2f2ff;
-  border: 1px solid #1979ca;
+  background: var(--hover-background-color);
+  border: 1px solid var(--hover-border-color);
 }

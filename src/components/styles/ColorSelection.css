@@ -1,0 +1,27 @@
+.color-selection{
+  padding: 0.2em;
+  text-align: center;
+  border: 1px solid transparent;
+}
+.color-selection-color{
+  width: 2em;
+  height: 2em;
+  padding: 1px;
+  border: 1px solid silver;
+  display: inline-block;
+}
+.color-selection-header{
+  font: 0.8em sans-serif;
+  margin: 0;
+  padding: 0.2em;
+  cursor: default;
+  user-select: none;
+}
+.color-selection:hover{
+  background-color: var(--hover-background-color);
+  border: 1px solid var(--hover-border-color);
+}
+.color-selection_active{
+  background-color: var(--active-background-color);
+  border: 1px solid var(--active-border-color);
+}

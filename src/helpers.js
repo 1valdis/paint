@@ -1,19 +1,18 @@
-export function onClickOutside (element, callback) {
+export function addClickOutsideListener (element, callback) {
   const outsideClickListener = event => {
     if (!element.contains(event.target)) {
-      // or use: event.target.closest(selector) === null
       if (isVisible(element)) {
         callback()
-        // removeClickListener()
       }
     }
   }
 
-  // const removeClickListener = () => {
-  //   document.removeEventListener('click', outsideClickListener)
-  // }
-
   document.addEventListener('click', outsideClickListener)
+  return outsideClickListener
+}
+
+export function removeClickOutsideListener (listener) {
+  document.removeEventListener('click', listener)
 }
 
 const isVisible = elem =>
