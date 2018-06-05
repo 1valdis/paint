@@ -89,7 +89,11 @@ class Colors extends Component {
       }
     }
     if (!found) {
-      this.setState(state=>({colors: [...state.colors, rgbObject], colorSelections: {...state.colorSelections, [state.activeColor]: state.colors.length}}))
+      if (this.state.colors.length!==30){
+        this.setState(state=>({colors: [...state.colors, rgbObject], colorSelections: {...state.colorSelections, [state.activeColor]: state.colors.length}}))
+      } else {
+        this.setState(state=>({colors: [...state.colors.slice(0, 20), ...state.colors.slice(21), rgbObject], colorSelections: {...state.colorSelections, [state.activeColor]: state.colors.length-1}}))
+      }
     }
   }
 }
