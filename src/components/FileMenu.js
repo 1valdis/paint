@@ -28,8 +28,19 @@ class FileMenu extends Component {
         </button>
         <nav className='file-menu-items'>
           <button className='file-menu-item'>Создать</button>
-          <button className='file-menu-item'>Открыть</button>
-          <button className='file-menu-item'>Сохранить</button>
+          <label className='file-menu-item'>
+            Открыть
+            <input
+              type='file'
+              className='file-menu-item'
+              accept='image/*'
+              onChange={(...args) => {
+                this.props.onFileOpen(...args)
+                this.setState({ open: false })
+              }}
+            />
+          </label>
+          <a href={this.props.downloadSrc} download='Твоя пикча.png' className='file-menu-item'>Сохранить</a>
         </nav>
       </div>
     )

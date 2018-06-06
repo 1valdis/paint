@@ -2,9 +2,21 @@
   display: block;
   box-shadow: 3px 3px 6px darkgrey;
   cursor: crosshair;
-  margin: 0.5em;
+  margin: 0;
+  position: relative;
 }
 .canvas-wrapper{
   flex: 1;
-  background: rgb(200, 210, 230)
+  background: rgb(200, 210, 230);
+  box-sizing: content-box;
+  overflow: scroll;
+}
+.canvas-wrapper-inner{
+  position: relative;
+  display: inline-block;
+  margin: 0.5em;
+  border: 1px solid transparent;
+}
+.canvas-wrapper-inner_resizing{
+  border: 1px dotted black;
 }

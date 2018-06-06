@@ -1,0 +1,12 @@
+.resizer-outer{
+  position: absolute;
+  width: 2em;
+  height: 2em;
+}
+.resizer-inner{
+  position: absolute;
+  height: 4px;
+  width: 4px;
+  border: 1px solid black;
+  background: white;
+}
