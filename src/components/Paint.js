@@ -19,7 +19,7 @@ class Paint extends Component {
   render () {
     return (
       <React.Fragment>
-        <FileMenu onFileOpen={this.openFile} downloadSrc={this.state.canvasBlob}/>
+        <FileMenu onFileOpen={this.openFile} downloadSrc={this.state.canvasBlob} onFileCreate={this.createFile}/>
         <NavBar />
         <Canvas
           width={this.state.width}
@@ -64,6 +64,15 @@ class Paint extends Component {
       img.src=e.target.result
     }
     reader.readAsDataURL(file)
+  }
+  createFile = e => {
+    this.setState({
+      width: 800,
+      height: 450
+    }, ()=>{
+      this.setupCanvas(this.state.ctx)
+      this.canvasChanged()
+    })
   }
 }
 
