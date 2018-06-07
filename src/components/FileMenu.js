@@ -52,6 +52,7 @@ class FileMenu extends Component {
             href={this.props.downloadSrc}
             download='Твоя пикча.png'
             className='file-menu-item'
+            onClick={() => this.setState({ open: false })}
           >
             Сохранить
           </a>

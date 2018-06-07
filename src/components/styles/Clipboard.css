@@ -1,0 +1,16 @@
+.clipboard button {
+  display: block;
+  background: none;
+  border: 1px solid transparent;
+}
+.clipboard button:hover {
+  background: var(--hover-background-color);
+  border: 1px solid var(--hover-border-color);
+}
+.clipboard button:active {
+  background: var(--active-background-color);
+  border: 1px solid var(--active-border-color);
+}
+.clipboard button:focus {
+  outline: none;
+}
