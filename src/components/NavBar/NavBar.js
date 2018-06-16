@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './styles/NavBar.css'
+import './NavBar.css'
 
 import NavBarItem from './NavBarItem'
 

@@ -1,7 +1,7 @@
 import React from 'react'
-import './styles/ColorInput.css'
+import './ColorInput.css'
 
-import icon from './images/color-input-icon.png'
+import icon from './color-input-icon.png'
 
 const ColorInput = props => (
   <div className='color-input'>

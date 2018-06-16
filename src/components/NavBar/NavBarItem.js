@@ -1,5 +1,5 @@
 import React from 'react'
-import './styles/NavBarItem.css'
+import './NavBarItem.css'
 
 const NavBarItem = props => (
   <section className='navbar-item'>

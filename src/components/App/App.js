@@ -1,17 +1,16 @@
 import React, { Component } from 'react'
-import './styles/Paint.css'
+import './App.css'
 
 import { createStore, compose } from 'redux'
 import { connect } from 'react-redux'
 
-import Canvas from './Canvas'
-// import CanvasResizer from './CanvasResizer'
-import FileMenu from './FileMenuContainer'
-import NavBar from './NavBar'
-import Colors from './Colors'
-import Clipboard from './Clipboard'
+import  FileMenu from '../FileMenu/FileMenuContainer'
+import  Canvas from '../Canvas/Canvas'
+import  NavBar from '../NavBar/NavBar'
+import  Clipboard from '../Clipboard/Clipboard'
+import  Colors from '../Colors/Colors'
 
-class Paint extends Component {
+class App extends Component {
   constructor (...args) {
     console.log('constructing app')
     super(...args)
@@ -26,11 +25,7 @@ class Paint extends Component {
     console.log('rendering app')
     return (
       <React.Fragment>
-        <FileMenu
-          onFileOpen={this.openFile}
-          downloadSrc={this.state.canvasBlob}
-          onFileCreate={this.createFile}
-        />
+        <FileMenu/>
         <NavBar>
           <Clipboard
             onPasteClick={this.props.onClipboardPasteClick}
@@ -152,4 +147,5 @@ class Paint extends Component {
   }
 }
 
-export default Paint
+export { default as rootReducer } from './reducer'
+export default App

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './styles/Clipboard.css'
+import './Clipboard.css'
 
 class Clipboard extends Component {
   render () {

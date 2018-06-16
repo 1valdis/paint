@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './styles/Image.css'
+import './Image.css'
 
 class Image extends Component {
   render () {

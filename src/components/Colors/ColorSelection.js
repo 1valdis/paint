@@ -1,5 +1,5 @@
 import React from 'react'
-import './styles/ColorSelection.css'
+import './ColorSelection.css'
 
 import classNames from 'classnames'
 

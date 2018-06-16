@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
-import './styles/FileMenu.css'
+import PropTypes from 'prop-types'
+import './FileMenu.css'
 
 import classNames from 'classnames'
 
@@ -50,6 +51,16 @@ class FileMenuComponent extends PureComponent {
   componentWillUnmount () {
     removeClickOutsideListener(this.clickOutsideListener)
   }
+}
+
+FileMenuComponent.propType = {
+  isOpen: PropTypes.bool.isRequired,
+  onClick: PropTypes.func.isRequired,
+  onClickInside: PropTypes.func.isRequired,
+  onClickOutside: PropTypes.func.isRequired,
+  downloadHref: PropTypes.string.isRequired,
+  onFileCreate: PropTypes.func.isRequired,
+  onFileOpen: PropTypes.func.isRequired
 }
 
 export default FileMenuComponent

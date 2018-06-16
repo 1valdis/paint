@@ -1,5 +1,5 @@
 import React from 'react'
-import './styles/Color.css'
+import './Color.css'
 
 import classNames from 'classnames'
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './styles/Canvas.css'
+import './Canvas.css'
 
 import classNames from 'classnames'
 

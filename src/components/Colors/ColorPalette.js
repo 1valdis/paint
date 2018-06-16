@@ -1,5 +1,5 @@
 import React from 'react'
-import './styles/ColorPalette.css'
+import './ColorPalette.css'
 
 import Color from './Color'
 

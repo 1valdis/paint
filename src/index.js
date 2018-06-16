@@ -1,6 +1,14 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import './index.css'
-import Paint from './components/Paint'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import Paint, {rootReducer} from './components/App/App'
 
-ReactDOM.render(<Paint />, document.getElementById('root'))
+const store = createStore(rootReducer)
+
+render(
+  <Provider store={store}>
+    <Paint />
+  </Provider>,
+  document.getElementById('root')
+)

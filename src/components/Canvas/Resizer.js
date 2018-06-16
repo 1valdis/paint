@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './styles/Resizer.css'
+import './Resizer.css'
 
 class Resizer extends Component {
   constructor (...args) {

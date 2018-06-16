@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './styles/Colors.css'
+import './Colors.css'
 
 import { rgbToHex } from '../helpers'
 
