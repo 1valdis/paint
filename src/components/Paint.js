@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import './styles/Paint.css'
 
+import { createStore, compose } from 'redux'
+import { connect } from 'react-redux'
+
 import Canvas from './Canvas'
 // import CanvasResizer from './CanvasResizer'
-import FileMenu from './FileMenu'
+import FileMenu from './FileMenuContainer'
 import NavBar from './NavBar'
 import Colors from './Colors'
 import Clipboard from './Clipboard'
@@ -29,8 +32,15 @@ class Paint extends Component {
           onFileCreate={this.createFile}
         />
         <NavBar>
-          <Clipboard onPasteClick={this.props.onClipboardPasteClick} disabled={this.props.clipboardDisabled} footer="Буфер обмена"/>
-          <Colors onSelectedColorsChanged={this.handleSelectedColorsChanged} footer="Цвета"/>
+          <Clipboard
+            onPasteClick={this.props.onClipboardPasteClick}
+            disabled={this.props.clipboardDisabled}
+            footer='Буфер обмена'
+          />
+          <Colors
+            onSelectedColorsChanged={this.handleSelectedColorsChanged}
+            footer='Цвета'
+          />
         </NavBar>
         <Canvas onCanvasRef={this.handleCanvasRef} />
       </React.Fragment>
@@ -103,9 +113,9 @@ class Paint extends Component {
     this.setupCanvas()
     this.canvasChanged()
   }
-  
+
   handleSelectedColorsChanged = (primaryColor, secondaryColor) => {
-    this.setState({primaryColor, secondaryColor})
+    this.setState({ primaryColor, secondaryColor })
   }
 
   componentDidMount () {
