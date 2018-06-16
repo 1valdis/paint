@@ -2,20 +2,23 @@
   display: block;
   box-shadow: 3px 3px 6px darkgrey;
   cursor: crosshair;
-  margin: 0;
-  position: relative;
+  margin: 0.5em;
+  position: absolute;
+  z-index: 1
 }
 .canvas-wrapper{
   flex: 1;
   background: rgb(200, 210, 230);
   box-sizing: content-box;
   overflow: scroll;
+  position: relative;
 }
 .canvas-wrapper-inner{
-  position: relative;
+  position: absolute;
   display: inline-block;
   margin: 0.5em;
   border: 1px solid transparent;
+  z-index: 2;
 }
 .canvas-wrapper-inner_resizing{
   border: 1px dotted black;

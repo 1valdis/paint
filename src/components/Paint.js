@@ -2,8 +2,11 @@ import React, { Component } from 'react'
 import './styles/Paint.css'
 
 import Canvas from './Canvas'
+// import CanvasResizer from './CanvasResizer'
 import FileMenu from './FileMenu'
 import NavBar from './NavBar'
+import Colors from './Colors'
+import Clipboard from './Clipboard'
 
 class Paint extends Component {
   constructor (...args) {
@@ -11,7 +14,9 @@ class Paint extends Component {
     super(...args)
     this.state = {
       canvasBlob: null,
-      ctx: null
+      ctx: null,
+      primaryColor: null,
+      secondaryColor: null
     }
   }
   render () {
@@ -23,23 +28,34 @@ class Paint extends Component {
           downloadSrc={this.state.canvasBlob}
           onFileCreate={this.createFile}
         />
-        <NavBar />
+        <NavBar>
+          <Clipboard onPasteClick={this.props.onClipboardPasteClick} disabled={this.props.clipboardDisabled} footer="Буфер обмена"/>
+          <Colors onSelectedColorsChanged={this.handleSelectedColorsChanged} footer="Цвета"/>
+        </NavBar>
         <Canvas onCanvasRef={this.handleCanvasRef} />
       </React.Fragment>
     )
   }
   handleCanvasRef = canvas => {
     console.log('handling canvas ref')
-    this.setState(state => {
-      return {
-        ctx: canvas.getContext('2d', { alpha: false })
-      }
-    }, ()=>this.createFile())
+    this.setState(
+      state => {
+        return {
+          ctx: canvas.getContext('2d', { alpha: false })
+        }
+      },
+      () => this.createFile()
+    )
   }
   setupCanvas = () => {
     console.log('setting up canvas')
     this.state.ctx.fillStyle = '#FFFFFF'
-    this.state.ctx.fillRect(0, 0, this.state.ctx.canvas.width, this.state.ctx.canvas.height)
+    this.state.ctx.fillRect(
+      0,
+      0,
+      this.state.ctx.canvas.width,
+      this.state.ctx.canvas.height
+    )
   }
   canvasChanged () {
     console.log('canvas changed called')
@@ -60,7 +76,10 @@ class Paint extends Component {
       this.state.ctx.canvas.width,
       this.state.ctx.canvas.height
     )
-    ;[this.state.ctx.canvas.width, this.state.ctx.canvas.height] = [width, height]
+    ;[this.state.ctx.canvas.width, this.state.ctx.canvas.height] = [
+      width,
+      height
+    ]
     this.setupCanvas()
     this.state.ctx.putImageData(imageData, 0, 0)
   }
@@ -84,6 +103,10 @@ class Paint extends Component {
     this.setupCanvas()
     this.canvasChanged()
   }
+  
+  handleSelectedColorsChanged = (primaryColor, secondaryColor) => {
+    this.setState({primaryColor, secondaryColor})
+  }
 
   componentDidMount () {
     document.addEventListener('paste', this.paste)
@@ -94,10 +117,10 @@ class Paint extends Component {
 
   paste = e => {
     if (e.clipboardData) {
-      var items = e.clipboardData.items
+      const items = e.clipboardData.items
       if (!items) return
 
-      for (var i = 0; i < items.length; i++) {
+      for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
           const blob = items[i].getAsFile()
           const source = window.URL.createObjectURL(blob)

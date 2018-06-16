@@ -14,3 +14,7 @@
 .clipboard button:focus {
   outline: none;
 }
+.clipboard button:disabled {
+  background: none;
+  border: 1px solid transparent;
+}

@@ -4,16 +4,3 @@
   padding: 0.2em;
   display: flex;
 }
-.navbar > section {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  padding: 0 0.5em;
-  border-right: 1px solid lightgray;
-}
-.navbar > section > footer {
-  margin-top: auto;
-  padding: 0.2em;
-  font-size: 0.7em;
-  color: gray;
-}

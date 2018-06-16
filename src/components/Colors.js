@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import './styles/Colors.css'
 
-import {rgbToHex} from '../helpers'
+import { rgbToHex } from '../helpers'
 
 import ColorPalette from './ColorPalette'
 import ColorSelection from './ColorSelection'
@@ -60,7 +60,14 @@ class Colors extends Component {
           activeColor={this.state.colorSelections[this.state.activeColor]}
           onColorClick={this.setColor}
         />
-        <ColorInput onChange={this.customColorSelected} value={rgbToHex(this.state.colors[this.state.colorSelections[this.state.activeColor]])}/>
+        <ColorInput
+          onChange={this.customColorSelected}
+          value={rgbToHex(
+            this.state.colors[
+              this.state.colorSelections[this.state.activeColor]
+            ]
+          )}
+        />
       </div>
     )
   }
@@ -68,31 +75,58 @@ class Colors extends Component {
     this.setState({ activeColor: color })
   }
   setColor = color => {
-    this.setState(state => ({
-      colorSelections: {
-        ...state.colorSelections,
-        [this.state.activeColor]: color
-      }
-    }))
-    
+    debugger
+    this.setState(
+      state => ({
+        colorSelections: {
+          ...state.colorSelections,
+          [this.state.activeColor]: color
+        }
+      }),
+      () =>
+        this.props.onSelectedColorsChanged(
+          this.state.colors[
+            this.state.colorSelections[this.state.colorSelections.primary]
+          ],
+          this.state.colors[
+            this.state.colorSelections[this.state.colorSelections.secondary]
+          ]
+        )
+    )
   }
   customColorSelected = e => {
     const hexRgb = e.target.value.match(/[A-Za-z0-9]{2}/g)
     const rgb = hexRgb.map(v => parseInt(v, 16))
     const rgbObject = { r: rgb[0], g: rgb[1], b: rgb[2] }
     const rgbObjectString = JSON.stringify(rgbObject)
-    let found = false;
-    for (let i = 0; i<this.state.colors.length; i++){
-      if (JSON.stringify(this.state.colors[i])===rgbObjectString){
-        found=true
+    let found = false
+    for (let i = 0; i < this.state.colors.length; i++) {
+      if (JSON.stringify(this.state.colors[i]) === rgbObjectString) {
+        found = true
         break
       }
     }
     if (!found) {
-      if (this.state.colors.length!==30){
-        this.setState(state=>({colors: [...state.colors, rgbObject], colorSelections: {...state.colorSelections, [state.activeColor]: state.colors.length}}))
+      if (this.state.colors.length !== 30) {
+        this.setState(state => ({
+          colors: [...state.colors, rgbObject],
+          colorSelections: {
+            ...state.colorSelections,
+            [state.activeColor]: state.colors.length
+          }
+        }))
       } else {
-        this.setState(state=>({colors: [...state.colors.slice(0, 20), ...state.colors.slice(21), rgbObject], colorSelections: {...state.colorSelections, [state.activeColor]: state.colors.length-1}}))
+        this.setState(state => ({
+          colors: [
+            ...state.colors.slice(0, 20),
+            ...state.colors.slice(21),
+            rgbObject
+          ],
+          colorSelections: {
+            ...state.colorSelections,
+            [state.activeColor]: state.colors.length - 1
+          }
+        }))
       }
     }
   }
