@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 import FileMenuComponent from './FileMenuComponent'
 
@@ -14,9 +15,8 @@ class FileMenuContainer extends Component {
         onClick={this.toggleMenu}
         onClickOutside={this.closeMenu}
         onClickInside={this.closeMenu}
-        donwloadHref={''}
-        onFileCreate={() => {}}
-        onFileOpen={() => {}}
+        {...this.props}
+        onFileCreate={this.props.onFileCreate}
       />
     )
   }

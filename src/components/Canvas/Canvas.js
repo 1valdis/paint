@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import './Canvas.css'
 
 import classNames from 'classnames'
@@ -10,7 +11,7 @@ class Canvas extends Component {
     return (
       <div className='canvas-wrapper'>
         <canvas
-          ref={this.props.onCanvasRef}
+          ref='canvas'
           className='canvas'
           width={this.props.width}
           height={this.props.height}
@@ -18,6 +19,24 @@ class Canvas extends Component {
       </div>
     )
   }
+  updateCanvas = () => {
+    const canvas = this.refs.canvas
+    if (canvas != null && this.props.data != null) {
+      ;[canvas.width, canvas.height] = [this.props.data.width, this.props.data.height]
+      const ctx = canvas.getContext('2d')
+      ctx.putImageData(this.props.data, 0, 0)
+    }
+  }
+  componentDidMount(){
+    this.updateCanvas()
+  }
+  componentDidUpdate(){
+    this.updateCanvas()
+  }
 }
 
-export default Canvas
+const mapStateToProps = state => ({
+  data: state.image.data
+})
+
+export default connect(mapStateToProps)(Canvas)

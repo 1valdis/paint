@@ -1,17 +1,30 @@
-import reducer from '../Colors/reducer'
+import { combineReducers } from 'redux'
+import { types } from './actions'
+import colorsReducer from '../Colors/reducer'
 
-const appReducer = (
+const canvasReducer = (
   state = {
-    imageData: null,
-    colors: {
-      primaryColor: null,
-      secondaryColor: null,
-      list: []
-    }
+    data: null,
+    downloadHref: null,
+    name: 'Ваша пикча.png'
   },
   action
 ) => {
-  return state
+  switch (action.type) {
+    case types.IMAGE_CHANGED:
+      return {
+        data: action.data,
+        name: action.name || state.name,
+        downloadHref: action.downloadHref
+      }
+    default:
+      return state
+  }
 }
 
-export default appReducer
+const reducer = combineReducers({
+  image: canvasReducer,
+  colors: colorsReducer
+})
+
+export default reducer

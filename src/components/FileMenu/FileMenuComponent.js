@@ -19,7 +19,10 @@ class FileMenuComponent extends PureComponent {
           Файл
         </button>
         <nav className='file-menu-items' onClick={this.props.onClickInside}>
-          <button className='file-menu-item' onClick={this.props.onFileCreate}>
+          <button
+            className='file-menu-item'
+            onClick={this.props.onFileCreate}
+          >
             Создать
           </button>
           <label className='file-menu-item'>
@@ -32,7 +35,7 @@ class FileMenuComponent extends PureComponent {
             />
           </label>
           <a
-            href={this.props.downloadSrc}
+            href={this.props.downloadHref}
             download='Твоя пикча.png'
             className='file-menu-item'
           >
@@ -58,7 +61,8 @@ FileMenuComponent.propType = {
   onClick: PropTypes.func.isRequired,
   onClickInside: PropTypes.func.isRequired,
   onClickOutside: PropTypes.func.isRequired,
-  downloadHref: PropTypes.string.isRequired,
+  downloadHref: PropTypes.string,
+  downloadName: PropTypes.string,
   onFileCreate: PropTypes.func.isRequired,
   onFileOpen: PropTypes.func.isRequired
 }

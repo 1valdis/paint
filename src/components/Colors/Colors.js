@@ -75,7 +75,6 @@ class Colors extends Component {
     this.setState({ activeColor: color })
   }
   setColor = color => {
-    debugger
     this.setState(
       state => ({
         colorSelections: {
