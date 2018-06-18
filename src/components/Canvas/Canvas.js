@@ -3,7 +3,7 @@ import './Canvas.css'
 
 import classNames from 'classnames'
 
-import Resizer from './Resizer'
+import Resizer from '../CanvasResizer/Resizer'
 
 class Canvas extends Component {
   render () {

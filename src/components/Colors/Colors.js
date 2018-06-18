@@ -3,9 +3,9 @@ import './Colors.css'
 
 import { rgbToHex } from '../helpers'
 
-import ColorPalette from './ColorPalette'
-import ColorSelection from './ColorSelection'
-import ColorInput from './ColorInput'
+import ColorPalette from '../ColorPalette/ColorPalette'
+import ColorSelection from '../ColorSelection/ColorSelection'
+import ColorInput from '../ColorInput/ColorInput'
 
 class Colors extends Component {
   constructor () {

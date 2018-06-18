@@ -4,7 +4,12 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import Paint, {rootReducer} from './components/App/App'
 
-const store = createStore(rootReducer)
+const store = createStore(rootReducer, {
+  imageData: null,
+  colors: [],
+  primaryColor: null,
+  secondaryColor: null
+})
 
 render(
   <Provider store={store}>

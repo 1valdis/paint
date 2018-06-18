@@ -1,7 +1,7 @@
 import React from 'react'
 import './ColorPalette.css'
 
-import Color from './Color'
+import Color from '../Color/Color'
 
 const ColorPalette = props => (
   <div className='color-palette'>

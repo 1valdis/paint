@@ -4,22 +4,16 @@ import './App.css'
 import { createStore, compose } from 'redux'
 import { connect } from 'react-redux'
 
-import  FileMenu from '../FileMenu/FileMenuContainer'
-import  Canvas from '../Canvas/Canvas'
-import  NavBar from '../NavBar/NavBar'
-import  Clipboard from '../Clipboard/Clipboard'
-import  Colors from '../Colors/Colors'
+import FileMenu from '../FileMenu/FileMenuContainer'
+import Canvas from '../Canvas/Canvas'
+import NavBar from '../NavBar/NavBar'
+import Clipboard from '../Clipboard/Clipboard'
+import Colors from '../Colors/Colors'
 
 class App extends Component {
   constructor (...args) {
     console.log('constructing app')
     super(...args)
-    this.state = {
-      canvasBlob: null,
-      ctx: null,
-      primaryColor: null,
-      secondaryColor: null
-    }
   }
   render () {
     console.log('rendering app')
@@ -147,5 +141,7 @@ class App extends Component {
   }
 }
 
+
+
 export { default as rootReducer } from './reducer'
-export default App
+export default connect((state)=>({state}))(App)
