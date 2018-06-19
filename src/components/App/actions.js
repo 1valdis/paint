@@ -47,7 +47,8 @@ export function openFile (e) {
 }
 
 export function paste (e) {
-  return function (dispatch) {
+  return function (dispatch, getState) {
+    console.log('gets there')
     if (e.clipboardData) {
       const items = e.clipboardData.items
       if (!items) return
@@ -63,6 +64,13 @@ export function paste (e) {
               Math.max(canvas.height, pastedImage.height)
             )
             ctx.drawImage(pastedImage, 0, 0)
+            setupHref(getState().image.downloadHref, href =>
+              dispatch({
+                type: types.IMAGE_CHANGED,
+                data: ctx.getImageData(0, 0, canvas.width, canvas.height),
+                downloadHref: href
+              })
+            )
           }
           pastedImage.src = source
           break

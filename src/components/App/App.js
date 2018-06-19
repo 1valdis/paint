@@ -45,11 +45,11 @@ class App extends Component {
     this.setState({ primaryColor, secondaryColor })
   }
   componentDidMount () {
-    document.addEventListener('paste', this.paste)
+    document.addEventListener('paste', this.props.onPaste)
     this.props.onFileCreate()
   }
   componentWillUnmount () {
-    document.removeEventListener('paste', this.paste)
+    document.removeEventListener('paste', this.props.onPaste)
   }
 }
 
