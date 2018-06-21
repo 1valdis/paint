@@ -1,7 +1,10 @@
 import React from 'react'
 import './ColorPalette.css'
 
+import { connect } from 'react-redux'
+
 import Color from '../Color/Color'
+import { selectColor } from './actions'
 
 const ColorPalette = props => (
   <div className='color-palette'>
@@ -9,7 +12,7 @@ const ColorPalette = props => (
       ...props.colors.map((c, i) => (
         <Color
           value={c}
-          active={i === props.activeColor}
+          active={i === props.selectedColor}
           onClick={() => props.onColorClick(i)}
           key={'color' + i}
           colorId={i}
@@ -22,4 +25,12 @@ const ColorPalette = props => (
   </div>
 )
 
-export default ColorPalette
+const mapStateToProps = ({ colors }) => ({
+  colors: colors.list,
+  selectedColor: colors[colors.activeColor]
+})
+const mapDispatchToProps = dispatch => ({
+  onColorClick: color => dispatch(selectColor(color))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ColorPalette)

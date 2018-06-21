@@ -1,3 +1,6 @@
+import colorPaletteReducer from '../ColorPalette/reducer'
+import { types } from './actions'
+
 const colorsReducer = (state = {
   list: [
     { r: 0, g: 0, b: 0 },
@@ -22,12 +25,18 @@ const colorsReducer = (state = {
     { r: 200, g: 191, b: 231 }
   ],
   activeColor: 'primary',
-  colorSelections: {
-    primary: 0,
-    secondary: 10
-  }
+  primary: 0,
+  secondary: 10
 }, action) => {
-  return state
+  const newState = {...state}
+  newState.list = colorPaletteReducer(state.list, action)
+  switch (action.type) {
+    case types.SELECT_COLOR: 
+      newState[newState.activeColor] = action.color
+      return newState
+    default:
+      return newState
+  }
 }
 
 export default colorsReducer

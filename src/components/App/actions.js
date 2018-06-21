@@ -30,7 +30,6 @@ export function openFile (e) {
       img.onload = () => {
         resizeCanvas(img.width, img.height)
         ctx.drawImage(img, 0, 0)
-        console.log('opened')
         setupHref(getState().image.downloadHref, href =>
           dispatch({
             type: types.IMAGE_CHANGED,

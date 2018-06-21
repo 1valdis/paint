@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './Canvas.css'
 
-import classNames from 'classnames'
-
 import Resizer from '../CanvasResizer/Resizer'
 
 class Canvas extends Component {

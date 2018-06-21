@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import './App.css'
 
-import { createStore, compose } from 'redux'
 import { connect } from 'react-redux'
 
 import FileMenu from '../FileMenu/FileMenuContainer'

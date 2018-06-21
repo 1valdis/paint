@@ -36,7 +36,7 @@ class FileMenuComponent extends PureComponent {
           </label>
           <a
             href={this.props.downloadHref}
-            download='Твоя пикча.png'
+            download={this.props.downloadName}
             className='file-menu-item'
           >
             Сохранить
