@@ -1,0 +1,15 @@
+.canvas{
+  box-shadow: 3px 3px 6px darkgrey;
+  cursor: crosshair;
+  margin: 0.5em;
+  z-index: 1
+}
+.canvas-wrapper{
+  flex: auto;
+  background: rgb(200, 210, 230);
+  box-sizing: content-box;
+  overflow: visible;
+  position: relative;
+  display: inline-block;
+  min-width: 100%;
+}

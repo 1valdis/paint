@@ -7,9 +7,15 @@ body {
 html, body, #root {
   height: 100%;
 }
+html, body {
+  overflow: auto;
+}
 #root{
-  display: flex;
+  display: inline-flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   flex-direction: column;
+  min-width: 100%;
 }
 :root{
   --hover-background-color: rgba(50, 150, 255, 0.1);
