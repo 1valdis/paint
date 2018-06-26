@@ -7,7 +7,7 @@ import FileMenu from '../FileMenu/FileMenuContainer'
 import Canvas from '../Canvas/Canvas'
 import NavBar from '../NavBar/NavBar'
 import Clipboard from '../Clipboard/Clipboard'
-import Colors from '../Colors/Colors'
+import Colors from '../Colors/ColorsContainer'
 import { openFile, createFile, paste } from './actions'
 
 class App extends Component {
@@ -31,10 +31,7 @@ class App extends Component {
             disabled={this.props.clipboardDisabled}
             footer='Буфер обмена'
           />
-          <Colors
-            onSelectedColorsChanged={this.handleSelectedColorsChanged}
-            footer='Цвета'
-          />
+          <Colors footer='Цвета' />
         </NavBar>
         <Canvas onCanvasRef={this.handleCanvasRef} />
       </React.Fragment>
@@ -57,9 +54,9 @@ const mapStateToProps = state => ({
   downloadName: state.image.name
 })
 const mapDispatchToProps = dispatch => ({
-  onFileCreate: ()=>dispatch(createFile()),
-  onFileOpen: e=>dispatch(openFile(e)),
-  onPaste: e=>dispatch(paste(e))
+  onFileCreate: () => dispatch(createFile()),
+  onFileOpen: e => dispatch(openFile(e)),
+  onPaste: e => dispatch(paste(e))
 })
 
 export { default as rootReducer } from './reducer'

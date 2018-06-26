@@ -56,7 +56,7 @@ class FileMenuComponent extends PureComponent {
   }
 }
 
-FileMenuComponent.propType = {
+FileMenuComponent.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
   onClickInside: PropTypes.func.isRequired,

@@ -12,7 +12,6 @@ const canvasReducer = (
 ) => {
   switch (action.type) {
     case types.IMAGE_CHANGED:
-      console.log(action.name)
       return {
         data: action.data,
         name: action.name || state.name,

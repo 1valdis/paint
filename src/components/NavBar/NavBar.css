@@ -3,4 +3,6 @@
   border: 1px solid silver;
   padding: 0.2em;
   display: flex;
+  align-self: stretch;
+  min-height: 5.5em;
 }

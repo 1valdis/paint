@@ -7,8 +7,8 @@ class NavBar extends Component {
   render () {
     return (
       <nav className='navbar'>
-        {this.props.children.map(c => (
-          <NavBarItem footer={c.props.footer}>
+        {this.props.children.map((c, i) => (
+          <NavBarItem footer={c.props.footer} key={`navbaritem${i}`}>
             {c}
           </NavBarItem>
         ))}
