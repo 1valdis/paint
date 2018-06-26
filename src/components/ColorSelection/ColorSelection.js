@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import './ColorSelection.css'
 
 import classNames from 'classnames'
@@ -16,5 +18,16 @@ const ColorSelection = props => (
     </h6>
   </div>
 )
+
+ColorSelection.propTypes = {
+  active: PropTypes.bool.isRequired,
+  color: PropTypes.shape({
+    r: PropTypes.number.isRequired,
+    g: PropTypes.number.isRequired,
+    b: PropTypes.number.isRequired
+  }),
+  onClick: PropTypes.func,
+  header: PropTypes.string
+}
 
 export default ColorSelection

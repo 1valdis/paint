@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
+
 import './App.css'
 
 import { connect } from 'react-redux'
@@ -8,15 +9,11 @@ import Canvas from '../Canvas/Canvas'
 import NavBar from '../NavBar/NavBar'
 import Clipboard from '../Clipboard/Clipboard'
 import Colors from '../Colors/ColorsContainer'
+
 import { openFile, createFile, paste } from './actions'
 
-class App extends Component {
-  constructor (...args) {
-    console.log('constructing app')
-    super(...args)
-  }
+class App extends PureComponent {
   render () {
-    console.log('rendering app')
     return (
       <React.Fragment>
         <FileMenu
@@ -36,9 +33,6 @@ class App extends Component {
         <Canvas onCanvasRef={this.handleCanvasRef} />
       </React.Fragment>
     )
-  }
-  handleSelectedColorsChanged = (primaryColor, secondaryColor) => {
-    this.setState({ primaryColor, secondaryColor })
   }
   componentDidMount () {
     document.addEventListener('paste', this.props.onPaste)

@@ -1,18 +1,21 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { PureComponent } from 'react'
+import PropTypes from 'prop-types'
+
 import './Canvas.css'
+
+import { connect } from 'react-redux'
 
 import Resizer from '../CanvasResizer/Resizer'
 
-class Canvas extends Component {
+class Canvas extends PureComponent {
   render () {
     return (
       <div className='canvas-wrapper'>
         <canvas
           ref='canvas'
           className='canvas'
-          width={this.props.width}
-          height={this.props.height}
+          width={this.props.data ? this.props.data.width : 0}
+          height={this.props.data ? this.props.data.height : 0}
         />
       </div>
     )
@@ -31,6 +34,10 @@ class Canvas extends Component {
   componentDidUpdate(){
     this.updateCanvas()
   }
+}
+
+Canvas.propTypes = {
+  data: PropTypes.object
 }
 
 const mapStateToProps = state => ({

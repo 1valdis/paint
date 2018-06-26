@@ -25,7 +25,6 @@ export function addColor (e) {
       }
     }
     if (!found) {
-      console.log('yay!')
       dispatch({
         type: types.ADD_COLOR,
         value: rgbObject

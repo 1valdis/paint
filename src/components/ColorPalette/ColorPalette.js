@@ -1,4 +1,5 @@
 import React from 'react'
+
 import './ColorPalette.css'
 
 const ColorPalette = props => (

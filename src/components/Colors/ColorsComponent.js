@@ -1,13 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import './Colors.css'
 
-import { rgbToHex } from '../helpers'
+import './Colors.css'
 
 import ColorPalette from '../ColorPalette/ColorPalette'
 import ColorSelection from '../ColorSelection/ColorSelection'
 import ColorInput from '../ColorInput/ColorInput'
 import Color from '../Color/Color'
+
+import { rgbToHex } from '../helpers'
 
 const ColorsComponent = props => (
   <div className='colors'>

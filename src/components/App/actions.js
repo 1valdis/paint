@@ -22,7 +22,6 @@ export function createFile () {
 export function openFile (e) {
   return function (dispatch, getState) {
     const file = e.nativeEvent.target.files[0]
-    console.log('opening...')
     if (file == null) return
     const reader = new FileReader()
     reader.onload = e => {
@@ -47,7 +46,6 @@ export function openFile (e) {
 
 export function paste (e) {
   return function (dispatch, getState) {
-    console.log('gets there')
     if (e.clipboardData) {
       const items = e.clipboardData.items
       if (!items) return

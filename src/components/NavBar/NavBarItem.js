@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+
 import './NavBarItem.css'
 
 const NavBarItem = props => (
@@ -9,5 +11,9 @@ const NavBarItem = props => (
     </footer>
   </section>
 )
+
+NavBarItem.propTypes = {
+  footer: PropTypes.string
+}
 
 export default NavBarItem
