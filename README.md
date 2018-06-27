@@ -12,7 +12,7 @@ This is my replica of MS Paint on canvas and [React](https://reactjs.org/). Crea
   * [ ] Text
 * [ ] Edit
   * [x] Open file form disk
-  * [ ] Resize
+  * [x] Resize
   * [ ] Selection
   * [x] Paste picture
   * [ ] Copy picture

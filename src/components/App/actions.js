@@ -86,6 +86,21 @@ function resizeCanvas (toWidth, toHeight) {
   ctx.putImageData(imageData, 0, 0)
 }
 
+function resizeActionCreator (toWidth, toHeight) {
+  return function (dispatch, getState) {
+    resizeCanvas(toWidth, toHeight)
+    setupHref(getState().image.downloadHref, href =>
+      dispatch({
+        type: types.IMAGE_CHANGED,
+        data: ctx.getImageData(0, 0, canvas.width, canvas.height),
+        downloadHref: href
+      })
+    )
+  }
+}
+
+export {resizeActionCreator as resize}
+
 function clearCanvas () {
   ctx.fillStyle = '#FFFFFF'
   ctx.fillRect(0, 0, canvas.width, canvas.height)

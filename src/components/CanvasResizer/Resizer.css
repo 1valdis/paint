@@ -2,6 +2,7 @@
   position: absolute;
   width: 2em;
   height: 2em;
+  pointer-events: auto;
 }
 .resizer-inner{
   position: absolute;

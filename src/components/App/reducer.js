@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+
 import { types } from './actions'
 import colorsReducer from '../Colors/reducer'
 

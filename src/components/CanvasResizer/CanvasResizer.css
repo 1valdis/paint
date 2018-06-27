@@ -1,0 +1,14 @@
+.canvas-resizer {
+  position: absolute;
+  top: 0.5em;
+  left: 0.5em;
+  pointer-events: none;
+}
+
+.canvas-resizer_resizing {
+  border: 1px dotted black;
+}
+
+.canvas-resizer_resizing .resizer-outer {
+  display: none;
+}

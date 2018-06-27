@@ -10,7 +10,7 @@ import NavBar from '../NavBar/NavBar'
 import Clipboard from '../Clipboard/Clipboard'
 import Colors from '../Colors/ColorsContainer'
 
-import { openFile, createFile, paste } from './actions'
+import { openFile, createFile, paste, resize } from './actions'
 
 class App extends PureComponent {
   render () {
@@ -30,7 +30,10 @@ class App extends PureComponent {
           />
           <Colors footer='Цвета' />
         </NavBar>
-        <Canvas onCanvasRef={this.handleCanvasRef} />
+        <Canvas
+          onCanvasRef={this.handleCanvasRef}
+          onResize={this.props.onResize}
+        />
       </React.Fragment>
     )
   }
@@ -50,7 +53,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onFileCreate: () => dispatch(createFile()),
   onFileOpen: e => dispatch(openFile(e)),
-  onPaste: e => dispatch(paste(e))
+  onPaste: e => dispatch(paste(e)),
+  onResize: (width, height) => dispatch(resize(width, height))
 })
 
 export { default as rootReducer } from './reducer'
