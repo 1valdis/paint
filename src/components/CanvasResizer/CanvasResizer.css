@@ -9,6 +9,6 @@
   border: 1px dotted black;
 }
 
-.canvas-resizer_resizing .resizer-outer {
+.canvas-resizer_resizing .resizer-inner {
   display: none;
 }

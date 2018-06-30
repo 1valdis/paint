@@ -29,9 +29,10 @@ class CanvasResizer extends PureComponent {
         }}
       >
         <Resizer
-          onResizeStart={e => this.onResizeStart(e, 'ew')}
-          onResizeMove={e => this.onResizeMove(e, 'ew')}
-          onResizeEnd={e => this.onResizeEnd(e, 'ew')}
+          onResizeStart={this.onResizeStart.bind(this, 'ew')}
+          onResizeMove={this.onResizeMove.bind(this, 'ew')}
+          onResizeEnd={this.onResizeEnd.bind(this, 'ew')}
+          onResizeCancel={this.onResizeCancel.bind(this, 'ew')}
           outerStyle={{
             cursor: 'ew-resize',
             left: '100%',
@@ -41,9 +42,10 @@ class CanvasResizer extends PureComponent {
           innerStyle={{ top: '50%', transform: 'translateY(-50%)' }}
         />
         <Resizer
-          onResizeStart={e => this.onResizeStart(e, 'ns')}
-          onResizeMove={e => this.onResizeMove(e, 'ns')}
-          onResizeEnd={e => this.onResizeEnd(e, 'ns')}
+          onResizeStart={this.onResizeStart.bind(this, 'ns')}
+          onResizeMove={this.onResizeMove.bind(this, 'ns')}
+          onResizeEnd={this.onResizeEnd.bind(this, 'ns')}
+          onResizeCancel={this.onResizeCancel.bind(this, 'ns')}
           outerStyle={{
             cursor: 'ns-resize',
             top: '100%',
@@ -53,16 +55,17 @@ class CanvasResizer extends PureComponent {
           innerStyle={{ left: '50%', transform: 'translateX(-50%)' }}
         />
         <Resizer
-          onResizeStart={e => this.onResizeStart(e, 'nwse')}
-          onResizeMove={e => this.onResizeMove(e, 'nwse')}
-          onResizeEnd={e => this.onResizeEnd(e, 'nwse')}
+          onResizeStart={this.onResizeStart.bind(this, 'nwse')}
+          onResizeMove={this.onResizeMove.bind(this, 'nwse')}
+          onResizeEnd={this.onResizeEnd.bind(this, 'nwse')}
+          onResizeCancel={this.onResizeCancel.bind(this, 'nwse')}
           outerStyle={{ cursor: 'nwse-resize', top: '100%', left: '100%' }}
         />
       </div>
     )
   }
-  onResizeStart = (e, direction) => {}
-  onResizeMove = (e, direction) => {
+  onResizeStart (direction, e) {}
+  onResizeMove (direction, e) {
     let {
       top,
       left,
@@ -83,13 +86,13 @@ class CanvasResizer extends PureComponent {
       Math.round(mouseX - left),
       Math.round(mouseY - top)
     ]
-    
+
     const state = {
       resizeWidth: this.props.width,
       resizeHeight: this.props.height,
       resizing: true
     }
-    
+
     if (direction === 'ns') {
       state.resizeHeight = newHeight
     } else if (direction === 'ew') {
@@ -98,21 +101,29 @@ class CanvasResizer extends PureComponent {
       state.resizeHeight = newHeight
       state.resizeWidth = newWidth
     }
-    
+
     state.resizeWidth = state.resizeWidth > 0 ? state.resizeWidth : 1
     state.resizeHeight = state.resizeHeight > 0 ? state.resizeHeight : 1
-    
+
     this.setState(state)
   }
-  onResizeEnd = (e, direction) => {
+  onResizeEnd (direction, e) {
     this.props.onResize(this.state.resizeWidth, this.state.resizeHeight)
     this.setState({ resizing: false })
+  }
+  onResizeCancel (direction, e) {
+    this.setState({
+      resizing: false,
+      resizeWidth: this.props.width,
+      resizeHeight: this.props.height
+    })
   }
 }
 
 CanvasResizer.propTypes = {
   width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired
+  height: PropTypes.number.isRequired,
+  onResize: PropTypes.func
 }
 
 export default CanvasResizer
