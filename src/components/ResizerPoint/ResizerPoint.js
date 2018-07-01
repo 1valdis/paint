@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import './Resizer.css'
+import './ResizerPoint.css'
 
-class Resizer extends Component {
+class ResizerPoint extends Component {
   constructor (...args) {
     super(...args)
     this.resizing = false
@@ -92,4 +92,4 @@ class Resizer extends Component {
   }
 }
 
-export default Resizer
+export default ResizerPoint

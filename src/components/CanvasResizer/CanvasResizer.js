@@ -5,7 +5,7 @@ import './CanvasResizer.css'
 
 import classNames from 'classnames'
 
-import Resizer from './Resizer'
+import ResizerPoint from '../ResizerPoint/ResizerPoint'
 
 class CanvasResizer extends PureComponent {
   constructor (...args) {
@@ -28,7 +28,7 @@ class CanvasResizer extends PureComponent {
           height: `${this.state.resizing ? this.state.resizeHeight : this.props.height}px`
         }}
       >
-        <Resizer
+        <ResizerPoint
           onResizeStart={this.onResizeStart.bind(this, 'ew')}
           onResizeMove={this.onResizeMove.bind(this, 'ew')}
           onResizeEnd={this.onResizeEnd.bind(this, 'ew')}
@@ -41,7 +41,7 @@ class CanvasResizer extends PureComponent {
           }}
           innerStyle={{ top: '50%', transform: 'translateY(-50%)' }}
         />
-        <Resizer
+        <ResizerPoint
           onResizeStart={this.onResizeStart.bind(this, 'ns')}
           onResizeMove={this.onResizeMove.bind(this, 'ns')}
           onResizeEnd={this.onResizeEnd.bind(this, 'ns')}
@@ -54,7 +54,7 @@ class CanvasResizer extends PureComponent {
           }}
           innerStyle={{ left: '50%', transform: 'translateX(-50%)' }}
         />
-        <Resizer
+        <ResizerPoint
           onResizeStart={this.onResizeStart.bind(this, 'nwse')}
           onResizeMove={this.onResizeMove.bind(this, 'nwse')}
           onResizeEnd={this.onResizeEnd.bind(this, 'nwse')}
