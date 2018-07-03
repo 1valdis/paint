@@ -7,6 +7,9 @@ import classNames from 'classnames'
 
 import { addClickOutsideListener, removeClickOutsideListener } from '../helpers'
 
+import Modal from '../Modal/Modal'
+import About from './about/About'
+
 class FileMenuComponent extends PureComponent {
   render () {
     return (
@@ -20,10 +23,7 @@ class FileMenuComponent extends PureComponent {
           Файл
         </button>
         <nav className='file-menu-items' onClick={this.props.onClickInside}>
-          <button
-            className='file-menu-item'
-            onClick={this.props.onFileCreate}
-          >
+          <button className='file-menu-item' onClick={this.props.onFileCreate}>
             Создать
           </button>
           <label className='file-menu-item'>
@@ -42,7 +42,11 @@ class FileMenuComponent extends PureComponent {
           >
             Сохранить
           </a>
+          <button className='file-menu-item' onClick={this.props.onAboutOpen}>
+            О программе
+          </button>
         </nav>
+        {this.props.isAboutOpen && <Modal><About onClose={this.props.onAboutClose} /></Modal>}
       </div>
     )
   }
@@ -65,7 +69,10 @@ FileMenuComponent.propTypes = {
   downloadHref: PropTypes.string,
   downloadName: PropTypes.string,
   onFileCreate: PropTypes.func.isRequired,
-  onFileOpen: PropTypes.func.isRequired
+  onFileOpen: PropTypes.func.isRequired,
+  isAboutOpen: PropTypes.bool,
+  onAboutOpen: PropTypes.func,
+  onAboutClose: PropTypes.func
 }
 
 export default FileMenuComponent

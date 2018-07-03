@@ -6,7 +6,7 @@ import FileMenuComponent from './FileMenuComponent'
 class FileMenuContainer extends PureComponent {
   constructor () {
     super()
-    this.state = { open: false }
+    this.state = { open: false, aboutOpen: false }
   }
   render () {
     return (
@@ -15,12 +15,17 @@ class FileMenuContainer extends PureComponent {
         onClick={this.toggleMenu}
         onClickOutside={this.closeMenu}
         onClickInside={this.closeMenu}
+        isAboutOpen={this.state.aboutOpen}
+        onAboutOpen={this.openAbout}
+        onAboutClose={this.closeAbout}
         {...this.props}
       />
     )
   }
   toggleMenu = () => this.setState(state => ({ open: !state.open }))
   closeMenu = () => this.setState({ open: false })
+  openAbout = () => this.setState({aboutOpen: true})
+  closeAbout = () => this.setState({aboutOpen: false})
 }
 
 FileMenuContainer.propTypes = {
