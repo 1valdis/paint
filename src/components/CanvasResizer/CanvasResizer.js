@@ -118,6 +118,12 @@ class CanvasResizer extends PureComponent {
       resizeHeight: this.props.height
     })
   }
+  static getDerivedStateFromProps (nextProps, prevState = {resizing: false}) {
+    return prevState.resizing ? null : {
+      resizeWidth: nextProps.width,
+      resizeHeight: nextProps.height
+    }
+  }
 }
 
 CanvasResizer.propTypes = {
