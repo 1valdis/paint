@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 
 import { types } from './actions'
 import colorsReducer from '../Colors/reducer'
+import instrumentsReducer from '../instruments/reducer'
 
 const canvasReducer = (
   state = {
@@ -25,7 +26,8 @@ const canvasReducer = (
 
 const reducer = combineReducers({
   image: canvasReducer,
-  colors: colorsReducer
+  colors: colorsReducer,
+  instruments: instrumentsReducer
 })
 
 export default reducer

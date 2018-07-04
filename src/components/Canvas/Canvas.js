@@ -30,7 +30,7 @@ class Canvas extends PureComponent {
             width={this.props.data ? this.props.data.width : 0}
             height={this.props.data ? this.props.data.height : 0}
           />
-          <CanvasEditor instrument='pen'/>
+          <CanvasEditor />
         </div>
       </div>
     )

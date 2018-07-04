@@ -8,6 +8,7 @@ import FileMenu from '../FileMenu/FileMenuContainer'
 import Canvas from '../Canvas/Canvas'
 import NavBar from '../NavBar/NavBar'
 import Clipboard from '../Clipboard/Clipboard'
+import Instruments from '../instruments/Instruments'
 import Colors from '../Colors/ColorsContainer'
 
 import { openFile, createFile, paste, resize } from './actions'
@@ -28,6 +29,7 @@ class App extends PureComponent {
             disabled={this.props.clipboardDisabled}
             footer='Буфер обмена'
           />
+          <Instruments footer='Инструменты' />
           <Colors footer='Цвета' />
         </NavBar>
         <Canvas

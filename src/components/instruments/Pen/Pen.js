@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 class Pen extends PureComponent {
   render () {
-    return <canvas ref='canvas' {...this.props} />
+    return <canvas ref='canvas' width={this.props.width} height={this.props.height} />
   }
   componentDidMount () {
     // ...

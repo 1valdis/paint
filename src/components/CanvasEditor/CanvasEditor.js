@@ -12,8 +12,16 @@ const instruments = {
 class CanvasEditor extends PureComponent {
   render () {
     const Element = instruments[this.props.instrument]
-    return <Element {...this.props.instrumentData} />
+    return Element != null ? <Element {...this.props.instrumentData} /> : null
   }
 }
 
-export default CanvasEditor
+CanvasEditor.propTypes = {
+  instrument: PropTypes.string
+}
+
+const mapStateToProps = state => ({
+  instrument: state.instruments.instrument
+})
+
+export default connect(mapStateToProps)(CanvasEditor)

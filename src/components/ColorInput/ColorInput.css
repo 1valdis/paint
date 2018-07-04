@@ -26,12 +26,12 @@
   background-size: 1.8em 1.8em;
   background-position: top;
   background-repeat: no-repeat;
+  background-image: url('./color-input-icon.png')
 }
 .color-input-header{
   font: 0.8em sans-serif;
   line-height: 1.1em;
   margin: 0;
-  padding: 0.2em;
   cursor: default;
   user-select: none;
   position: absolute;
