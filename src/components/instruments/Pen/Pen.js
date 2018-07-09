@@ -10,7 +10,6 @@ class Pen extends PureComponent {
   constructor (...args) {
     super(...args)
     this.isDrawing = false
-    this.leftWhileDrawing = false
     this.prevX = 0
     this.prevY = 0
     this.canvasRef = createRef()
@@ -80,6 +79,9 @@ class Pen extends PureComponent {
   }
   componentDidMount () {
     this.ctx = this.canvasRef.current.getContext('2d')
+    if (this.props.imageData != null) {
+      this.ctx.putImageData(this.props.imageData, 0, 0)
+    }
     document.addEventListener('pointerup', this.handleDocumentPointerUp)
     document.addEventListener('pointermove', this.handleDocumentPointerMove)
     document.addEventListener('selectstart', this.handleDocumentSelectStart)
@@ -106,7 +108,6 @@ class Pen extends PureComponent {
     ;[this.prevX, this.prevY] = [x, y]
   }
   endDrawing = () => {
-    // debugger
     this.props.dispatch(changeImage(this.ctx.getImageData(0, 0, this.canvasRef.current.width, this.canvasRef.current.height)))
   }
   cancelDrawing = () => {
