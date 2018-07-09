@@ -12,7 +12,7 @@ const instruments = {
 class CanvasEditor extends PureComponent {
   render () {
     const Element = instruments[this.props.instrument]
-    return Element != null ? <Element {...this.props.instrumentData} /> : null
+    return Element != null ? <Element /> : null
   }
 }
 

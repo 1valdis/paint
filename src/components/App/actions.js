@@ -79,11 +79,13 @@ export function paste (e) {
 }
 
 function resizeCanvas (toWidth, toHeight) {
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-  ;[canvas.width, canvas.height] = [toWidth, toHeight]
-  ctx.fillStyle = '#FFFFFF'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
-  ctx.putImageData(imageData, 0, 0)
+  if (canvas.width !== toWidth || canvas.height !== toHeight) {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    ;[canvas.width, canvas.height] = [toWidth, toHeight]
+    ctx.fillStyle = '#FFFFFF'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.putImageData(imageData, 0, 0)
+  }
 }
 
 function resizeActionCreator (toWidth, toHeight) {
@@ -99,7 +101,23 @@ function resizeActionCreator (toWidth, toHeight) {
   }
 }
 
-export {resizeActionCreator as resize}
+export { resizeActionCreator as resize }
+
+function imageChangedActionCreator (imageData) {
+  return function (dispatch, getState) {
+    resizeCanvas(imageData.width, imageData.height)
+    ctx.putImageData(imageData, 0, 0)
+    setupHref(getState().image.downloadHref, href =>
+      dispatch({
+        type: types.IMAGE_CHANGED,
+        data: ctx.getImageData(0, 0, canvas.width, canvas.height),
+        downloadHref: href
+      })
+    )
+  }
+}
+
+export { imageChangedActionCreator as changeImage }
 
 function clearCanvas () {
   ctx.fillStyle = '#FFFFFF'

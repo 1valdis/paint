@@ -1,7 +1,19 @@
+.canvas-resizer {
+  pointer-events: none;
+  z-index: 100;
+}
+
 .canvas-resizer_resizing {
   outline: 1px dotted black;
 }
 
 .canvas-resizer_resizing .resizer-inner {
   display: none;
+}
+
+.canvas-resizer_resizing .resizer-outer {
+  width: 4em;
+  height: 4em;
+  margin-top: -2em;
+  margin-left: -2em;
 }
