@@ -4,9 +4,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import Pen from '../instruments/Pen/Pen'
+import Fill from '../instruments/Fill/Fill'
 
 const instruments = {
-  pen: Pen
+  pen: Pen,
+  fill: Fill
 }
 
 class CanvasEditor extends PureComponent {

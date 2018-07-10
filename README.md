@@ -7,7 +7,7 @@ This is my replica of MS Paint on canvas and [React](https://reactjs.org/). Crea
   * [x] Pick colors
   * [x] Pen
   * [ ] Brushes
-  * [ ] Fill
+  * [x] Fill
   * [ ] Shapes
   * [ ] Text
 * [ ] Edit

@@ -7,7 +7,7 @@ import { selectInstrument } from './actions'
 import classNames from 'classnames'
 import './Instruments.css'
 
-const instruments = ['pen', 'bucket', 'text', 'eraser', 'dropper', 'zoom']
+const instruments = ['pen', 'fill', 'text', 'eraser', 'dropper', 'zoom']
 
 class Instruments extends PureComponent {
   render () {

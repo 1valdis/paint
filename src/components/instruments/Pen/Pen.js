@@ -3,7 +3,7 @@ import React, { PureComponent, createRef } from 'react'
 import { connect } from 'react-redux'
 
 import './Pen.css'
-import { bresenhamLine } from '../../helpers'
+import { bresenhamLine, getCanvasCoordsFromEvent } from '../../helpers'
 import { changeImage } from '../../App/actions'
 
 class Pen extends PureComponent {
@@ -20,8 +20,8 @@ class Pen extends PureComponent {
       <canvas
         className='pen-canvas'
         ref={this.canvasRef}
-        width={this.props.width}
-        height={this.props.height}
+        width={this.props.imageData ? this.props.imageData.width : 0}
+        height={this.props.imageData ? this.props.imageData.height : 0}
         onPointerDown={this.handlePointerDown}
         onPointerUp={this.handlePointerUp}
         onPointerMove={this.handlePointerMove}
@@ -32,23 +32,23 @@ class Pen extends PureComponent {
   }
   handlePointerDown = e => {
     this.isDrawing = true
-    this.beginDrawing(...this.getCoordsFromEvent(e))
+    this.beginDrawing(...getCanvasCoordsFromEvent(this.canvasRef.current, e))
   }
   handlePointerMove = e => {
     if (this.isDrawing && e.buttons !== 3) {
-      this.continueDrawing(...this.getCoordsFromEvent(e))
+      this.continueDrawing(...getCanvasCoordsFromEvent(this.canvasRef.current, e))
     }
   }
   handlePointerEnter = e => {
     if (e.buttons === 1 && this.isDrawing) {
-      this.continueDrawing(...this.getCoordsFromEvent(e))
+      this.continueDrawing(...getCanvasCoordsFromEvent(this.canvasRef.current, e))
     } else {
       this.isDrawing = false
     }
   }
   handlePointerLeave = e => {
     if (this.isDrawing) {
-      this.continueDrawing(...this.getCoordsFromEvent(e))
+      this.continueDrawing(...getCanvasCoordsFromEvent(this.canvasRef.current, e))
     }
   }
   handleDocumentPointerUp = () => {
@@ -59,7 +59,7 @@ class Pen extends PureComponent {
   }
   handleDocumentPointerMove = e => {
     if (e.target !== this.canvasRef.current) {
-      [this.prevX, this.prevY] = this.getCoordsFromEvent(e)
+      [this.prevX, this.prevY] = getCanvasCoordsFromEvent(this.canvasRef.current, e)
     }
     if (this.isDrawing && e.button===2) {
       this.preventContextMenu = true
@@ -116,17 +116,9 @@ class Pen extends PureComponent {
   drawPoint = (x, y) => {
     this.ctx.fillRect(x, y, 1, 1)
   }
-
-  getCoordsFromEvent (e) {
-    let { top, left } = this.canvasRef.current.getBoundingClientRect()
-    const [mouseX, mouseY] = [e.clientX, e.clientY]
-    return [Math.floor(mouseX - left), Math.floor(mouseY - top)]
-  }
 }
 
 const mapStateToProps = state => ({
-  width: state.image.data ? state.image.data.width : 1,
-  height: state.image.data ? state.image.data.height : 1,
   color: state.colors.list[state.colors[state.colors.activeColor]],
   imageData: state.image.data
 })

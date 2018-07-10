@@ -50,3 +50,9 @@ export function bresenhamLine (x0, y0, x1, y1, callback) {
     }
   }
 }
+
+export function getCanvasCoordsFromEvent(canvas, e) {
+  let { top, left } = canvas.getBoundingClientRect()
+  const [mouseX, mouseY] = [e.clientX, e.clientY]
+  return [Math.floor(mouseX - left), Math.floor(mouseY - top)]
+}

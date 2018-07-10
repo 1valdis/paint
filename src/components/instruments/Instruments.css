@@ -38,8 +38,8 @@
 .instrument_pen:before {
   background-image: url('./pen_colorful.svg');
 }
-.instrument_bucket:before {
-  background-image: url('./bucket_colorful.svg')
+.instrument_fill:before {
+  background-image: url('./fill_colorful.svg')
 }
 .instrument_text:before {
   content: 'A';
