@@ -11,15 +11,14 @@ import Clipboard from '../Clipboard/Clipboard'
 import Instruments from '../instruments/Instruments'
 import Colors from '../Colors/ColorsContainer'
 
-import { openFile, createFile, paste, resize } from './actions'
+import { openFile, createFile, paste, resize, download } from './actions'
 
 class App extends PureComponent {
   render () {
     return (
       <React.Fragment>
         <FileMenu
-          downloadHref={this.props.donwloadHref}
-          downloadName={this.props.downloadName}
+          onDownload={() => download(this.props.downloadName)}
           onFileCreate={this.props.onFileCreate}
           onFileOpen={this.props.onFileOpen}
         />

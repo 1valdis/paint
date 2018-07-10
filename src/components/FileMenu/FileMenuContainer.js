@@ -19,6 +19,7 @@ class FileMenuContainer extends PureComponent {
         onAboutOpen={this.openAbout}
         onAboutClose={this.closeAbout}
         {...this.props}
+        onDownload={()=>this.props.onDownload(this.props.downloadName)}
       />
     )
   }
@@ -29,7 +30,7 @@ class FileMenuContainer extends PureComponent {
 }
 
 FileMenuContainer.propTypes = {
-  downloadHref: PropTypes.string,
+  onDownload: PropTypes.func.isRequired,
   downloadName: PropTypes.string,
   onFileCreate: PropTypes.func,
   onFileOpen: PropTypes.func

@@ -4,18 +4,17 @@ export const types = {
 
 const canvas = document.createElement('canvas')
 const ctx = canvas.getContext('2d', { alpha: false })
+let href = null
 
 export function createFile () {
   return function (dispatch, getState) {
     ;[canvas.width, canvas.height] = [800, 450]
     clearCanvas()
-    setupHref(getState().image.downloadHref, href =>
-      dispatch({
-        type: types.IMAGE_CHANGED,
-        data: ctx.getImageData(0, 0, canvas.width, canvas.height),
-        downloadHref: href
-      })
-    )
+    dispatch({
+      type: types.IMAGE_CHANGED,
+      data: ctx.getImageData(0, 0, canvas.width, canvas.height),
+      name: 'Ваша пикча.png'
+    })
   }
 }
 
@@ -29,14 +28,11 @@ export function openFile (e) {
       img.onload = () => {
         resizeCanvas(img.width, img.height)
         ctx.drawImage(img, 0, 0)
-        setupHref(getState().image.downloadHref, href =>
-          dispatch({
-            type: types.IMAGE_CHANGED,
-            data: ctx.getImageData(0, 0, img.width, img.height),
-            name: file.name,
-            downloadHref: href
-          })
-        )
+        dispatch({
+          type: types.IMAGE_CHANGED,
+          data: ctx.getImageData(0, 0, img.width, img.height),
+          name: file.name
+        })
       }
       img.src = e.target.result
     }
@@ -61,13 +57,10 @@ export function paste (e) {
               Math.max(canvas.height, pastedImage.height)
             )
             ctx.drawImage(pastedImage, 0, 0)
-            setupHref(getState().image.downloadHref, href =>
-              dispatch({
-                type: types.IMAGE_CHANGED,
-                data: ctx.getImageData(0, 0, canvas.width, canvas.height),
-                downloadHref: href
-              })
-            )
+            dispatch({
+              type: types.IMAGE_CHANGED,
+              data: ctx.getImageData(0, 0, canvas.width, canvas.height),
+            })
           }
           pastedImage.src = source
           break
@@ -91,13 +84,10 @@ function resizeCanvas (toWidth, toHeight) {
 function resizeActionCreator (toWidth, toHeight) {
   return function (dispatch, getState) {
     resizeCanvas(toWidth, toHeight)
-    setupHref(getState().image.downloadHref, href =>
-      dispatch({
-        type: types.IMAGE_CHANGED,
-        data: ctx.getImageData(0, 0, canvas.width, canvas.height),
-        downloadHref: href
-      })
-    )
+    dispatch({
+      type: types.IMAGE_CHANGED,
+      data: ctx.getImageData(0, 0, canvas.width, canvas.height),
+    })
   }
 }
 
@@ -107,13 +97,10 @@ function imageChangedActionCreator (imageData) {
   return function (dispatch, getState) {
     resizeCanvas(imageData.width, imageData.height)
     ctx.putImageData(imageData, 0, 0)
-    setupHref(getState().image.downloadHref, href =>
-      dispatch({
-        type: types.IMAGE_CHANGED,
-        data: ctx.getImageData(0, 0, canvas.width, canvas.height),
-        downloadHref: href
-      })
-    )
+    dispatch({
+      type: types.IMAGE_CHANGED,
+      data: ctx.getImageData(0, 0, canvas.width, canvas.height),
+    })
   }
 }
 
@@ -124,11 +111,17 @@ function clearCanvas () {
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
 
-function setupHref (prevHref, callback) {
+export function download (name) {
   canvas.toBlob(blob => {
-    if (prevHref != null) {
-      window.URL.revokeObjectURL(prevHref)
+    if (href !== null) {
+      window.URL.revokeObjectURL(href)
     }
-    callback(window.URL.createObjectURL(blob))
+    href = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.download = name
+    a.href = href
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
   })
 }

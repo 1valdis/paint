@@ -35,13 +35,12 @@ class FileMenuComponent extends PureComponent {
               onChange={this.props.onFileOpen}
             />
           </label>
-          <a
-            href={this.props.downloadHref}
-            download={this.props.downloadName}
+          <button
             className='file-menu-item'
+            onClick={this.props.onDownload}
           >
             Сохранить
-          </a>
+          </button>
           <button className='file-menu-item' onClick={this.props.onAboutOpen}>
             О программе
           </button>
@@ -66,8 +65,7 @@ FileMenuComponent.propTypes = {
   onClick: PropTypes.func.isRequired,
   onClickInside: PropTypes.func.isRequired,
   onClickOutside: PropTypes.func.isRequired,
-  downloadHref: PropTypes.string,
-  downloadName: PropTypes.string,
+  onDownload: PropTypes.func,
   onFileCreate: PropTypes.func.isRequired,
   onFileOpen: PropTypes.func.isRequired,
   isAboutOpen: PropTypes.bool,

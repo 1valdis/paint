@@ -7,7 +7,6 @@ import instrumentsReducer from '../instruments/reducer'
 const canvasReducer = (
   state = {
     data: null,
-    downloadHref: null,
     name: 'Ваша пикча.png'
   },
   action
@@ -17,7 +16,6 @@ const canvasReducer = (
       return {
         data: action.data,
         name: action.name || state.name,
-        downloadHref: action.downloadHref
       }
     default:
       return state
