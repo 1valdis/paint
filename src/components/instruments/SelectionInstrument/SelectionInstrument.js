@@ -7,6 +7,7 @@ import MovableSelection from '../../MovableSelection/MovableSelection'
 import './SelectionInstrument.css'
 
 import { selection } from './actions'
+import { changeImage } from '../../App/actions'
 
 // the selection is not working quite right:
 // there's no way a person can select the full width
@@ -22,7 +23,7 @@ class SelectionInstrument extends PureComponent {
       selectingX: null,
       selectingY: null,
       selectionCoords: null,
-      selectionData: null
+      selectionOriginCoords: null
     }
   }
   render () {
@@ -40,7 +41,12 @@ class SelectionInstrument extends PureComponent {
         />
       )
     } else if (this.props.selection) {
-      El = <MovableSelection onChange={this.existingSelectionChangeHandler} {...this.props.selection} />
+      El = (
+        <MovableSelection
+          onChange={this.existingSelectionChangeHandler}
+          {...this.props.selection}
+        />
+      )
     } else El = null
     return (
       <div className='selection' onPointerDown={this.handlePointerDown}>
@@ -65,7 +71,7 @@ class SelectionInstrument extends PureComponent {
       e.clientY + window.pageYOffset
     ]
     ;[top, left] = [Math.ceil(mouseY - top), Math.ceil(mouseX - left)]
-    this.setState({ selecting: true, selectingY: top, selectingX: left })
+    this.setState({ selecting: true, selectingY: top, selectingX: left, selectionCoords: null })
   }
   handleDocumentPointerMove = e => {
     if (!this.state.selecting) return
@@ -92,17 +98,11 @@ class SelectionInstrument extends PureComponent {
       // clamping top and left coordinates between 0 and canvas width
       //
       ;[canvasRelativeTop, canvasRelativeLeft] = [
-        Math.max(
-          0,
-          Math.min(canvasRelativeTop, this.props.imageData.height)
-        ),
-        Math.max(
-          0,
-          Math.min(canvasRelativeLeft, this.props.imageData.width)
-        )
+        Math.max(0, Math.min(canvasRelativeTop, this.props.imageData.height)),
+        Math.max(0, Math.min(canvasRelativeLeft, this.props.imageData.width))
       ]
 
-      //console.log(canvasRelativeTop, canvasRelativeLeft)
+      // console.log(canvasRelativeTop, canvasRelativeLeft)
 
       const selectionCoords = {
         top: Math.min(state.selectingY, canvasRelativeTop),
@@ -128,20 +128,67 @@ class SelectionInstrument extends PureComponent {
   }
   handleDocumentPointerUp = e => {
     // also checking if user just clicked without moving (so there's no selectionCoords)
-    if (this.state.selecting && this.state.selectionCoords) {
-      if (this.state.selectionCoords.width > 0 && this.state.selectionCoords.height > 0)
-      this.props.onSelect(this.state.selectionCoords)
-      this.setState({
-        selecting: false,
-        selectingX: null,
-        selectingY: null,
-        selectionCoords: null
-      })
-    }
+
+    this.setState(state => {
+      let selectionOriginCoords = null
+      if (state.selecting && state.selectionCoords) {
+        if (
+          state.selectionCoords.width > 0 &&
+          state.selectionCoords.height > 0
+        ) {
+          this.props.onSelect(state.selectionCoords)
+
+          this.oldCanvas = document.createElement('canvas')
+          this.oldCanvas.width = this.props.imageData.width
+          this.oldCanvas.height = this.props.imageData.height
+          const oldCanvasCtx = this.oldCanvas.getContext('2d')
+          oldCanvasCtx.putImageData(this.props.imageData, 0, 0)
+
+          selectionOriginCoords = state.selectionCoords
+        }
+        return {
+          selecting: false,
+          selectingX: null,
+          selectingY: null,
+          selectionCoords: null,
+          selectionOriginCoords
+        }
+      }
+      return null
+    })
   }
-  existingSelectionChangeHandler = (top, left, width, height) => {
+  existingSelectionChangeHandler = ({ top, left, width, height }) => {
     this.backgroundColor = this.props.secondaryColor
-    this.props.onSelect({top, left, width, height})
+
+    const newCanvas = document.createElement('canvas')
+    newCanvas.width = this.props.imageData.width
+    newCanvas.height = this.props.imageData.height
+    const newCanvasCtx = newCanvas.getContext('2d')
+    newCanvasCtx.drawImage(this.oldCanvas, 0, 0)
+
+    newCanvasCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
+    newCanvasCtx.fillRect(
+      this.state.selectionOriginCoords.left,
+      this.state.selectionOriginCoords.top,
+      this.state.selectionOriginCoords.width,
+      this.state.selectionOriginCoords.height
+    )
+    newCanvasCtx.drawImage(
+      this.oldCanvas,
+      this.state.selectionOriginCoords.left,
+      this.state.selectionOriginCoords.top,
+      this.state.selectionOriginCoords.width,
+      this.state.selectionOriginCoords.height,
+      left,
+      top,
+      width,
+      height
+    )
+
+    this.props.changeImage(
+      newCanvasCtx.getImageData(0, 0, newCanvas.width, newCanvas.height)
+    )
+    this.props.onSelect({ top, left, width, height })
   }
   componentDidMount () {
     document.addEventListener('pointermove', this.handleDocumentPointerMove)
@@ -159,7 +206,8 @@ const mapStateToProps = state => ({
   secondaryColor: state.colors.list[state.colors.secondary]
 })
 const mapDispatchToProps = dispatch => ({
-  onSelect: zone => dispatch(selection(zone))
+  onSelect: zone => dispatch(selection(zone)),
+  changeImage: imageData => dispatch(changeImage(imageData))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SelectionInstrument)
