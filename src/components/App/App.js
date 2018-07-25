@@ -8,6 +8,7 @@ import FileMenu from '../FileMenu/FileMenuContainer'
 import Canvas from '../Canvas/Canvas'
 import NavBar from '../NavBar/NavBar'
 import Clipboard from '../Clipboard/Clipboard'
+import Image from '../Image/Image'
 import Instruments from '../instruments/Instruments'
 import Colors from '../Colors/ColorsContainer'
 
@@ -28,6 +29,7 @@ class App extends PureComponent {
             disabled={this.props.clipboardDisabled}
             footer='Буфер обмена'
           />
+          <Image footer='Изображение' />
           <Instruments footer='Инструменты' />
           <Colors footer='Цвета' />
         </NavBar>
@@ -48,14 +50,13 @@ class App extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  donwloadHref: state.image.downloadHref,
   downloadName: state.image.name
 })
 const mapDispatchToProps = dispatch => ({
   onFileCreate: () => dispatch(createFile()),
   onFileOpen: e => dispatch(openFile(e)),
   onPaste: e => dispatch(paste(e)),
-  onResize: (width, height) => dispatch(resize(width, height))
+  onResize: (top, left, width, height) => dispatch(resize(width, height))
 })
 
 export { default as rootReducer } from './reducer'

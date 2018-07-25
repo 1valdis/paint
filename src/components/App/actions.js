@@ -42,6 +42,7 @@ export function openFile (e) {
 
 export function paste (e) {
   return function (dispatch, getState) {
+    console.log(e)
     if (e.clipboardData) {
       const items = e.clipboardData.items
       if (!items) return

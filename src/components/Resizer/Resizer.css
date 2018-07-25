@@ -1,0 +1,21 @@
+.resizer {
+  pointer-events: none;
+  z-index: 100;
+  position: absolute;
+}
+
+.resizer_resizing {
+  outline: 1px dotted white;
+  mix-blend-mode: difference;
+}
+
+.resizer_resizing .resizer-inner {
+  display: none;
+}
+
+.resizer_resizing .resizer-outer {
+  width: 4em;
+  height: 4em;
+  margin-top: -2em;
+  margin-left: -2em;
+}

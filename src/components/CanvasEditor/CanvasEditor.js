@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
 
+import SelectionInstrument from '../instruments/SelectionInstrument/SelectionInstrument'
 import Pen from '../instruments/Pen/Pen'
 import Fill from '../instruments/Fill/Fill'
 
 const instruments = {
   pen: Pen,
-  fill: Fill
+  fill: Fill,
+  selection: SelectionInstrument
 }
 
 class CanvasEditor extends PureComponent {

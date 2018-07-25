@@ -3,7 +3,8 @@ import { types } from './actions'
 const instrumentsReducer = (state = { instrument: 'pen' }, action) => {
   switch (action.type) {
     case types.CHANGE_INSTRUMENT:
-      return { ...action, type: undefined }
+      const {type, ...withoutType} = action
+      return withoutType
     default:
       return state
   }

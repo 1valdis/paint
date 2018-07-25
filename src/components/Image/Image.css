@@ -1,0 +1,20 @@
+.image .select svg {
+  padding: 0.5em;
+  width: 3.5em;
+}
+.image .select {
+  display: block;
+  background: none;
+  border: 1px solid transparent;
+}
+.image .select:hover {
+  background: var(--hover-background-color);
+  border: 1px solid var(--hover-border-color);
+}
+.image .select:active, .image .select_active {
+  background: var(--active-background-color);
+  border: 1px solid var(--active-border-color);
+}
+.image .select:focus {
+  outline: none;
+}

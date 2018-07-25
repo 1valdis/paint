@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
 
-import CanvasResizer from '../CanvasResizer/CanvasResizer'
+import Resizer from '../Resizer/Resizer'
 import CanvasEditor from '../CanvasEditor/CanvasEditor'
 
 import './Canvas.css'
@@ -25,10 +25,13 @@ class Canvas extends PureComponent {
             height: this.props.data ? this.props.data.height : 0
           }}
         >
-          <CanvasResizer
+          <Resizer
+            mode='canvas'
             onResize={this.props.onResize}
             width={this.props.data ? this.props.data.width : 0}
             height={this.props.data ? this.props.data.height : 0}
+            top={0}
+            left={0}
           />
           <CanvasEditor />
         </div>

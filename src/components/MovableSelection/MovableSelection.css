@@ -1,0 +1,9 @@
+.movable-selection {
+  outline: 1px dashed blue;
+  position: relative;
+  cursor: move;
+}
+
+.movable-selection .resizer{
+  position: relative;
+}
