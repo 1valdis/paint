@@ -9,6 +9,10 @@
   mix-blend-mode: difference;
 }
 
+.resizer_hide-border {
+  outline: none
+}
+
 .resizer_resizing .resizer-inner {
   display: none;
 }

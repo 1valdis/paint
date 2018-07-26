@@ -17,16 +17,27 @@ class MovableSelection extends PureComponent {
     }
   }
   render () {
-    const { onChange, ...withoutOnChange } = this.props
+    const {
+      onResizeEnd,
+      onResizing,
+      onMoveEnd,
+      onMoving,
+      ...withoutOnChange
+    } = this.props
+    if (this.props.onResizing) {
+      withoutOnChange.onResizing = this.onResizing
+    }
+    if (this.props.onResizeEnd) {
+      withoutOnChange.onResizeEnd = this.onResizeEnd
+    }
     return (
       <div
-        className='movable-selection'
         style={this.props}
         onPointerDown={this.handlePointerDown}
+        className='movable-selection'
       >
         <Resizer
           mode='selection'
-          onResize={this.onResize}
           {...withoutOnChange}
           top={0}
           left={0}
@@ -34,8 +45,16 @@ class MovableSelection extends PureComponent {
       </div>
     )
   }
-  onResize = (top, left, width, height) => {
-    this.props.onChange({
+  onResizeEnd = (top, left, width, height) => {
+    this.props.onResizeEnd({
+      top: this.props.top + top,
+      left: this.props.left + left,
+      width,
+      height
+    })
+  }
+  onResizing = (top, left, width, height) => {
+    this.props.onResizing({
       top: this.props.top + top,
       left: this.props.left + left,
       width,
@@ -52,13 +71,23 @@ class MovableSelection extends PureComponent {
     }
   }
   handleDocumentPointerMove = e => {
-    if (this.state.moving && this.state.startX !== null) {
-      const { onChange, ...coords } = this.props
+    if (
+      this.state.moving &&
+      this.state.startX !== null &&
+      this.props.onMoving
+    ) {
+      const {
+        onResizeEnd,
+        onResizing,
+        onMoveEnd,
+        onMoving,
+        ...coords
+      } = this.props
       coords.top =
         this.state.top + (e.clientY + window.pageYOffset - this.state.startY)
       coords.left =
         this.state.left + (e.clientX + window.pageXOffset - this.state.startX)
-      this.props.onChange(coords)
+      this.props.onMoving(coords)
     }
   }
   handleDocumentPointerUp = e => {
@@ -87,21 +116,15 @@ class MovableSelection extends PureComponent {
   }
 }
 
-// const mapStateToProps = state => ({
-//   instrument: state.instruments.instrument,
-//   imageData: state.instruments.imageData
-// })
-
-// const mapDispatchToProps = dispatch => ({})
-
-// export default connect(mapStateToProps, mapDispatchToProps)(MovableSelection)
-
 MovableSelection.propTypes = {
   top: PropTypes.number.isRequired,
   left: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
-  onChange: PropTypes.func.isRequired
+  onResizeEnd: PropTypes.func,
+  onResizing: PropTypes.func,
+  onMoveEnd: PropTypes.func,
+  onMoving: PropTypes.func
 }
 
 export default MovableSelection

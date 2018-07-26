@@ -14,6 +14,8 @@ import { changeImage } from '../../App/actions'
 // of the picture, because max coordinate is width-1.
 // interesting that full height is selectable though.
 // at least it works somehow, will polish it later maybe.
+// TODO: changing image only at the end of movement and resizing,
+// but not WHILE mowing
 
 class SelectionInstrument extends PureComponent {
   constructor (...args) {
@@ -22,9 +24,21 @@ class SelectionInstrument extends PureComponent {
       selecting: false,
       selectingX: null,
       selectingY: null,
-      selectionCoords: null,
+      selectionCoords: this.props.selectionCoords,
       selectionOriginCoords: null
     }
+
+    this.oldCanvas = document.createElement('canvas')
+    this.oldCanvas.width = this.props.imageData.width
+    this.oldCanvas.height = this.props.imageData.height
+    const oldCanvasCtx = this.oldCanvas.getContext('2d')
+    oldCanvasCtx.putImageData(this.props.imageData, 0, 0)
+
+    this.newCanvas = document.createElement('canvas')
+    this.newCanvas.width = this.props.imageData.width
+    this.newCanvas.height = this.props.imageData.height
+    this.newCanvasCtx = this.newCanvas.getContext('2d')
+    this.newCanvasCtx.imageSmoothingEnabled = false
   }
   render () {
     let El
@@ -40,11 +54,12 @@ class SelectionInstrument extends PureComponent {
           }}
         />
       )
-    } else if (this.props.selection) {
+    } else if (this.props.selectionCoords) {
       El = (
         <MovableSelection
-          onChange={this.existingSelectionChangeHandler}
-          {...this.props.selection}
+          onResizeEnd={this.existingSelectionChangeHandler}
+          onMoving={this.existingSelectionChangeHandler}
+          {...this.props.selectionCoords}
         />
       )
     } else El = null
@@ -57,6 +72,7 @@ class SelectionInstrument extends PureComponent {
   handlePointerDown = e => {
     if (e.target !== e.currentTarget) return
 
+    this.props.onSelect(null)
     this.container = e.target
 
     let { top, left, bottom, right } = e.target.getBoundingClientRect()
@@ -71,7 +87,12 @@ class SelectionInstrument extends PureComponent {
       e.clientY + window.pageYOffset
     ]
     ;[top, left] = [Math.ceil(mouseY - top), Math.ceil(mouseX - left)]
-    this.setState({ selecting: true, selectingY: top, selectingX: left, selectionCoords: null })
+    this.setState({
+      selecting: true,
+      selectingY: top,
+      selectingX: left,
+      selectionCoords: null
+    })
   }
   handleDocumentPointerMove = e => {
     if (!this.state.selecting) return
@@ -119,31 +140,21 @@ class SelectionInstrument extends PureComponent {
         )
       }
 
-      // console.log(top + selectionCoords.top + selectionCoords.height, bottom)
-
       return {
         selectionCoords
       }
     })
   }
   handleDocumentPointerUp = e => {
-    // also checking if user just clicked without moving (so there's no selectionCoords)
-
     this.setState(state => {
       let selectionOriginCoords = null
+      // also checking if user just clicked without moving (so there's no selectionCoords)
       if (state.selecting && state.selectionCoords) {
         if (
           state.selectionCoords.width > 0 &&
           state.selectionCoords.height > 0
         ) {
           this.props.onSelect(state.selectionCoords)
-
-          this.oldCanvas = document.createElement('canvas')
-          this.oldCanvas.width = this.props.imageData.width
-          this.oldCanvas.height = this.props.imageData.height
-          const oldCanvasCtx = this.oldCanvas.getContext('2d')
-          oldCanvasCtx.putImageData(this.props.imageData, 0, 0)
-
           selectionOriginCoords = state.selectionCoords
         }
         return {
@@ -153,27 +164,27 @@ class SelectionInstrument extends PureComponent {
           selectionCoords: null,
           selectionOriginCoords
         }
+      } else {
+        return {
+          selecting: false,
+          selectingX: null,
+          selectingY: null
+        }
       }
-      return null
     })
   }
   existingSelectionChangeHandler = ({ top, left, width, height }) => {
     this.backgroundColor = this.props.secondaryColor
 
-    const newCanvas = document.createElement('canvas')
-    newCanvas.width = this.props.imageData.width
-    newCanvas.height = this.props.imageData.height
-    const newCanvasCtx = newCanvas.getContext('2d')
-    newCanvasCtx.drawImage(this.oldCanvas, 0, 0)
-
-    newCanvasCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
-    newCanvasCtx.fillRect(
+    this.newCanvasCtx.drawImage(this.oldCanvas, 0, 0)
+    this.newCanvasCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
+    this.newCanvasCtx.fillRect(
       this.state.selectionOriginCoords.left,
       this.state.selectionOriginCoords.top,
       this.state.selectionOriginCoords.width,
       this.state.selectionOriginCoords.height
     )
-    newCanvasCtx.drawImage(
+    this.newCanvasCtx.drawImage(
       this.oldCanvas,
       this.state.selectionOriginCoords.left,
       this.state.selectionOriginCoords.top,
@@ -186,7 +197,12 @@ class SelectionInstrument extends PureComponent {
     )
 
     this.props.changeImage(
-      newCanvasCtx.getImageData(0, 0, newCanvas.width, newCanvas.height)
+      this.newCanvasCtx.getImageData(
+        0,
+        0,
+        this.newCanvas.width,
+        this.newCanvas.height
+      )
     )
     this.props.onSelect({ top, left, width, height })
   }
@@ -202,7 +218,10 @@ class SelectionInstrument extends PureComponent {
 
 const mapStateToProps = state => ({
   imageData: state.image.data,
-  selection: state.instruments.selection,
+  selectionCoords: state.instruments.selection
+    ? state.instruments.selection.coords
+    : null,
+  /* selectionImageData: state.instruments.selection.imageData, */
   secondaryColor: state.colors.list[state.colors.secondary]
 })
 const mapDispatchToProps = dispatch => ({

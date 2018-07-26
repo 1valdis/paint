@@ -27,7 +27,7 @@ class Canvas extends PureComponent {
         >
           <Resizer
             mode='canvas'
-            onResize={this.props.onResize}
+            onResizeEnd={this.props.onResize}
             width={this.props.data ? this.props.data.width : 0}
             height={this.props.data ? this.props.data.height : 0}
             top={0}

@@ -94,7 +94,8 @@ class Resizer extends PureComponent {
     return (
       <div
         className={classNames('resizer', {
-          resizer_resizing: this.state.resizing
+          resizer_resizing: this.state.resizing,
+          'resizer_hide-border': !!this.props.onResizing
         })}
         ref='resizeRect'
         style={{
@@ -200,11 +201,25 @@ class Resizer extends PureComponent {
     state.resizeHeight = Math.round(
       state.resizeHeight > 0 ? state.resizeHeight : 1
     )
-
+    if (this.props.onResizing) {
+      this.props.onResizing(
+        state.resizeTop,
+        state.resizeLeft,
+        state.resizeWidth,
+        state.resizeHeight
+      )
+    }
     this.setState(state)
   }
   onResizeEnd (direction, e) {
-    this.props.onResize(this.state.resizeTop, this.state.resizeLeft, this.state.resizeWidth, this.state.resizeHeight)
+    if (this.props.onResizeEnd) {
+      this.props.onResizeEnd(
+        this.state.resizeTop,
+        this.state.resizeLeft,
+        this.state.resizeWidth,
+        this.state.resizeHeight
+      )
+    }
     this.setState({ resizing: false })
   }
   onResizeCancel (direction, e) {
@@ -230,7 +245,8 @@ Resizer.propTypes = {
   mode: PropTypes.oneOf(['canvas', 'selection']),
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
-  onResize: PropTypes.func
+  onResizeEnd: PropTypes.func,
+  onResizing: PropTypes.func
 }
 
 export default Resizer

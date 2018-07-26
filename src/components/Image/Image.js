@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 
 import classNames from 'classnames'
 
-import {selectInstrument} from '../instruments/actions'
+import { selectInstrument } from '../instruments/actions'
 
 class Image extends Component {
   render () {

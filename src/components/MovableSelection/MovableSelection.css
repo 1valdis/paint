@@ -7,3 +7,7 @@
 .movable-selection .resizer{
   position: relative;
 }
+
+.movable-selection_hide-outline-on-resizing .resizer_resizing {
+  outline: none
+}

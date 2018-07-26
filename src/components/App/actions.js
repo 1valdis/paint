@@ -74,11 +74,17 @@ export function paste (e) {
 
 function resizeCanvas (toWidth, toHeight) {
   if (canvas.width !== toWidth || canvas.height !== toHeight) {
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const p = performance.now()
+    const newCanvas = document.createElement('canvas')
+    newCanvas.width = toWidth
+    newCanvas.height = toHeight
+    const newCtx = newCanvas.getContext('2d')
+    newCtx.fillStyle = '#FFFFFF'
+    newCtx.fillRect(0, 0, toWidth, toHeight)
+    newCtx.drawImage(canvas, 0, 0)
+    
     ;[canvas.width, canvas.height] = [toWidth, toHeight]
-    ctx.fillStyle = '#FFFFFF'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.putImageData(imageData, 0, 0)
+    ctx.drawImage(newCanvas, 0, 0)
   }
 }
 
@@ -100,7 +106,7 @@ function imageChangedActionCreator (imageData) {
     ctx.putImageData(imageData, 0, 0)
     dispatch({
       type: types.IMAGE_CHANGED,
-      data: ctx.getImageData(0, 0, canvas.width, canvas.height),
+      data: imageData
     })
   }
 }
