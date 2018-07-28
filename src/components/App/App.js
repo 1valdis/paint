@@ -42,7 +42,6 @@ class App extends PureComponent {
   }
   componentDidMount () {
     document.addEventListener('paste', this.props.onPaste)
-    this.props.onFileCreate()
   }
   componentWillUnmount () {
     document.removeEventListener('paste', this.props.onPaste)

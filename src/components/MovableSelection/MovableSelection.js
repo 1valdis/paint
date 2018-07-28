@@ -91,6 +91,24 @@ class MovableSelection extends PureComponent {
     }
   }
   handleDocumentPointerUp = e => {
+    if (
+      this.state.moving &&
+      this.state.startX !== null &&
+      this.props.onMoving
+    ) {
+      const {
+        onResizeEnd,
+        onResizing,
+        onMoveEnd,
+        onMoving,
+        ...coords
+      } = this.props
+      coords.top =
+        this.state.top + (e.clientY + window.pageYOffset - this.state.startY)
+      coords.left =
+        this.state.left + (e.clientX + window.pageXOffset - this.state.startX)
+        this.props.onMoveEnd(coords)
+    }
     this.setState({
       moving: false,
       startX: null,
@@ -121,6 +139,7 @@ MovableSelection.propTypes = {
   left: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
   height: PropTypes.number.isRequired,
+  hideBorderOnResizing: PropTypes.bool,
   onResizeEnd: PropTypes.func,
   onResizing: PropTypes.func,
   onMoveEnd: PropTypes.func,

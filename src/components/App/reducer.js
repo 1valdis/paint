@@ -5,12 +5,20 @@ import colorsReducer from '../Colors/reducer'
 import instrumentsReducer from '../instruments/reducer'
 
 const canvasReducer = (
-  state = {
-    data: null,
-    name: 'Ваша пикча.png'
-  },
+  state,
   action
 ) => {
+  if (state === undefined) {
+    const canvasEl = document.createElement('canvas')
+    ;[canvasEl.width, canvasEl.height] = [800, 450]
+    const ctx = canvasEl.getContext('2d')
+    ctx.fillStyle = '#FFFFFF'
+    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height)
+    return {
+      data: ctx.getImageData(0, 0, canvasEl.width, canvasEl.height),
+      name: 'Ваша пикча.png'
+    }
+  }
   switch (action.type) {
     case types.IMAGE_CHANGED:
       return {

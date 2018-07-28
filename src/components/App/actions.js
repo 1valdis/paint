@@ -7,6 +7,7 @@ const ctx = canvas.getContext('2d', { alpha: false })
 let href = null
 
 export function createFile () {
+  debugger;
   return function (dispatch, getState) {
     ;[canvas.width, canvas.height] = [800, 450]
     clearCanvas()
@@ -74,7 +75,6 @@ export function paste (e) {
 
 function resizeCanvas (toWidth, toHeight) {
   if (canvas.width !== toWidth || canvas.height !== toHeight) {
-    const p = performance.now()
     const newCanvas = document.createElement('canvas')
     newCanvas.width = toWidth
     newCanvas.height = toHeight

@@ -95,7 +95,7 @@ class Resizer extends PureComponent {
       <div
         className={classNames('resizer', {
           resizer_resizing: this.state.resizing,
-          'resizer_hide-border': !!this.props.onResizing
+          'resizer_hide-border': this.props.hideBorderOnResizing
         })}
         ref='resizeRect'
         style={{

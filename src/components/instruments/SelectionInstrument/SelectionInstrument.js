@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, createRef } from 'react'
 
 import { connect } from 'react-redux'
 
@@ -20,58 +20,57 @@ import { changeImage } from '../../App/actions'
 class SelectionInstrument extends PureComponent {
   constructor (...args) {
     super(...args)
+
     this.state = {
       selecting: false,
       selectingX: null,
       selectingY: null,
-      selectionCoords: this.props.selectionCoords,
-      selectionOriginCoords: null
+      selectingCoords: null,
+      selectionOriginCoords: this.props.selectionCoords
     }
 
-    this.oldCanvas = document.createElement('canvas')
-    this.oldCanvas.width = this.props.imageData.width
-    this.oldCanvas.height = this.props.imageData.height
-    const oldCanvasCtx = this.oldCanvas.getContext('2d')
-    oldCanvasCtx.putImageData(this.props.imageData, 0, 0)
+    // todo - imageData selection handling
 
-    this.newCanvas = document.createElement('canvas')
-    this.newCanvas.width = this.props.imageData.width
-    this.newCanvas.height = this.props.imageData.height
-    this.newCanvasCtx = this.newCanvas.getContext('2d')
-    this.newCanvasCtx.imageSmoothingEnabled = false
+    this.canvasRef = createRef()
   }
   render () {
     let El
-    if (this.state.selecting && this.state.selectionCoords) {
+    if (this.state.selecting && this.state.selectingCoords) {
       El = (
         <div
           className='selecting'
           style={{
-            top: `${this.state.selectionCoords.top}px`,
-            left: `${this.state.selectionCoords.left}px`,
-            width: `${this.state.selectionCoords.width}px`,
-            height: `${this.state.selectionCoords.height}px`
+            top: `${this.state.selectingCoords.top}px`,
+            left: `${this.state.selectingCoords.left}px`,
+            width: `${this.state.selectingCoords.width}px`,
+            height: `${this.state.selectingCoords.height}px`
           }}
         />
       )
     } else if (this.props.selectionCoords) {
       El = (
         <MovableSelection
-          onResizeEnd={this.existingSelectionChangeHandler}
-          onMoving={this.existingSelectionChangeHandler}
+          onResizing={this.handleResizing}
+          onResizeEnd={this.handleResizeEnd}
+          onMoving={this.handleMoving}
+          onMoveEnd={this.handleMoveEnd}
+          hideBorderOnResizing={false}
           {...this.props.selectionCoords}
         />
       )
     } else El = null
     return (
       <div className='selection' onPointerDown={this.handlePointerDown}>
+        <canvas ref={this.canvasRef} />
         {El}
       </div>
     )
   }
   handlePointerDown = e => {
-    if (e.target !== e.currentTarget) return
+    if (e.target !== this.canvasRef.current) return
 
+    this.oldCtx.putImageData(this.props.imageData, 0, 0)
+    this.backgroundColor = null
     this.props.onSelect(null)
     this.container = e.target
 
@@ -91,7 +90,7 @@ class SelectionInstrument extends PureComponent {
       selecting: true,
       selectingY: top,
       selectingX: left,
-      selectionCoords: null
+      selectingCoords: null
     })
   }
   handleDocumentPointerMove = e => {
@@ -125,7 +124,7 @@ class SelectionInstrument extends PureComponent {
 
       // console.log(canvasRelativeTop, canvasRelativeLeft)
 
-      const selectionCoords = {
+      const selectingCoords = {
         top: Math.min(state.selectingY, canvasRelativeTop),
         left: Math.min(state.selectingX, canvasRelativeLeft),
         width: Math.max(
@@ -141,7 +140,7 @@ class SelectionInstrument extends PureComponent {
       }
 
       return {
-        selectionCoords
+        selectingCoords
       }
     })
   }
@@ -149,19 +148,19 @@ class SelectionInstrument extends PureComponent {
     this.setState(state => {
       let selectionOriginCoords = null
       // also checking if user just clicked without moving (so there's no selectionCoords)
-      if (state.selecting && state.selectionCoords) {
+      if (state.selecting && this.state.selectingCoords) {
         if (
-          state.selectionCoords.width > 0 &&
-          state.selectionCoords.height > 0
+          this.state.selectingCoords.width > 0 &&
+          this.state.selectingCoords.height > 0
         ) {
-          this.props.onSelect(state.selectionCoords)
-          selectionOriginCoords = state.selectionCoords
+          this.props.onSelect(this.state.selectingCoords)
+          selectionOriginCoords = this.state.selectingCoords
         }
         return {
           selecting: false,
           selectingX: null,
           selectingY: null,
-          selectionCoords: null,
+          selectingCoords: null,
           selectionOriginCoords
         }
       } else {
@@ -173,46 +172,105 @@ class SelectionInstrument extends PureComponent {
       }
     })
   }
-  existingSelectionChangeHandler = ({ top, left, width, height }) => {
-    this.backgroundColor = this.props.secondaryColor
-
-    this.newCanvasCtx.drawImage(this.oldCanvas, 0, 0)
-    this.newCanvasCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
-    this.newCanvasCtx.fillRect(
-      this.state.selectionOriginCoords.left,
-      this.state.selectionOriginCoords.top,
-      this.state.selectionOriginCoords.width,
-      this.state.selectionOriginCoords.height
-    )
-    this.newCanvasCtx.drawImage(
-      this.oldCanvas,
-      this.state.selectionOriginCoords.left,
-      this.state.selectionOriginCoords.top,
-      this.state.selectionOriginCoords.width,
-      this.state.selectionOriginCoords.height,
-      left,
-      top,
-      width,
-      height
-    )
-
+  handleResizing = ({ top, left, width, height }) => {}
+  handleResizeEnd = ({ top, left, width, height }) => {
+    if (!this.backgroundColor) {
+      this.backgroundColor = this.props.secondaryColor
+      this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
+    }
+    this.props.onSelect({ top, left, width, height })
     this.props.changeImage(
-      this.newCanvasCtx.getImageData(
+      this.newCtx.getImageData(
         0,
         0,
-        this.newCanvas.width,
-        this.newCanvas.height
+        this.newCtx.canvas.width,
+        this.newCtx.canvas.height
       )
     )
+  }
+  handleMoving = ({ top, left, width, height }) => {
+    if (!this.backgroundColor) {
+      this.backgroundColor = this.props.secondaryColor
+      this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
+    }
     this.props.onSelect({ top, left, width, height })
   }
+  handleMoveEnd = ({ top, left, width, height }) => {
+    this.props.changeImage(
+      this.newCtx.getImageData(
+        0,
+        0,
+        this.newCtx.canvas.width,
+        this.newCtx.canvas.height
+      )
+    )
+  }
+
+  redrawCanvas = updateOld => {
+    if (!this.oldCtx) {
+      const oldCanvas = document.createElement('canvas')
+      oldCanvas.width = this.props.imageData.width
+      oldCanvas.height = this.props.imageData.height
+      this.oldCtx = oldCanvas.getContext('2d')
+      this.oldCtx.putImageData(this.props.imageData, 0, 0)
+
+      this.canvasRef.current.width = this.props.imageData.width
+      this.canvasRef.current.height = this.props.imageData.height
+      this.newCtx = this.canvasRef.current.getContext('2d')
+      this.newCtx.imageSmoothingEnabled = false
+    }
+
+    if (updateOld) {
+      this.oldCtx.canvas.width = this.props.imageData.width
+      this.oldCtx.canvas.height = this.props.imageData.height
+      this.newCtx.canvas.width = this.props.imageData.width
+      this.newCtx.canvas.height = this.props.imageData.height
+      this.newCtx.imageSmoothingEnabled = false
+      this.oldCtx.putImageData(this.props.imageData, 0, 0)
+    }
+
+    this.newCtx.drawImage(this.oldCtx.canvas, 0, 0)
+
+    if (this.props.selectionCoords && this.state.selectionOriginCoords) {
+      this.newCtx.fillRect(
+        this.state.selectionOriginCoords.left,
+        this.state.selectionOriginCoords.top,
+        this.state.selectionOriginCoords.width,
+        this.state.selectionOriginCoords.height
+      )
+      this.newCtx.drawImage(
+        this.oldCtx.canvas,
+        this.state.selectionOriginCoords.left,
+        this.state.selectionOriginCoords.top,
+        this.state.selectionOriginCoords.width,
+        this.state.selectionOriginCoords.height,
+        this.props.selectionCoords.left,
+        this.props.selectionCoords.top,
+        this.props.selectionCoords.width,
+        this.props.selectionCoords.height
+      )
+    }
+    // todo: imageData
+  }
+
   componentDidMount () {
     document.addEventListener('pointermove', this.handleDocumentPointerMove)
     document.addEventListener('pointerup', this.handleDocumentPointerUp)
+    this.redrawCanvas(true)
   }
   componentWillUnmount () {
     document.removeEventListener('pointermove', this.handleDocumentPointerMove)
     document.removeEventListener('pointerup', this.handleDocumentPointerUp)
+  }
+  componentDidUpdate (prevProps) {
+    if (
+      prevProps.imageData.width !== this.props.imageData.width ||
+      prevProps.imageData.height !== this.props.imageData.height
+    ) {
+      this.props.onSelect(null)
+      this.redrawCanvas(true)
+    }
+    this.redrawCanvas(false)
   }
 }
 

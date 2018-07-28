@@ -11,3 +11,7 @@
   outline: 1px dashed white;
   mix-blend-mode: difference;
 }
+.selection canvas{
+  position: absolute;
+  top: 0;
+}
