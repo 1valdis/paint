@@ -12,7 +12,7 @@ import Image from '../Image/Image'
 import Instruments from '../instruments/Instruments'
 import Colors from '../Colors/ColorsContainer'
 
-import { openFile, createFile, paste, resize, download } from './actions'
+import { openFile, createFile, paste, download } from './actions'
 
 class App extends PureComponent {
   render () {
@@ -35,7 +35,6 @@ class App extends PureComponent {
         </NavBar>
         <Canvas
           onCanvasRef={this.handleCanvasRef}
-          onResize={this.props.onResize}
         />
       </React.Fragment>
     )
@@ -54,8 +53,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onFileCreate: () => dispatch(createFile()),
   onFileOpen: e => dispatch(openFile(e)),
-  onPaste: e => dispatch(paste(e)),
-  onResize: (top, left, width, height) => dispatch(resize(width, height))
+  onPaste: e => dispatch(paste(e))
 })
 
 export { default as rootReducer } from './reducer'

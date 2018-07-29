@@ -311,7 +311,7 @@ const mapStateToProps = state => ({
   selectionCoords: state.instruments.selection
     ? state.instruments.selection.coords
     : null,
-  /* selectionImageData: state.instruments.selection.imageData, */
+  selectionImageData: state.instruments.selection.imageData,
   secondaryColor: state.colors.list[state.colors.secondary]
 })
 const mapDispatchToProps = dispatch => ({

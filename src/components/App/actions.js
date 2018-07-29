@@ -1,3 +1,5 @@
+import { types as instrumentsTypes } from '../instruments/actions'
+
 export const types = {
   IMAGE_CHANGED: 'app/image-changed'
 }
@@ -27,7 +29,8 @@ export function openFile (e) {
     reader.onload = e => {
       const img = new Image()
       img.onload = () => {
-        resizeCanvas(img.width, img.height)
+        canvas.width = img.width
+        canvas.height = img.height
         ctx.drawImage(img, 0, 0)
         dispatch({
           type: types.IMAGE_CHANGED,
@@ -53,15 +56,19 @@ export function paste (e) {
           const blob = items[i].getAsFile()
           const source = window.URL.createObjectURL(blob)
           const pastedImage = new Image()
-          pastedImage.onload = () => {
-            resizeCanvas(
-              Math.max(canvas.width, pastedImage.width),
-              Math.max(canvas.height, pastedImage.height)
-            )
-            ctx.drawImage(pastedImage, 0, 0)
+          pastedImage.onload = () => {  
+            const pastedImageCanvas = document.createElement('canvas')
+            pastedImageCanvas.width = pastedImage.width
+            pastedImageCanvas.height = pastedImage.height
+            const pastedImageCtx = pastedImageCanvas.getContext('2d')
+            pastedImageCtx.drawImage(pastedImage, 0, 0)
+            
             dispatch({
-              type: types.IMAGE_CHANGED,
-              data: ctx.getImageData(0, 0, canvas.width, canvas.height),
+              type: instrumentsTypes.CHANGE_INSTRUMENT,
+              instrument: 'selection',
+              selection: {
+                data: pastedImageCtx.getImageData(0, 0, pastedImageCanvas.width, pastedImageCanvas.height)
+              }
             })
           }
           pastedImage.src = source
@@ -73,36 +80,10 @@ export function paste (e) {
   }
 }
 
-function resizeCanvas (toWidth, toHeight) {
-  if (canvas.width !== toWidth || canvas.height !== toHeight) {
-    const newCanvas = document.createElement('canvas')
-    newCanvas.width = toWidth
-    newCanvas.height = toHeight
-    const newCtx = newCanvas.getContext('2d')
-    newCtx.fillStyle = '#FFFFFF'
-    newCtx.fillRect(0, 0, toWidth, toHeight)
-    newCtx.drawImage(canvas, 0, 0)
-    
-    ;[canvas.width, canvas.height] = [toWidth, toHeight]
-    ctx.drawImage(newCanvas, 0, 0)
-  }
-}
-
-function resizeActionCreator (toWidth, toHeight) {
-  return function (dispatch, getState) {
-    resizeCanvas(toWidth, toHeight)
-    dispatch({
-      type: types.IMAGE_CHANGED,
-      data: ctx.getImageData(0, 0, canvas.width, canvas.height),
-    })
-  }
-}
-
-export { resizeActionCreator as resize }
-
 function imageChangedActionCreator (imageData) {
   return function (dispatch, getState) {
-    resizeCanvas(imageData.width, imageData.height)
+    canvas.width = imageData.width
+    canvas.height = imageData.height
     ctx.putImageData(imageData, 0, 0)
     dispatch({
       type: types.IMAGE_CHANGED,
