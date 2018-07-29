@@ -6,11 +6,13 @@ import { connect } from 'react-redux'
 import SelectionInstrument from '../instruments/SelectionInstrument/SelectionInstrument'
 import Pen from '../instruments/Pen/Pen'
 import Fill from '../instruments/Fill/Fill'
+import Dropper from '../instruments/Dropper/Dropper'
 
 const instruments = {
   pen: Pen,
   fill: Fill,
-  selection: SelectionInstrument
+  selection: SelectionInstrument,
+  dropper: Dropper
 }
 
 class CanvasEditor extends PureComponent {

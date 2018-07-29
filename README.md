@@ -5,6 +5,7 @@ This is my replica of MS Paint on canvas and [React](https://reactjs.org/). Crea
 ### What can this thing do?
 * [ ] Draw
   * [x] Pick colors
+  * [x] Dropper
   * [x] Pen
   * [ ] Brushes
   * [x] Fill

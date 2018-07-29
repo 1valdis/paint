@@ -1,0 +1,6 @@
+.dropper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: url('./dropper_monochrome.svg') 0 16, pointer;
+}
