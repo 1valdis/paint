@@ -3,10 +3,12 @@ import React, { PureComponent, createRef } from 'react'
 import { connect } from 'react-redux'
 
 import MovableSelection from '../../MovableSelection/MovableSelection'
+import ZoneSelection from './ZoneSelection/ZoneSelection'
+// import ImageDataSelection from './ImageDataSelection/ImageDataSelection'
 
 import './SelectionInstrument.css'
 
-import { selection } from './actions'
+import { changeSelection } from './actions'
 import { changeImage } from '../../App/actions'
 
 // the selection is not working quite right:
@@ -23,13 +25,12 @@ class SelectionInstrument extends PureComponent {
       selecting: false,
       selectingX: null,
       selectingY: null,
-      selectingCoords: null,
-      selectionOriginCoords: this.props.selectionCoords
+      selectingCoords: null
     }
+    
+    this.containerRef = createRef()
 
     // todo - imageData selection handling
-
-    this.canvasRef = createRef()
   }
   render () {
     let El
@@ -45,34 +46,56 @@ class SelectionInstrument extends PureComponent {
           }}
         />
       )
+    } else if (this.props.selectionImageData) {
+      // El = <ImageDataSelection/>
+      // El = (
+      //   <MovableSelection
+      //     onResizing={this.handleResizing}
+      //     onResizeEnd={this.handleResizeEnd}
+      //     onMoving={this.handleMoving}
+      //     onMoveEnd={this.handleMoveEnd}
+      //     hideBorderOnResizing={false}
+      //     top={0}
+      //     left={0}
+      //     width={this.props.selectionImageData.width}
+      //     height={this.props.selectionImageData.height}
+      //   />
+      // )
     } else if (this.props.selectionCoords) {
       El = (
-        <MovableSelection
-          onResizing={this.handleResizing}
-          onResizeEnd={this.handleResizeEnd}
-          onMoving={this.handleMoving}
-          onMoveEnd={this.handleMoveEnd}
-          hideBorderOnResizing={false}
-          {...this.props.selectionCoords}
+        <ZoneSelection
+          onClickOutside={this.handlePointerDown}
+          imageData={this.props.imageData}
+          coords={this.props.selectionCoords}
+          onCoordsChanged={zone => this.props.changeSelection({coords: zone, imageData: null})}
+          onImageChanged={imageData => this.props.changeImage(imageData)}
+          secondaryColor={this.props.secondaryColor}
         />
       )
+      // El = (
+      //   <MovableSelection
+      //     onResizing={this.handleResizing}
+      //     onResizeEnd={this.handleResizeEnd}
+      //     onMoving={this.handleMoving}
+      //     onMoveEnd={this.handleMoveEnd}
+      //     hideBorderOnResizing={false}
+      //     {...this.props.selectionCoords}
+      //   />
+      // )
     } else El = null
     return (
-      <div className='selection' onPointerDown={this.handlePointerDown}>
-        <canvas ref={this.canvasRef} />
+      <div className='selection' onPointerDown={this.handlePointerDown} ref={this.containerRef}>
         {El}
       </div>
     )
   }
-  handlePointerDown = e => {
-    if (e.target !== this.canvasRef.current) return
+  handlePointerDown = (e, trusted) => {
+    if (e.target !== e.currentTarget && !trusted) return
 
-    this.oldCtx.putImageData(this.props.imageData, 0, 0)
     this.backgroundColor = null
-    this.props.onSelect(null)
-    this.container = e.target
+    this.props.changeSelection({ coords: null, imageData: null })
 
-    let { top, left, bottom, right } = e.target.getBoundingClientRect()
+    let { top, left, bottom, right } = this.containerRef.current.getBoundingClientRect()
     ;[top, left, bottom, right] = [
       top + window.pageYOffset,
       left + window.pageXOffset,
@@ -103,7 +126,7 @@ class SelectionInstrument extends PureComponent {
             left,
             bottom,
             right
-          } = this.container.getBoundingClientRect()
+          } = this.containerRef.current.getBoundingClientRect()
           ;[top, left, bottom, right] = [
             top + window.pageYOffset,
             left + window.pageXOffset,
@@ -176,7 +199,10 @@ class SelectionInstrument extends PureComponent {
           this.state.selectingCoords.width > 0 &&
           this.state.selectingCoords.height > 0
         ) {
-          this.props.onSelect(this.state.selectingCoords)
+          this.props.changeSelection({
+            coords: this.state.selectingCoords,
+            imageData: null
+          })
           selectionOriginCoords = this.state.selectingCoords
         }
         return {
@@ -195,92 +221,11 @@ class SelectionInstrument extends PureComponent {
       }
     })
   }
-  handleResizing = ({ top, left, width, height }) => {}
-  handleResizeEnd = ({ top, left, width, height }) => {
-    if (!this.backgroundColor) {
-      this.backgroundColor = this.props.secondaryColor
-      this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
-    }
-    this.props.onSelect({ top, left, width, height })
-    this.props.changeImage(
-      this.newCtx.getImageData(
-        0,
-        0,
-        this.newCtx.canvas.width,
-        this.newCtx.canvas.height
-      )
-    )
-  }
-  handleMoving = ({ top, left, width, height }) => {
-    if (!this.backgroundColor) {
-      this.backgroundColor = this.props.secondaryColor
-      this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
-    }
-    this.props.onSelect({ top, left, width, height })
-  }
-  handleMoveEnd = ({ top, left, width, height }) => {
-    this.props.changeImage(
-      this.newCtx.getImageData(
-        0,
-        0,
-        this.newCtx.canvas.width,
-        this.newCtx.canvas.height
-      )
-    )
-  }
-
-  redrawCanvas = updateOld => {
-    if (!this.oldCtx) {
-      const oldCanvas = document.createElement('canvas')
-      oldCanvas.width = this.props.imageData.width
-      oldCanvas.height = this.props.imageData.height
-      this.oldCtx = oldCanvas.getContext('2d')
-      this.oldCtx.putImageData(this.props.imageData, 0, 0)
-
-      this.canvasRef.current.width = this.props.imageData.width
-      this.canvasRef.current.height = this.props.imageData.height
-      this.newCtx = this.canvasRef.current.getContext('2d')
-      this.newCtx.imageSmoothingEnabled = false
-    }
-
-    if (updateOld) {
-      this.oldCtx.canvas.width = this.props.imageData.width
-      this.oldCtx.canvas.height = this.props.imageData.height
-      this.newCtx.canvas.width = this.props.imageData.width
-      this.newCtx.canvas.height = this.props.imageData.height
-      this.newCtx.imageSmoothingEnabled = false
-      this.oldCtx.putImageData(this.props.imageData, 0, 0)
-    }
-
-    this.newCtx.drawImage(this.oldCtx.canvas, 0, 0)
-
-    if (this.props.selectionCoords && this.state.selectionOriginCoords) {
-      this.newCtx.fillRect(
-        this.state.selectionOriginCoords.left,
-        this.state.selectionOriginCoords.top,
-        this.state.selectionOriginCoords.width,
-        this.state.selectionOriginCoords.height
-      )
-      this.newCtx.drawImage(
-        this.oldCtx.canvas,
-        this.state.selectionOriginCoords.left,
-        this.state.selectionOriginCoords.top,
-        this.state.selectionOriginCoords.width,
-        this.state.selectionOriginCoords.height,
-        this.props.selectionCoords.left,
-        this.props.selectionCoords.top,
-        this.props.selectionCoords.width,
-        this.props.selectionCoords.height
-      )
-    }
-    // todo: imageData
-  }
 
   componentDidMount () {
     document.addEventListener('pointermove', this.handleDocumentPointerMove)
     document.addEventListener('pointerup', this.handleDocumentPointerUp)
     document.addEventListener('contextmenu', this.handleContextMenu)
-    this.redrawCanvas(true)
   }
   componentWillUnmount () {
     document.removeEventListener('pointermove', this.handleDocumentPointerMove)
@@ -293,17 +238,6 @@ class SelectionInstrument extends PureComponent {
       this.preventContextMenu = false
     }
   }
-
-  componentDidUpdate (prevProps) {
-    if (
-      prevProps.imageData.width !== this.props.imageData.width ||
-      prevProps.imageData.height !== this.props.imageData.height
-    ) {
-      this.props.onSelect(null)
-      this.redrawCanvas(true)
-    }
-    this.redrawCanvas(false)
-  }
 }
 
 const mapStateToProps = state => ({
@@ -311,11 +245,14 @@ const mapStateToProps = state => ({
   selectionCoords: state.instruments.selection
     ? state.instruments.selection.coords
     : null,
-  selectionImageData: state.instruments.selection.imageData,
+  selectionImageData: state.instruments.selection
+    ? state.instruments.selection.imageData
+    : null,
   secondaryColor: state.colors.list[state.colors.secondary]
 })
 const mapDispatchToProps = dispatch => ({
-  onSelect: zone => dispatch(selection(zone)),
+  changeSelection: (zone, imageData) =>
+    dispatch(changeSelection(zone, imageData)),
   changeImage: imageData => dispatch(changeImage(imageData))
 })
 

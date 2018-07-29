@@ -9,7 +9,6 @@ const ctx = canvas.getContext('2d', { alpha: false })
 let href = null
 
 export function createFile () {
-  debugger;
   return function (dispatch, getState) {
     ;[canvas.width, canvas.height] = [800, 450]
     clearCanvas()
@@ -46,7 +45,6 @@ export function openFile (e) {
 
 export function paste (e) {
   return function (dispatch, getState) {
-    console.log(e)
     if (e.clipboardData) {
       const items = e.clipboardData.items
       if (!items) return
@@ -67,7 +65,13 @@ export function paste (e) {
               type: instrumentsTypes.CHANGE_INSTRUMENT,
               instrument: 'selection',
               selection: {
-                data: pastedImageCtx.getImageData(0, 0, pastedImageCanvas.width, pastedImageCanvas.height)
+                imageData: pastedImageCtx.getImageData(0, 0, pastedImageCanvas.width, pastedImageCanvas.height),
+                coords: {
+                  top: 0,
+                  left: 0,
+                  width: pastedImage.width,
+                  height: pastedImage.height
+                }
               }
             })
           }
