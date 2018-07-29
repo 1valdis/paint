@@ -36,12 +36,7 @@ class MovableSelection extends PureComponent {
         onPointerDown={this.handlePointerDown}
         className='movable-selection'
       >
-        <Resizer
-          mode='selection'
-          {...withoutOnChange}
-          top={0}
-          left={0}
-        />
+        <Resizer mode='selection' {...withoutOnChange} top={0} left={0} />
       </div>
     )
   }
@@ -76,18 +71,37 @@ class MovableSelection extends PureComponent {
       this.state.startX !== null &&
       this.props.onMoving
     ) {
-      const {
-        onResizeEnd,
-        onResizing,
-        onMoveEnd,
-        onMoving,
-        ...coords
-      } = this.props
-      coords.top =
-        this.state.top + (e.clientY + window.pageYOffset - this.state.startY)
-      coords.left =
-        this.state.left + (e.clientX + window.pageXOffset - this.state.startX)
-      this.props.onMoving(coords)
+      switch (e.buttons) {
+        case 1:
+          const {
+            onResizeEnd,
+            onResizing,
+            onMoveEnd,
+            onMoving,
+            ...coords
+          } = this.props
+          coords.top =
+            this.state.top +
+            (e.clientY + window.pageYOffset - this.state.startY)
+          coords.left =
+            this.state.left +
+            (e.clientX + window.pageXOffset - this.state.startX)
+          this.props.onMoving(coords)
+          break
+        case 2:
+        case 3:
+          this.props.onMoving({
+            top: this.state.top,
+            left: this.state.left,
+            width: this.props.width,
+            height: this.props.height,
+          })
+          this.setState({
+            moving: false
+          })
+          this.preventContextMenu = true
+          break // no default
+      }
     }
   }
   handleDocumentPointerUp = e => {
@@ -107,7 +121,7 @@ class MovableSelection extends PureComponent {
         this.state.top + (e.clientY + window.pageYOffset - this.state.startY)
       coords.left =
         this.state.left + (e.clientX + window.pageXOffset - this.state.startX)
-        this.props.onMoveEnd(coords)
+      this.props.onMoveEnd(coords)
     }
     this.setState({
       moving: false,
@@ -127,10 +141,19 @@ class MovableSelection extends PureComponent {
   componentDidMount () {
     document.addEventListener('pointermove', this.handleDocumentPointerMove)
     document.addEventListener('pointerup', this.handleDocumentPointerUp)
+    document.addEventListener('contextmenu', this.handleContextMenu)
   }
   componentWillUnmount () {
     document.removeEventListener('pointermove', this.handleDocumentPointerUp)
     document.removeEventListener('pointerup', this.handleDocumentPointerUp)
+    document.removeEventListener('contextmenu', this.handleContextMenu)
+  }
+  
+  handleContextMenu = e => {
+    if (this.preventContextMenu) {
+      e.preventDefault()
+      this.preventContextMenu = false
+    }
   }
 }
 

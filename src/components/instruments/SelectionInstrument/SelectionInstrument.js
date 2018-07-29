@@ -14,8 +14,6 @@ import { changeImage } from '../../App/actions'
 // of the picture, because max coordinate is width-1.
 // interesting that full height is selectable though.
 // at least it works somehow, will polish it later maybe.
-// TODO: changing image only at the end of movement and resizing,
-// but not WHILE mowing
 
 class SelectionInstrument extends PureComponent {
   constructor (...args) {
@@ -96,53 +94,78 @@ class SelectionInstrument extends PureComponent {
   handleDocumentPointerMove = e => {
     if (!this.state.selecting) return
 
-    this.setState(state => {
-      // getting bounding rect and mouse coords relatively to document, not viewport
-      let { top, left, bottom, right } = this.container.getBoundingClientRect()
-      ;[top, left, bottom, right] = [
-        top + window.pageYOffset,
-        left + window.pageXOffset,
-        bottom + window.pageYOffset,
-        right + window.pageXOffset
-      ]
-      const [mouseX, mouseY] = [
-        e.clientX + window.pageXOffset,
-        e.clientY + window.pageYOffset
-      ]
+    switch (e.buttons) {
+      case 1:
+        this.setState(state => {
+          // getting bounding rect and mouse coords relatively to document, not viewport
+          let {
+            top,
+            left,
+            bottom,
+            right
+          } = this.container.getBoundingClientRect()
+          ;[top, left, bottom, right] = [
+            top + window.pageYOffset,
+            left + window.pageXOffset,
+            bottom + window.pageYOffset,
+            right + window.pageXOffset
+          ]
+          const [mouseX, mouseY] = [
+            e.clientX + window.pageXOffset,
+            e.clientY + window.pageYOffset
+          ]
 
-      // getting top and left coordinates of current mouse position relatively to canvas
-      let [canvasRelativeTop, canvasRelativeLeft] = [
-        Math.trunc(mouseY - top),
-        Math.trunc(mouseX - left)
-      ]
-      // clamping top and left coordinates between 0 and canvas width
-      //
-      ;[canvasRelativeTop, canvasRelativeLeft] = [
-        Math.max(0, Math.min(canvasRelativeTop, this.props.imageData.height)),
-        Math.max(0, Math.min(canvasRelativeLeft, this.props.imageData.width))
-      ]
+          // getting top and left coordinates of current mouse position relatively to canvas
+          let [canvasRelativeTop, canvasRelativeLeft] = [
+            Math.trunc(mouseY - top),
+            Math.trunc(mouseX - left)
+          ]
+          // clamping top and left coordinates between 0 and canvas width
+          //
+          ;[canvasRelativeTop, canvasRelativeLeft] = [
+            Math.max(
+              0,
+              Math.min(canvasRelativeTop, this.props.imageData.height)
+            ),
+            Math.max(
+              0,
+              Math.min(canvasRelativeLeft, this.props.imageData.width)
+            )
+          ]
 
-      // console.log(canvasRelativeTop, canvasRelativeLeft)
+          // console.log(canvasRelativeTop, canvasRelativeLeft)
 
-      const selectingCoords = {
-        top: Math.min(state.selectingY, canvasRelativeTop),
-        left: Math.min(state.selectingX, canvasRelativeLeft),
-        width: Math.max(
-          Math.max(state.selectingX, canvasRelativeLeft) -
-            Math.min(state.selectingX, canvasRelativeLeft),
-          1
-        ),
-        height: Math.max(
-          Math.max(state.selectingY, canvasRelativeTop) -
-            Math.min(state.selectingY, canvasRelativeTop),
-          1
-        )
-      }
+          const selectingCoords = {
+            top: Math.min(state.selectingY, canvasRelativeTop),
+            left: Math.min(state.selectingX, canvasRelativeLeft),
+            width: Math.max(
+              Math.max(state.selectingX, canvasRelativeLeft) -
+                Math.min(state.selectingX, canvasRelativeLeft),
+              0
+            ),
+            height: Math.max(
+              Math.max(state.selectingY, canvasRelativeTop) -
+                Math.min(state.selectingY, canvasRelativeTop),
+              0
+            )
+          }
 
-      return {
-        selectingCoords
-      }
-    })
+          return {
+            selectingCoords
+          }
+        })
+        break
+      case 2:
+      case 3:
+        this.setState({
+          selecting: false,
+          selectingX: null,
+          selectingY: null,
+          selectingCoords: null
+        })
+        this.preventContextMenu = true
+        break // no default
+    }
   }
   handleDocumentPointerUp = e => {
     this.setState(state => {
@@ -256,12 +279,21 @@ class SelectionInstrument extends PureComponent {
   componentDidMount () {
     document.addEventListener('pointermove', this.handleDocumentPointerMove)
     document.addEventListener('pointerup', this.handleDocumentPointerUp)
+    document.addEventListener('contextmenu', this.handleContextMenu)
     this.redrawCanvas(true)
   }
   componentWillUnmount () {
     document.removeEventListener('pointermove', this.handleDocumentPointerMove)
     document.removeEventListener('pointerup', this.handleDocumentPointerUp)
+    document.removeEventListener('contextmenu', this.handleContextMenu)
   }
+  handleContextMenu = e => {
+    if (this.preventContextMenu) {
+      e.preventDefault()
+      this.preventContextMenu = false
+    }
+  }
+
   componentDidUpdate (prevProps) {
     if (
       prevProps.imageData.width !== this.props.imageData.width ||
