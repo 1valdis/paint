@@ -113,12 +113,6 @@ class ZoneSelection extends PureComponent {
   }
 
   componentDidUpdate (prevProps) {
-    if (
-      prevProps.imageData.width !== this.props.imageData.width ||
-      prevProps.imageData.height !== this.props.imageData.height
-    ) {
-      this.props.onCoordsChanged(null)
-    }
     this.redrawCanvas(false)
   }
 }

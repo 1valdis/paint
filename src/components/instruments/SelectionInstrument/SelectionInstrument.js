@@ -220,13 +220,23 @@ class SelectionInstrument extends PureComponent {
   }
 
   componentDidMount () {
-    document.addEventListener('pointermove', this.handleDocumentPointerMove, {passive: true})
-    document.addEventListener('pointerup', this.handleDocumentPointerUp, {passive: true})
+    document.addEventListener('pointermove', this.handleDocumentPointerMove, {
+      passive: true
+    })
+    document.addEventListener('pointerup', this.handleDocumentPointerUp, {
+      passive: true
+    })
     document.addEventListener('contextmenu', this.handleContextMenu)
   }
   componentWillUnmount () {
-    document.removeEventListener('pointermove', this.handleDocumentPointerMove, {passive: true})
-    document.removeEventListener('pointerup', this.handleDocumentPointerUp, {passive: true})
+    document.removeEventListener(
+      'pointermove',
+      this.handleDocumentPointerMove,
+      { passive: true }
+    )
+    document.removeEventListener('pointerup', this.handleDocumentPointerUp, {
+      passive: true
+    })
     document.removeEventListener('contextmenu', this.handleContextMenu)
   }
 

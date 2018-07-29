@@ -18,7 +18,9 @@ class ImageDataSelection extends PureComponent {
         coords: this.props.coords,
         imageData: this.props.selectionImageData
       })
+      this.updateOld = true
     }
+    console.log('constructor')
   }
 
   render () {
@@ -45,35 +47,18 @@ class ImageDataSelection extends PureComponent {
     this.updateOldCanvas()
     this.updateSelectionCanvas()
     this.updateNewCanvas()
+    console.log('mount')
   }
 
   componentDidUpdate (prevProps) {
-    // debugger
-    if (
-      this.props.imageData.width !== this.props.selectionImageData.width ||
-      this.props.imageData.height !== this.props.selectionImageData.height
-    ) {
-      if (
-        this.props.selectionImageData !== prevProps.selectionImageData &&
-        (this.props.imageData.width < this.props.selectionImageData.width ||
-          this.props.imageData.height < this.props.selectionImageData.height)
-      ) {
-        this.resizeCanvasToFitPasted()
-      } else {
-        this.props.onSelectionChanged({ coords: null, imageData: null })
-      }
-      return
-    }
-    if (
-      prevProps.imageData.width !== this.props.imageData.width ||
-      prevProps.imageData.height !== this.props.imageData.height
-    ) {
+    if (this.updateOld) {
       this.updateOldCanvas()
     }
-    if (prevProps.selectionImageData !== this.props.selectionImageData) {
+    if (this.props.selectionImageData !== prevProps.selectionImageData) {
       this.updateSelectionCanvas()
     }
     this.updateNewCanvas()
+    this.updateOld = true
   }
 
   updateOldCanvas = () => {
@@ -134,10 +119,12 @@ class ImageDataSelection extends PureComponent {
       this.backgroundColor = this.props.secondaryColor
       this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
     }
+    this.updateOld = false
     this.props.onSelectionChanged({
       coords: { top, left, width, height },
       imageData: this.props.selectionImageData
     })
+    this.updateOld = false
     this.props.onImageChanged(
       this.newCtx.getImageData(
         0,
@@ -152,12 +139,14 @@ class ImageDataSelection extends PureComponent {
       this.backgroundColor = this.props.secondaryColor
       this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
     }
+    this.updateOld = false
     this.props.onSelectionChanged({
       coords: { top, left, width, height },
       imageData: this.props.selectionImageData
     })
   }
   handleMoveEnd = ({ top, left, width, height }) => {
+    this.updateOld = false
     this.props.onImageChanged(
       this.newCtx.getImageData(
         0,

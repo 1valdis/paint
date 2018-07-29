@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
 import { changeImage } from '../App/actions'
+import { disableSelection } from '../instruments/SelectionInstrument/actions'
 
 import Resizer from '../Resizer/Resizer'
 import CanvasEditor from '../CanvasEditor/CanvasEditor'
@@ -30,6 +31,7 @@ class Canvas extends PureComponent {
           <Resizer
             mode='canvas'
             onResizeEnd={this.onResize}
+            onResizing={this.props.disableSelection}
             width={this.props.data ? this.props.data.width : 0}
             height={this.props.data ? this.props.data.height : 0}
             top={0}
@@ -81,7 +83,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  changeImage: data => dispatch(changeImage(data))
+  changeImage: data => dispatch(changeImage(data)),
+  disableSelection: () => dispatch(disableSelection())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Canvas)
