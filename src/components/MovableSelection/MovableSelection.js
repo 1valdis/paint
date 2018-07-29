@@ -139,13 +139,13 @@ class MovableSelection extends PureComponent {
     return null
   }
   componentDidMount () {
-    document.addEventListener('pointermove', this.handleDocumentPointerMove)
-    document.addEventListener('pointerup', this.handleDocumentPointerUp)
+    document.addEventListener('pointermove', this.handleDocumentPointerMove, {passive: true})
+    document.addEventListener('pointerup', this.handleDocumentPointerUp, {passive: true})
     document.addEventListener('contextmenu', this.handleContextMenu)
   }
   componentWillUnmount () {
-    document.removeEventListener('pointermove', this.handleDocumentPointerUp)
-    document.removeEventListener('pointerup', this.handleDocumentPointerUp)
+    document.removeEventListener('pointermove', this.handleDocumentPointerUp, {passive: true})
+    document.removeEventListener('pointerup', this.handleDocumentPointerUp, {passive: true})
     document.removeEventListener('contextmenu', this.handleContextMenu)
   }
   

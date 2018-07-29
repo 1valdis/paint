@@ -18,7 +18,7 @@ class ZoneSelection extends PureComponent {
         <canvas
           ref={this.canvasRef}
           onPointerDown={e =>
-            e.target === e.currentTarget && this.props.onClickOutside(e, true)}
+            e.target === e.currentTarget && this.props.onClickOutside(e)}
         />
         <MovableSelection
           {...this.props.coords}
@@ -118,7 +118,6 @@ class ZoneSelection extends PureComponent {
       prevProps.imageData.height !== this.props.imageData.height
     ) {
       this.props.onCoordsChanged(null)
-      return
     }
     this.redrawCanvas(false)
   }

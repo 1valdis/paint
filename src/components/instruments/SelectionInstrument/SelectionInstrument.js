@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import MovableSelection from '../../MovableSelection/MovableSelection'
 import ZoneSelection from './ZoneSelection/ZoneSelection'
-// import ImageDataSelection from './ImageDataSelection/ImageDataSelection'
+import ImageDataSelection from './ImageDataSelection/ImageDataSelection'
 
 import './SelectionInstrument.css'
 
@@ -27,7 +27,7 @@ class SelectionInstrument extends PureComponent {
       selectingY: null,
       selectingCoords: null
     }
-    
+
     this.containerRef = createRef()
 
     // todo - imageData selection handling
@@ -47,44 +47,36 @@ class SelectionInstrument extends PureComponent {
         />
       )
     } else if (this.props.selectionImageData) {
-      // El = <ImageDataSelection/>
-      // El = (
-      //   <MovableSelection
-      //     onResizing={this.handleResizing}
-      //     onResizeEnd={this.handleResizeEnd}
-      //     onMoving={this.handleMoving}
-      //     onMoveEnd={this.handleMoveEnd}
-      //     hideBorderOnResizing={false}
-      //     top={0}
-      //     left={0}
-      //     width={this.props.selectionImageData.width}
-      //     height={this.props.selectionImageData.height}
-      //   />
-      // )
-    } else if (this.props.selectionCoords) {
       El = (
-        <ZoneSelection
-          onClickOutside={this.handlePointerDown}
+        <ImageDataSelection
+          onClickOutside={e => this.handlePointerDown(e, true)}
           imageData={this.props.imageData}
           coords={this.props.selectionCoords}
-          onCoordsChanged={zone => this.props.changeSelection({coords: zone, imageData: null})}
+          selectionImageData={this.props.selectionImageData}
+          onSelectionChanged={this.props.changeSelection}
           onImageChanged={imageData => this.props.changeImage(imageData)}
           secondaryColor={this.props.secondaryColor}
         />
       )
-      // El = (
-      //   <MovableSelection
-      //     onResizing={this.handleResizing}
-      //     onResizeEnd={this.handleResizeEnd}
-      //     onMoving={this.handleMoving}
-      //     onMoveEnd={this.handleMoveEnd}
-      //     hideBorderOnResizing={false}
-      //     {...this.props.selectionCoords}
-      //   />
-      // )
+    } else if (this.props.selectionCoords) {
+      El = (
+        <ZoneSelection
+          onClickOutside={e => this.handlePointerDown(e, true)}
+          imageData={this.props.imageData}
+          coords={this.props.selectionCoords}
+          onCoordsChanged={zone =>
+            this.props.changeSelection({ coords: zone, imageData: null })}
+          onImageChanged={imageData => this.props.changeImage(imageData)}
+          secondaryColor={this.props.secondaryColor}
+        />
+      )
     } else El = null
     return (
-      <div className='selection' onPointerDown={this.handlePointerDown} ref={this.containerRef}>
+      <div
+        className='selection'
+        onPointerDown={this.handlePointerDown}
+        ref={this.containerRef}
+      >
         {El}
       </div>
     )
@@ -95,7 +87,12 @@ class SelectionInstrument extends PureComponent {
     this.backgroundColor = null
     this.props.changeSelection({ coords: null, imageData: null })
 
-    let { top, left, bottom, right } = this.containerRef.current.getBoundingClientRect()
+    let {
+      top,
+      left,
+      bottom,
+      right
+    } = this.containerRef.current.getBoundingClientRect()
     ;[top, left, bottom, right] = [
       top + window.pageYOffset,
       left + window.pageXOffset,
@@ -223,15 +220,16 @@ class SelectionInstrument extends PureComponent {
   }
 
   componentDidMount () {
-    document.addEventListener('pointermove', this.handleDocumentPointerMove)
-    document.addEventListener('pointerup', this.handleDocumentPointerUp)
+    document.addEventListener('pointermove', this.handleDocumentPointerMove, {passive: true})
+    document.addEventListener('pointerup', this.handleDocumentPointerUp, {passive: true})
     document.addEventListener('contextmenu', this.handleContextMenu)
   }
   componentWillUnmount () {
-    document.removeEventListener('pointermove', this.handleDocumentPointerMove)
-    document.removeEventListener('pointerup', this.handleDocumentPointerUp)
+    document.removeEventListener('pointermove', this.handleDocumentPointerMove, {passive: true})
+    document.removeEventListener('pointerup', this.handleDocumentPointerUp, {passive: true})
     document.removeEventListener('contextmenu', this.handleContextMenu)
   }
+
   handleContextMenu = e => {
     if (this.preventContextMenu) {
       e.preventDefault()
