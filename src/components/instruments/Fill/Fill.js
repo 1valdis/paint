@@ -132,7 +132,7 @@ class Fill extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  color: state.colors.list[state.colors[state.colors.activeColor]],
+  color: state.colors.list[state.colors.primary],
   imageData: state.image.data
 })
 
