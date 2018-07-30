@@ -5,6 +5,7 @@ import MovableSelection from '../../../MovableSelection/MovableSelection'
 
 class ImageDataSelection extends PureComponent {
   constructor (...args) {
+    console.log('constructor')
     super(...args)
 
     this.canvasRef = createRef()
@@ -13,6 +14,7 @@ class ImageDataSelection extends PureComponent {
       this.props.imageData.width < this.props.selectionImageData.width ||
       this.props.imageData.height < this.props.selectionImageData.height
     ) {
+      this.resized = true
       this.resizeCanvasToFitPasted()
       this.props.onSelectionChanged({
         coords: this.props.coords,
@@ -20,7 +22,6 @@ class ImageDataSelection extends PureComponent {
       })
       this.updateOld = true
     }
-    console.log('constructor')
   }
 
   render () {
@@ -44,13 +45,14 @@ class ImageDataSelection extends PureComponent {
   }
 
   componentDidMount () {
+    console.log('mount')
     this.updateOldCanvas()
     this.updateSelectionCanvas()
     this.updateNewCanvas()
-    console.log('mount')
   }
 
   componentDidUpdate (prevProps) {
+    console.log('update')
     if (this.updateOld) {
       this.updateOldCanvas()
     }
@@ -58,6 +60,19 @@ class ImageDataSelection extends PureComponent {
       this.updateSelectionCanvas()
     }
     this.updateNewCanvas()
+    if (this.resized) {
+      this.resized = false
+      this.props.onImageChanged(
+        this.newCtx.getImageData(
+          0,
+          0,
+          this.newCtx.canvas.width,
+          this.newCtx.canvas.height
+        )
+      )
+      this.updateOld = false
+      return
+    }
     this.updateOld = true
   }
 
