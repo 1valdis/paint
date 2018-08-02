@@ -12,73 +12,6 @@ const directions = {
   selection: ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 }
 
-const directionStyles = {
-  n: {
-    outerStyle: {
-      cursor: 'ns-resize',
-      bottom: '100%',
-      left: '50%',
-      transform: 'translateX(-50%)'
-    },
-    innerStyle: { left: '50%', bottom: '0', transform: 'translateX(-50%)' }
-  },
-  ne: {
-    outerStyle: { cursor: 'nesw-resize', bottom: '100%', left: '100%' },
-    innerStyle: { bottom: '0' }
-  },
-  e: {
-    outerStyle: {
-      cursor: 'ew-resize',
-      left: '100%',
-      top: '50%',
-      transform: 'translateY(-50%)'
-    },
-    innerStyle: { top: '50%', transform: 'translateY(-50%)' }
-  },
-  se: {
-    outerStyle: { cursor: 'nwse-resize', top: '100%', left: '100%' }
-  },
-  s: {
-    outerStyle: {
-      cursor: 'ns-resize',
-      top: '100%',
-      left: '50%',
-      transform: 'translateX(-50%)'
-    },
-    innerStyle: { left: '50%', transform: 'translateX(-50%)' }
-  },
-  sw: {
-    outerStyle: {
-      cursor: 'nesw-resize',
-      top: '100%',
-      right: '100%'
-    },
-    innerStyle: {
-      right: '0'
-    }
-  },
-  w: {
-    outerStyle: {
-      cursor: 'ew-resize',
-      right: '100%',
-      top: '50%',
-      transform: 'translateY(-50%)'
-    },
-    innerStyle: { top: '50%', right: '0', transform: 'translateY(-50%)' }
-  },
-  nw: {
-    outerStyle: {
-      cursor: 'nwse-resize',
-      bottom: '100%',
-      right: '100%'
-    },
-    innerStyle: {
-      bottom: '0',
-      right: '0'
-    }
-  }
-}
-
 class Resizer extends PureComponent {
   constructor (...args) {
     super(...args)
@@ -112,7 +45,7 @@ class Resizer extends PureComponent {
             onResizeEnd={this.onResizeEnd.bind(this, d)}
             onResizeCancel={this.onResizeCancel.bind(this, d)}
             key={`${d}-resizer-point`}
-            {...directionStyles[d]}
+            className={d}
           />
         ))}
       </div>

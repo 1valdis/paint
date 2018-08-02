@@ -18,3 +18,27 @@
 .image .select:focus {
   outline: none;
 }
+.image {
+  display: flex;
+}
+
+.image .side-buttons button {
+  display: block;
+  background: none;
+  border: 1px solid transparent;
+}
+.image .side-buttons button:hover {
+  background: var(--hover-background-color);
+  border: 1px solid var(--hover-border-color);
+}
+.image .side-buttons button:active {
+  background: var(--active-background-color);
+  border: 1px solid var(--active-border-color);
+}
+.image .side-buttons button:focus {
+  outline: none;
+}
+.image .side-buttons button:disabled {
+  background: none;
+  border: 1px solid transparent;
+}

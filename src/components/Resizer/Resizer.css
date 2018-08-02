@@ -23,3 +23,90 @@
   margin-top: -2em;
   margin-left: -2em;
 }
+
+.n {
+  cursor: ns-resize;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%)
+}
+
+.n .resizer-inner {
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%)
+}
+
+.ne {
+  cursor: nesw-resize;
+  bottom: 100%;
+  left: 100%
+}
+
+.ne .resizer-inner {
+  bottom: 0
+}
+
+.e {
+  cursor: ew-resize;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%)
+}
+
+.e .resizer-inner {
+  top: 50%;
+  transform: translateY(-50%)
+}
+
+.se {
+  cursor: nwse-resize;
+  top: 100%;
+  left: 100%
+}
+
+.s {
+  cursor: ns-resize;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%)
+}
+
+.s .resizer-inner {
+  left: 50%;
+  transform: translateX(-50%)
+}
+
+.sw {
+  cursor: nesw-resize;
+  top: 100%;
+  right: 100%
+}
+
+.sw .resizer-inner {
+  right: 0
+}
+
+.w {
+  cursor: ew-resize;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%)
+}
+
+.w .resizer-inner {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%)
+}
+
+.nw {
+  cursor: nwse-resize;
+  bottom: 100%;
+  right: 100%
+}
+
+.nw .resizer-inner {
+  bottom: 0;
+  right: 0
+}

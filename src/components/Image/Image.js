@@ -26,6 +26,11 @@ class Image extends Component {
           </svg>
           <footer>Выделить</footer>
         </button>
+        <div className="side-buttons">
+          <button>Обрезать</button>
+          <button>Изменить размер</button>
+          <button>Повернуть</button>
+        </div>
       </nav>
     )
   }

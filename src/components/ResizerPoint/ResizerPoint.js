@@ -10,7 +10,7 @@ class ResizerPoint extends Component {
   render () {
     return (
       <div
-        className='resizer-outer'
+        className={'resizer-outer ' + (this.props.className || '')}
         style={{ ...this.props.outerStyle }}
         ref='resizerElement'
       >
