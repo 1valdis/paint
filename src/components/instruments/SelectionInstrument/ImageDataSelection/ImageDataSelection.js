@@ -5,7 +5,6 @@ import MovableSelection from '../../../MovableSelection/MovableSelection'
 
 class ImageDataSelection extends PureComponent {
   constructor (...args) {
-    console.log('constructor')
     super(...args)
 
     this.canvasRef = createRef()
@@ -45,14 +44,20 @@ class ImageDataSelection extends PureComponent {
   }
 
   componentDidMount () {
-    console.log('mount')
     this.updateOldCanvas()
     this.updateSelectionCanvas()
     this.updateNewCanvas()
+    this.props.onImageChanged(
+      this.newCtx.getImageData(
+        0,
+        0,
+        this.newCtx.canvas.width,
+        this.newCtx.canvas.height
+      )
+    )
   }
 
   componentDidUpdate (prevProps) {
-    console.log('update')
     if (this.updateOld) {
       this.updateOldCanvas()
     }
@@ -74,6 +79,16 @@ class ImageDataSelection extends PureComponent {
       return
     }
     this.updateOld = true
+    if (this.props.selectionImageData !== prevProps.selectionImageData) {
+      this.props.onImageChanged(
+        this.newCtx.getImageData(
+          0,
+          0,
+          this.newCtx.canvas.width,
+          this.newCtx.canvas.height
+        )
+      )
+    }
   }
 
   updateOldCanvas = () => {

@@ -6,8 +6,9 @@ class Clipboard extends Component {
   render () {
     return (
       <nav className='clipboard'>
-        <button disabled={this.props.disabled}>Вырезать</button>
-        <button disabled={this.props.disabled}>Копировать</button>
+        <button disabled={false}>Вырезать</button>
+        <button disabled={false}>Копировать</button>
+        <button disabled={false}>Вставить</button>
       </nav>
     )
   }

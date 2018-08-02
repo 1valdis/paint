@@ -2,7 +2,6 @@ import React, { PureComponent, createRef } from 'react'
 
 import { connect } from 'react-redux'
 
-import MovableSelection from '../../MovableSelection/MovableSelection'
 import ZoneSelection from './ZoneSelection/ZoneSelection'
 import ImageDataSelection from './ImageDataSelection/ImageDataSelection'
 
