@@ -14,7 +14,6 @@ export function changeSelection ({coords, imageData}) {
 export function disableSelection () {
   return {
     type: types.CHANGE_INSTRUMENT,
-    instrument: 'selection',
     selection: {
       coords: null,
       imageData: null
