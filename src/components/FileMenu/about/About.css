@@ -28,5 +28,6 @@
 }
 
 .about-close-button::after {
-  content: 'X';
+  font-size: 150%;
+  content: '×';
 }
