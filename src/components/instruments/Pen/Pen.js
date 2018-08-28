@@ -36,19 +36,25 @@ class Pen extends PureComponent {
   }
   handlePointerMove = e => {
     if (this.isDrawing && e.buttons !== 3) {
-      this.continueDrawing(...getCanvasCoordsFromEvent(this.canvasRef.current, e))
+      this.continueDrawing(
+        ...getCanvasCoordsFromEvent(this.canvasRef.current, e)
+      )
     }
   }
   handlePointerEnter = e => {
     if (e.buttons === 1 && this.isDrawing) {
-      this.continueDrawing(...getCanvasCoordsFromEvent(this.canvasRef.current, e))
+      this.continueDrawing(
+        ...getCanvasCoordsFromEvent(this.canvasRef.current, e)
+      )
     } else {
       this.isDrawing = false
     }
   }
   handlePointerLeave = e => {
     if (this.isDrawing) {
-      this.continueDrawing(...getCanvasCoordsFromEvent(this.canvasRef.current, e))
+      this.continueDrawing(
+        ...getCanvasCoordsFromEvent(this.canvasRef.current, e)
+      )
     }
   }
   handleDocumentPointerUp = () => {
@@ -59,21 +65,24 @@ class Pen extends PureComponent {
   }
   handleDocumentPointerMove = e => {
     if (e.target !== this.canvasRef.current) {
-      [this.prevX, this.prevY] = getCanvasCoordsFromEvent(this.canvasRef.current, e)
+      ;[this.prevX, this.prevY] = getCanvasCoordsFromEvent(
+        this.canvasRef.current,
+        e
+      )
     }
-    if (this.isDrawing && e.button===2) {
+    if (this.isDrawing && e.button === 2) {
       this.preventContextMenu = true
       this.cancelDrawing()
     }
   }
   handleDocumentContextMenu = e => {
-    if (this.isDrawing){
+    if (this.isDrawing) {
       e.preventDefault()
       this.isDrawing = false
     }
   }
   handleDocumentSelectStart = e => {
-    if (this.isDrawing){
+    if (this.isDrawing) {
       e.preventDefault()
     }
   }
@@ -101,6 +110,7 @@ class Pen extends PureComponent {
   beginDrawing = (x, y) => {
     const { r, g, b } = this.props.color
     this.ctx.fillStyle = `rgb(${r},${g},${b})`
+    this.ctx.fillRect(x, y, 1, 1)
     ;[this.prevX, this.prevY] = [x, y]
   }
   continueDrawing = (x, y) => {
@@ -108,7 +118,16 @@ class Pen extends PureComponent {
     ;[this.prevX, this.prevY] = [x, y]
   }
   endDrawing = () => {
-    this.props.dispatch(changeImage(this.ctx.getImageData(0, 0, this.canvasRef.current.width, this.canvasRef.current.height)))
+    this.props.dispatch(
+      changeImage(
+        this.ctx.getImageData(
+          0,
+          0,
+          this.canvasRef.current.width,
+          this.canvasRef.current.height
+        )
+      )
+    )
   }
   cancelDrawing = () => {
     this.ctx.putImageData(this.props.imageData, 0, 0)
