@@ -14,7 +14,7 @@ This is my replica of MS Paint on canvas and [React](https://reactjs.org/). Crea
     * [x] Dropper
   * [x] Pen
   * [ ] Brushes
-  * [ ] Eraser
+  * [x] Eraser
   * [x] Fill
   * [ ] Shapes
   * [ ] Thickness
