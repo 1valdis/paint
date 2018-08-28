@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, createRef } from 'react'
 import PropTypes from 'prop-types'
 
 import './Resizer.css'
@@ -22,6 +22,7 @@ class Resizer extends PureComponent {
       resizeWidth: this.props.width,
       resizeHeight: this.props.height
     }
+    this.resizeRect = createRef()
   }
   render () {
     return (
@@ -30,7 +31,7 @@ class Resizer extends PureComponent {
           resizer_resizing: this.state.resizing,
           'resizer_hide-border': this.props.hideBorderOnResizing
         })}
-        ref='resizeRect'
+        ref={this.resizeRect}
         style={{
           width: `${this.state.resizing ? this.state.resizeWidth : this.props.width}px`,
           height: `${this.state.resizing ? this.state.resizeHeight : this.props.height}px`,
@@ -58,8 +59,8 @@ class Resizer extends PureComponent {
       left,
       bottom,
       right
-    } = this.refs.resizeRect.getBoundingClientRect()
-    const parentRect = this.refs.resizeRect.parentNode.getBoundingClientRect()
+    } = this.resizeRect.current.getBoundingClientRect()
+    const parentRect = this.resizeRect.current.parentNode.getBoundingClientRect()
     ;[top, left, bottom, right] = [
       top + window.pageYOffset,
       left + window.pageXOffset,

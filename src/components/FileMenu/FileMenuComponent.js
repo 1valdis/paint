@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, createRef } from 'react'
 import PropTypes from 'prop-types'
 
 import './FileMenu.css'
@@ -11,10 +11,14 @@ import Modal from '../Modal/Modal'
 import About from './about/About'
 
 class FileMenuComponent extends PureComponent {
+  constructor (...args) {
+    super(...args)
+    this.menu = createRef()
+  }
   render () {
     return (
       <div
-        ref='menu'
+        ref={this.menu}
         className={classNames('file-menu', {
           'file-menu_open': this.props.isOpen
         })}
@@ -51,7 +55,7 @@ class FileMenuComponent extends PureComponent {
   }
   componentDidMount () {
     this.clickOutsideListener = addClickOutsideListener(
-      this.refs.menu,
+      this.menu.current,
       this.props.onClickOutside
     )
   }

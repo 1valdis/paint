@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, createRef } from 'react'
 import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
@@ -12,11 +12,15 @@ import CanvasEditor from '../CanvasEditor/CanvasEditor'
 import './Canvas.css'
 
 class Canvas extends PureComponent {
+  constructor (...args) {
+    super(...args)
+    this.canvas = createRef()
+  }
   render () {
     return (
       <div className='canvas-wrapper'>
         <canvas
-          ref='canvas'
+          ref={this.canvas}
           className='canvas'
           width={this.props.data ? this.props.data.width : 0}
           height={this.props.data ? this.props.data.height : 0}
@@ -43,7 +47,7 @@ class Canvas extends PureComponent {
     )
   }
   updateCanvas = () => {
-    const canvas = this.refs.canvas
+    const canvas = this.canvas.current
     if (canvas != null && this.props.data != null) {
       ;[canvas.width, canvas.height] = [
         this.props.data.width,

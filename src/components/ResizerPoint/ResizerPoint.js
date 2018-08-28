@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import './ResizerPoint.css'
 
 class ResizerPoint extends Component {
@@ -6,13 +6,14 @@ class ResizerPoint extends Component {
     super(...args)
     this.resizing = false
     this.preventContextMenu = false
+    this.resizerElement = createRef()
   }
   render () {
     return (
       <div
         className={'resizer-outer ' + (this.props.className || '')}
         style={{ ...this.props.outerStyle }}
-        ref='resizerElement'
+        ref={this.resizerElement}
       >
         <div className='resizer-inner' style={{ ...this.props.innerStyle }} />
       </div>
@@ -39,7 +40,7 @@ class ResizerPoint extends Component {
   handlePointerDown = e => {
     switch (e.button) {
       case 0:
-        if (this.refs.resizerElement.contains(e.target)) {
+        if (this.resizerElement.current.contains(e.target)) {
           this.resizing = true
           this.props.onResizeStart(e)
         }
