@@ -4,11 +4,11 @@
   "private": true,
   "dependencies": {
     "classnames": "^2.2.6",
-    "prop-types": "^15.6.2",
-    "react": "^16.7.0",
-    "react-dom": "^16.7.0",
-    "react-redux": "^6.0.0",
-    "react-scripts": "^2.1.2",
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-redux": "^7.0.3",
+    "react-scripts": "3.0.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0"
   },
@@ -23,5 +23,12 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-react": "^7.13.0",
+    "eslint-plugin-sonarjs": "^0.3.0"
+  }
 }
