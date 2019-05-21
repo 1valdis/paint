@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/paint/static/css/main.4ea74e05.chunk.css",
+    "main.js": "/paint/static/js/main.43f89492.chunk.js",
+    "main.js.map": "/paint/static/js/main.43f89492.chunk.js.map",
+    "runtime~main.js": "/paint/static/js/runtime~main.098c9039.js",
+    "runtime~main.js.map": "/paint/static/js/runtime~main.098c9039.js.map",
+    "static/js/2.236cb1a8.chunk.js": "/paint/static/js/2.236cb1a8.chunk.js",
+    "static/js/2.236cb1a8.chunk.js.map": "/paint/static/js/2.236cb1a8.chunk.js.map",
+    "index.html": "/paint/index.html",
+    "precache-manifest.ab0fa4733381dc68a5f1bd3d52155b16.js": "/paint/precache-manifest.ab0fa4733381dc68a5f1bd3d52155b16.js",
+    "service-worker.js": "/paint/service-worker.js",
+    "static/css/main.4ea74e05.chunk.css.map": "/paint/static/css/main.4ea74e05.chunk.css.map",
+    "static/media/ColorInput.css": "/paint/static/media/color-input-icon.e9f5edd1.png",
+    "static/media/SelectionInstrument.css": "/paint/static/media/crosshair-monochrome.be0d253d.svg",
+    "static/media/Instruments.css": "/paint/static/media/zoom_colorful.70d7efe5.svg",
+    "static/media/Dropper.css": "/paint/static/media/dropper_monochrome.e172e5fc.svg"
+  }
+}
