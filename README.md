@@ -2,7 +2,9 @@
 
 This is my replica of MS Paint on canvas and [React](https://reactjs.org/). Created using [create-react-app](https://github.com/facebook/create-react-app).
 
-[![forthebadge](https://forthebadge.com/images/badges/you-didnt-ask-for-this.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/you-didnt-ask-for-this.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/contains-technical-debt.svg)](https://forthebadge.com)
+
+Live demo: https://1valdis.github.io/paint/
 
 ### What can this thing do?
 * [x] File
@@ -34,8 +36,6 @@ This is my replica of MS Paint on canvas and [React](https://reactjs.org/). Crea
     * [x] Move, resize
     * [ ] Clip selection
     * [ ] Transparent selection
-
-Live demo: soon...
 
 Screenshot:
 ![Screenshot](screenshot.png)
