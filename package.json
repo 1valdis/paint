@@ -2,6 +2,7 @@
   "name": "paint",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://1valdis.github.io/paint/",
   "dependencies": {
     "classnames": "^2.2.6",
     "prop-types": "^15.7.2",
@@ -15,6 +16,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
@@ -29,6 +31,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-react": "^7.13.0",
-    "eslint-plugin-sonarjs": "^0.3.0"
+    "eslint-plugin-sonarjs": "^0.3.0",
+    "gh-pages": "^2.0.1"
   }
 }
