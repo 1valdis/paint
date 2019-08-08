@@ -25,13 +25,13 @@ Live demo: https://1valdis.github.io/paint/
   * [ ] Text
   * [ ] Zoom
 * [ ] Image
-  * [ ] App's inner clipboard <sub><sup>(to imitate true clipboard, sadly there's no way to put image to clipboard with existing API/browser support)</sub></sup>
+  * [ ] Clipboard
     * [ ] Copy
     * [ ] Paste
     * [ ] Cut
   * [x] Selection
     * [x] Paste
-      * [x] From clipboard <sub><sup>(a real one)</sub></sup>
+      * [x] From clipboard
       * [ ] From file
     * [x] Move, resize
     * [ ] Clip selection
