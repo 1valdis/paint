@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { changeImage } from '../App/actions'
 
 class Image extends Component {
-  
+
 }
 
 const mapStateToProps = state => ({
@@ -15,7 +15,7 @@ const mapStateToProps = state => ({
   selection: state.instruments.selection
 })
 const mapDispatchToProps = dispatch => ({
-  changeThickness = 
+  //changeThickness = 
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Image)
