@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import './Colors.css'
 
 import { ColorPalette } from '../ColorPalette/ColorPalette'
-import ColorSelection from '../ColorSelection/ColorSelection'
+import { ColorSelection } from '../ColorSelection/ColorSelection'
 import { ColorInput } from '../ColorInput/ColorInput'
 import { Color } from '../Color/Color'
 
