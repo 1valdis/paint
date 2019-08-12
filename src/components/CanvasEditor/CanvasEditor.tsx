@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { connect } from 'react-redux'
 
 import SelectionInstrument from '../instruments/SelectionInstrument/SelectionInstrument'
@@ -22,7 +22,9 @@ interface CanvasEditorProps {
   instrument: keyof typeof instruments
 }
 
-const _CanvasEditor = (props: CanvasEditorProps): JSX.Element | null => {
+const _CanvasEditor: FunctionComponent<CanvasEditorProps> = (
+  props
+): JSX.Element | null => {
   const Element = instruments[props.instrument]
   return Element != null ? <Element /> : null
 }
