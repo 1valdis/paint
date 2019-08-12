@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import FileMenu from '../FileMenu/FileMenuContainer'
 import Canvas from '../Canvas/Canvas'
 import NavBar from '../NavBar/NavBar'
-import Clipboard from '../Clipboard/Clipboard'
+import { Clipboard } from '../Clipboard/Clipboard'
 import Image from '../Image/Image'
 import Instruments from '../instruments/Instruments'
 import Colors from '../Colors/ColorsContainer'
@@ -15,7 +15,7 @@ import Colors from '../Colors/ColorsContainer'
 import { openFile, createFile, paste, download } from './actions'
 
 class App extends PureComponent {
-  render () {
+  render() {
     return (
       <React.Fragment>
         <FileMenu
@@ -27,22 +27,22 @@ class App extends PureComponent {
           <Clipboard
             onPasteClick={this.props.onClipboardPasteClick}
             disabled={this.props.clipboardDisabled}
-            footer='Буфер обмена'
+            footer="Буфер обмена"
           />
-          <Image footer='Изображение' />
-          <Instruments footer='Инструменты' />
-          <Colors footer='Цвета' />
+          <Image footer="Изображение" />
+          <Instruments footer="Инструменты" />
+          <Colors footer="Цвета" />
         </NavBar>
-        <Canvas
-          onCanvasRef={this.handleCanvasRef}
-        />
+        <Canvas onCanvasRef={this.handleCanvasRef} />
       </React.Fragment>
     )
   }
-  componentDidMount () {
+
+  componentDidMount() {
     document.addEventListener('paste', this.props.onPaste)
   }
-  componentWillUnmount () {
+
+  componentWillUnmount() {
     document.removeEventListener('paste', this.props.onPaste)
   }
 }
@@ -57,4 +57,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export { default as rootReducer } from './reducer'
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
