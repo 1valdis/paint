@@ -7,33 +7,33 @@ import { changeImage } from '../App/actions'
 import { disableSelection } from '../instruments/SelectionInstrument/actions'
 
 import Resizer from '../Resizer/Resizer'
-import CanvasEditor from '../CanvasEditor/CanvasEditor'
+import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
 
 import './Canvas.css'
 
 class Canvas extends PureComponent {
-  constructor (...args) {
+  constructor(...args) {
     super(...args)
     this.canvas = createRef()
   }
-  render () {
+
+  render() {
     return (
-      <div className='canvas-wrapper'>
+      <div className="canvas-wrapper">
         <canvas
           ref={this.canvas}
-          className='canvas'
+          className="canvas"
           width={this.props.data ? this.props.data.width : 0}
           height={this.props.data ? this.props.data.height : 0}
         />
         <div
-          className='canvas-upper-layer'
+          className="canvas-upper-layer"
           style={{
             width: this.props.data ? this.props.data.width : 0,
             height: this.props.data ? this.props.data.height : 0
-          }}
-        >
+          }}>
           <Resizer
-            mode='canvas'
+            mode="canvas"
             onResizeEnd={this.onResize}
             onResizing={this.props.disableSelection}
             width={this.props.data ? this.props.data.width : 0}
@@ -46,19 +46,24 @@ class Canvas extends PureComponent {
       </div>
     )
   }
+
   updateCanvas = () => {
     const canvas = this.canvas.current
     if (canvas != null && this.props.data != null) {
       ;[canvas.width, canvas.height] = [
         this.props.data.width,
-        this.props.data.height 
+        this.props.data.height
       ]
       const ctx = canvas.getContext('2d')
       ctx.putImageData(this.props.data, 0, 0)
     }
   }
+
   onResize = (top, left, toWidth, toHeight) => {
-    if (this.props.data.width !== toWidth || this.props.data.height !== toHeight) {
+    if (
+      this.props.data.width !== toWidth ||
+      this.props.data.height !== toHeight
+    ) {
       const newCanvas = document.createElement('canvas')
       newCanvas.width = toWidth
       newCanvas.height = toHeight
@@ -69,10 +74,12 @@ class Canvas extends PureComponent {
       this.props.changeImage(newCtx.getImageData(0, 0, toWidth, toHeight))
     }
   }
-  componentDidMount () {
+
+  componentDidMount() {
     this.updateCanvas()
   }
-  componentDidUpdate () {
+
+  componentDidUpdate() {
     this.updateCanvas()
   }
 }
@@ -91,4 +98,7 @@ const mapDispatchToProps = dispatch => ({
   disableSelection: () => dispatch(disableSelection())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Canvas)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Canvas)
