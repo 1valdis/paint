@@ -16,5 +16,8 @@
       "version": "detect"
     }
   },
+  "rules": {
+    "react/prop-types": [2, { "ignore": ["children"] }]
+  },
   "parser": "@typescript-eslint/parser"
 }
