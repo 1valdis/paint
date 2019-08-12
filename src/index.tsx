@@ -6,7 +6,7 @@ import thunk from 'redux-thunk'
 
 import Paint, { rootReducer } from './components/App/App'
 
-const composeEnhancers = /* window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ||*/  compose;
+const composeEnhancers = /* window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || */ compose
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
 
 render(
