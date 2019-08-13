@@ -4,7 +4,7 @@ import './App.css'
 
 import { connect } from 'react-redux'
 
-import FileMenu from '../FileMenu/FileMenuContainer'
+import { FileMenu } from '../FileMenu/FileMenu'
 import Canvas from '../Canvas/Canvas'
 import { NavBar } from '../NavBar/NavBar'
 import { NavBarItem } from '../NavBar/NavBarItem'

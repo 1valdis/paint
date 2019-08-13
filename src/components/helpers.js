@@ -1,8 +1,8 @@
-export function addClickOutsideListener (element, callback) {
+export function addClickOutsideListener(element, callback) {
   const outsideClickListener = event => {
     if (!element.contains(event.target)) {
       if (isVisible(element)) {
-        callback()
+        callback(event)
       }
     }
   }
@@ -11,7 +11,7 @@ export function addClickOutsideListener (element, callback) {
   return outsideClickListener
 }
 
-export function removeClickOutsideListener (listener) {
+export function removeClickOutsideListener(listener) {
   document.removeEventListener('click', listener)
 }
 
@@ -19,16 +19,16 @@ const isVisible = elem =>
   !!elem &&
   !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
 
-function componentToHex (c) {
+function componentToHex(c) {
   var hex = c.toString(16)
   return hex.length === 1 ? '0' + hex : hex
 }
 
-export function rgbToHex ({ r, g, b }) {
+export function rgbToHex({ r, g, b }) {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-export function bresenhamLine (x0, y0, x1, y1, callback) {
+export function bresenhamLine(x0, y0, x1, y1, callback) {
   var dx = Math.abs(x1 - x0)
   var dy = Math.abs(y1 - y0)
   var sx = x0 < x1 ? 1 : -1
@@ -52,7 +52,7 @@ export function bresenhamLine (x0, y0, x1, y1, callback) {
 }
 
 export function getCanvasCoordsFromEvent(canvas, e) {
-  let { top, left } = canvas.getBoundingClientRect()
+  const { top, left } = canvas.getBoundingClientRect()
   const [mouseX, mouseY] = [e.clientX, e.clientY]
   return [Math.floor(mouseX - left), Math.floor(mouseY - top)]
 }
