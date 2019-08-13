@@ -6,7 +6,8 @@ import { connect } from 'react-redux'
 
 import FileMenu from '../FileMenu/FileMenuContainer'
 import Canvas from '../Canvas/Canvas'
-import NavBar from '../NavBar/NavBar'
+import { NavBar } from '../NavBar/NavBar'
+import { NavBarItem } from '../NavBar/NavBarItem'
 import { Clipboard } from '../Clipboard/Clipboard'
 import Image from '../Image/Image'
 import Instruments from '../instruments/Instruments'
@@ -24,14 +25,21 @@ class App extends PureComponent {
           onFileOpen={this.props.onFileOpen}
         />
         <NavBar>
-          <Clipboard
-            onPasteClick={this.props.onClipboardPasteClick}
-            disabled={this.props.clipboardDisabled}
-            footer="Буфер обмена"
-          />
-          <Image footer="Изображение" />
-          <Instruments footer="Инструменты" />
-          <Colors footer="Цвета" />
+          <NavBarItem footer="Clipboard">
+            <Clipboard
+              onPasteClick={this.props.onClipboardPasteClick}
+              disabled={this.props.clipboardDisabled}
+            />
+          </NavBarItem>
+          <NavBarItem footer="Image">
+            <Image />
+          </NavBarItem>
+          <NavBarItem footer="Instruments">
+            <Instruments />
+          </NavBarItem>
+          <NavBarItem footer="Colors">
+            <Colors />
+          </NavBarItem>
         </NavBar>
         <Canvas onCanvasRef={this.handleCanvasRef} />
       </React.Fragment>
