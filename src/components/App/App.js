@@ -9,7 +9,7 @@ import Canvas from '../Canvas/Canvas'
 import { NavBar } from '../NavBar/NavBar'
 import { NavBarItem } from '../NavBar/NavBarItem'
 import { Clipboard } from '../Clipboard/Clipboard'
-import Image from '../Image/Image'
+import { Image } from '../Image/Image'
 import Instruments from '../instruments/Instruments'
 import { ColorsContainer } from '../Colors/ColorsContainer'
 

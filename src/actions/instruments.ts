@@ -6,7 +6,8 @@ export enum Instruments {
   text = 'text',
   eraser = 'eraser',
   dropper = 'dropper',
-  zoom = 'zoom'
+  zoom = 'zoom',
+  selection = 'selection'
 }
 
 export interface ChangeInstrumentAction {

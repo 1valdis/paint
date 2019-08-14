@@ -5,10 +5,20 @@ import { connect } from 'react-redux'
 
 import classNames from 'classnames'
 
-import { selectInstrument } from '../../actions'
+import { selectInstrument, Action, Instruments } from '../../actions'
 import { changeImage } from '../App/actions'
+import { ThunkDispatch } from 'redux-thunk'
+import { StoreState } from '../../reducers'
 
-class Image extends Component {
+interface ImageProps {
+  image: ImageData
+  instrument: Instruments
+  selection: any // todo fix
+  selectInstrument: (instrument: Instruments) => void
+  changeImage: (imageData: ImageData) => void
+}
+
+class _Image extends Component<ImageProps> {
   render() {
     return (
       <nav className="image">
@@ -45,7 +55,7 @@ class Image extends Component {
   }
 
   handleClick = () => {
-    this.props.selectInstrument('selection')
+    this.props.selectInstrument(Instruments.selection)
   }
 
   handleClipClick = () => {
@@ -59,6 +69,7 @@ class Image extends Component {
       height: newCanvas.height
     } = this.props.selection.coords)
 
+    if (!newCtx) throw new Error("Couldn't acquire canvas context")
     newCtx.putImageData(this.props.image, 0, 0)
     this.props.changeImage(
       newCtx.getImageData(
@@ -68,21 +79,24 @@ class Image extends Component {
         this.props.selection.coords.height
       )
     )
-    this.props.selectInstrument('selection')
+    this.props.selectInstrument(Instruments.selection)
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: StoreState) => ({
   image: state.image.data,
   instrument: state.instruments.instrument,
   selection: state.instruments.selection
 })
-const mapDispatchToProps = dispatch => ({
-  selectInstrument: instrument => dispatch(selectInstrument(instrument)),
-  changeImage: imageData => dispatch(changeImage(imageData))
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StoreState, undefined, Action>
+) => ({
+  selectInstrument: (instrument: Instruments) =>
+    dispatch(selectInstrument(instrument)),
+  changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
 })
 
-export default connect(
+export const Image = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Image)
+)(_Image)
