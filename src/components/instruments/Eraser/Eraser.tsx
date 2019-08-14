@@ -1,65 +1,100 @@
-import React, { PureComponent, createRef } from 'react'
+import React, {
+  PureComponent,
+  createRef,
+  RefObject,
+  PointerEvent as ReactPointerEvent
+} from 'react'
 
 import { connect } from 'react-redux'
 
 import './Eraser.css'
 import { bresenhamLine, getCanvasCoordsFromEvent } from '../../helpers'
 import { changeImage } from '../../App/actions'
+import { Color, Action } from '../../../actions'
+import { StoreState } from '../../../reducers'
+import { ThunkDispatch } from 'redux-thunk'
 
-class Eraser extends PureComponent {
-  constructor (...args) {
-    super(...args)
-    this.canvasRef = createRef()
-    this.ctx = null
+export interface EraserProps {
+  color: Color
+  imageData: ImageData
+  changeImage: (imageData: ImageData) => void
+  thickness: number // insert true one after thickness is made
+}
+
+class _Eraser extends PureComponent<EraserProps> {
+  canvasRef: RefObject<HTMLCanvasElement>
+
+  ctx?: CanvasRenderingContext2D
+
+  noCursorCtx: CanvasRenderingContext2D
+
+  isDrawing: boolean
+
+  prevX: number
+
+  prevY: number
+
+  preventContextMenu: boolean = false
+
+  constructor(props: EraserProps) {
+    super(props)
+    this.canvasRef = createRef<HTMLCanvasElement>()
     const noCursorCanvas = document.createElement('canvas')
-    this.noCursorCtx = noCursorCanvas.getContext('2d')
+    const noCursorCtx = noCursorCanvas.getContext('2d')
+    if (!noCursorCtx) throw new Error("Coudn't acquire context")
+    this.noCursorCtx = noCursorCtx
     this.isDrawing = false
     this.prevX = 0
     this.prevY = 0
   }
-  render () {
+
+  render() {
     return (
       <canvas
-        className='eraser-canvas'
+        className="eraser-canvas"
         ref={this.canvasRef}
         width={this.props.imageData ? this.props.imageData.width : 0}
         height={this.props.imageData ? this.props.imageData.height : 0}
         onPointerDown={this.handlePointerDown}
-        onPointerUp={this.handlePointerUp}
         onPointerMove={this.handlePointerMove}
         onPointerEnter={this.handlePointerEnter}
         onPointerLeave={this.handlePointerLeave}
       />
     )
   }
-  handlePointerDown = e => {
+
+  handlePointerDown = (e: ReactPointerEvent<HTMLCanvasElement>) => {
+    if (!this.canvasRef.current) throw new Error("Canvas didn't mount")
     this.isDrawing = true
-    this.drawPoint()
-    this.beginDrawing(...getCanvasCoordsFromEvent(this.canvasRef.current, e))
+    const [x, y] = getCanvasCoordsFromEvent(this.canvasRef.current, e)
+    this.drawPoint(x, y)
+    this.beginDrawing(x, y)
   }
-  handlePointerMove = e => {
+
+  handlePointerMove = (e: ReactPointerEvent<HTMLCanvasElement>) => {
+    if (!this.canvasRef.current) throw new Error("Canvas didn't mount")
     const [x, y] = getCanvasCoordsFromEvent(this.canvasRef.current, e)
     if (this.isDrawing && e.buttons !== 3) {
-      this.continueDrawing(
-        x, y
-      )
+      this.continueDrawing(x, y)
     }
     this.updateCanvas(x, y)
   }
-  handlePointerEnter = e => {
+
+  handlePointerEnter = (e: ReactPointerEvent<HTMLCanvasElement>) => {
+    if (!this.canvasRef.current) throw new Error("Canvas didn't mount")
     if (e.buttons === 1 && this.isDrawing) {
-      this.continueDrawing(
-        ...getCanvasCoordsFromEvent(this.canvasRef.current, e)
-      )
+      const [x, y] = getCanvasCoordsFromEvent(this.canvasRef.current, e)
+      this.continueDrawing(x, y)
     } else {
       this.isDrawing = false
     }
   }
-  handlePointerLeave = e => {
+
+  handlePointerLeave = (e: ReactPointerEvent<HTMLCanvasElement>) => {
+    if (!this.canvasRef.current) throw new Error("Canvas didn't mount")
     if (this.isDrawing) {
-      this.continueDrawing(
-        ...getCanvasCoordsFromEvent(this.canvasRef.current, e)
-      )
+      const [x, y] = getCanvasCoordsFromEvent(this.canvasRef.current, e)
+      this.continueDrawing(x, y)
     }
     this.updateCanvas()
   }
@@ -70,7 +105,9 @@ class Eraser extends PureComponent {
       this.endDrawing()
     }
   }
-  handleDocumentPointerMove = e => {
+
+  handleDocumentPointerMove = (e: PointerEvent) => {
+    if (!this.canvasRef.current) return
     if (e.target !== this.canvasRef.current) {
       ;[this.prevX, this.prevY] = getCanvasCoordsFromEvent(
         this.canvasRef.current,
@@ -82,23 +119,27 @@ class Eraser extends PureComponent {
       this.cancelDrawing()
     }
   }
-  handleDocumentContextMenu = e => {
+
+  handleDocumentContextMenu = (e: Event) => {
     if (this.isDrawing) {
       e.preventDefault()
       this.isDrawing = false
     }
   }
-  handleDocumentSelectStart = e => {
+
+  handleDocumentSelectStart = (e: Event) => {
     if (this.isDrawing) {
       e.preventDefault()
     }
   }
 
-  componentDidMount () {
-    this.ctx = this.canvasRef.current.getContext('2d')
+  componentDidMount() {
+    if (!this.canvasRef.current) throw new Error("Canvas didn't mount")
+    this.ctx = this.canvasRef.current.getContext('2d') || undefined
+    if (!this.ctx) throw new Error("Coudn't acquire context")
     const { r, g, b } = this.props.color
     this.ctx.fillStyle = `rgb(${r},${g},${b})`
-    this.ctx.strokeStyle = "black"
+    this.ctx.strokeStyle = 'black'
     this.noCursorCtx.fillStyle = `rgb(${r},${g},${b})`
     this.updateCanvasNoCursor()
     document.addEventListener('pointerup', this.handleDocumentPointerUp)
@@ -106,64 +147,76 @@ class Eraser extends PureComponent {
     document.addEventListener('selectstart', this.handleDocumentSelectStart)
     document.addEventListener('contextmenu', this.handleDocumentContextMenu)
   }
-  componentDidUpdate () {
+
+  componentDidUpdate() {
     const { r, g, b } = this.props.color
+    if (!this.ctx) throw new Error("Coudn't acquire context")
     this.ctx.fillStyle = `rgb(${r},${g},${b})`
     this.noCursorCtx.fillStyle = `rgb(${r},${g},${b})`
     this.updateCanvasNoCursor()
   }
-  componentWillUnmount () {
+
+  componentWillUnmount() {
     document.removeEventListener('pointerup', this.handleDocumentPointerUp)
     document.removeEventListener('pointermove', this.handleDocumentPointerMove)
     document.removeEventListener('selectstart', this.handleDocumentSelectStart)
     document.removeEventListener('contextmenu', this.handleDocumentContextMenu)
   }
 
-  beginDrawing = (x, y) => {
+  beginDrawing = (x: number, y: number) => {
     const { r, g, b } = this.props.color
+    if (!this.ctx) throw new Error("Coudn't acquire context")
     this.ctx.fillStyle = `rgb(${r},${g},${b})`
     this.drawPoint(x, y)
     ;[this.prevX, this.prevY] = [x, y]
   }
-  continueDrawing = (x, y) => {
+
+  continueDrawing = (x: number, y: number) => {
     bresenhamLine(this.prevX, this.prevY, x, y, this.drawPoint)
     ;[this.prevX, this.prevY] = [x, y]
   }
+
   endDrawing = () => {
-    this.props.dispatch(
-      changeImage(
-        this.noCursorCtx.getImageData(
-          0,
-          0,
-          this.noCursorCtx.canvas.width,
-          this.noCursorCtx.canvas.height
-        )
+    this.props.changeImage(
+      this.noCursorCtx.getImageData(
+        0,
+        0,
+        this.noCursorCtx.canvas.width,
+        this.noCursorCtx.canvas.height
       )
     )
   }
+
   cancelDrawing = () => {
     this.noCursorCtx.putImageData(this.props.imageData, 0, 0)
   }
-  drawPoint = (x, y) => {
-    this.noCursorCtx.fillRect(
-      x - this.props.thickness / 2,
-      y - this.props.thickness / 2,
-      this.props.thickness,
-      this.props.thickness
-    )
+
+  drawPoint = (x: number, y: number) => {
+    if (this.noCursorCtx)
+      this.noCursorCtx.fillRect(
+        x - this.props.thickness / 2,
+        y - this.props.thickness / 2,
+        this.props.thickness,
+        this.props.thickness
+      )
   }
 
   updateCanvasNoCursor = () => {
     if (this.props.imageData != null) {
-      [this.noCursorCtx.canvas.width, this.noCursorCtx.canvas.height] = [this.props.imageData.width, this.props.imageData.height]
+      ;[this.noCursorCtx.canvas.width, this.noCursorCtx.canvas.height] = [
+        this.props.imageData.width,
+        this.props.imageData.height
+      ]
       const { r, g, b } = this.props.color
       this.noCursorCtx.fillStyle = `rgb(${r},${g},${b})`
-      ;this.noCursorCtx.putImageData(this.props.imageData, 0, 0)
+      this.noCursorCtx.putImageData(this.props.imageData, 0, 0)
     }
   }
-  updateCanvas = (x, y) => {
+
+  updateCanvas = (x?: number, y?: number) => {
+    if (!this.ctx) throw new Error("Coudn't acquire context")
     this.ctx.drawImage(this.noCursorCtx.canvas, 0, 0)
-    if (x && y) {
+    if (x !== undefined && y !== undefined) {
       this.ctx.fillRect(
         x - this.props.thickness / 2,
         y - this.props.thickness / 2,
@@ -180,10 +233,19 @@ class Eraser extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: StoreState) => ({
   color: state.colors.list[state.colors.secondary],
   imageData: state.image.data,
   thickness: 8 // insert true one after thickness is made
 })
 
-export default connect(mapStateToProps)(Eraser)
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StoreState, undefined, Action>
+) => ({
+  changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
+})
+
+export const Eraser = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(_Eraser)

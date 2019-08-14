@@ -1,3 +1,5 @@
+import { PointerEvent as ReactPointerEvent } from 'react'
+
 export interface ClickOutsideListener {
   (event: MouseEvent): void
 }
@@ -66,7 +68,7 @@ export function bresenhamLine(
 
 export function getCanvasCoordsFromEvent(
   canvas: HTMLCanvasElement,
-  e: MouseEvent
+  e: ReactPointerEvent<HTMLCanvasElement> | PointerEvent
 ) {
   const { top, left } = canvas.getBoundingClientRect()
   const [mouseX, mouseY] = [e.clientX, e.clientY]
