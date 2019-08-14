@@ -11,7 +11,7 @@ import { NavBarItem } from '../NavBar/NavBarItem'
 import { Clipboard } from '../Clipboard/Clipboard'
 import Image from '../Image/Image'
 import Instruments from '../instruments/Instruments'
-import Colors from '../Colors/ColorsContainer'
+import { ColorsContainer } from '../Colors/ColorsContainer'
 
 import { openFile, createFile, paste, download } from './actions'
 
@@ -38,7 +38,7 @@ class App extends PureComponent {
             <Instruments />
           </NavBarItem>
           <NavBarItem footer="Colors">
-            <Colors />
+            <ColorsContainer />
           </NavBarItem>
         </NavBar>
         <Canvas onCanvasRef={this.handleCanvasRef} />

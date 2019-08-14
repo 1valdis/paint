@@ -1,4 +1,4 @@
-import { ActionTypes, Action } from '../actions'
+import { ActionTypes, Action, SelectedColor } from '../actions'
 import { ColorsStoreState } from '.'
 
 export const colorsReducer = (
@@ -25,7 +25,7 @@ export const colorsReducer = (
       { r: 112, g: 176, b: 190 },
       { r: 200, g: 191, b: 231 }
     ],
-    activeColor: 'primary',
+    activeColor: SelectedColor.primary,
     primary: 0,
     secondary: 10
   },

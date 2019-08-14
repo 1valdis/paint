@@ -1,3 +1,5 @@
+import { SelectedColor } from '../actions'
+
 interface Color {
   r: number
   g: number
@@ -6,7 +8,7 @@ interface Color {
 
 export interface ColorsStoreState {
   list: Color[]
-  activeColor: 'primary' | 'secondary'
+  activeColor: SelectedColor
   primary: number
   secondary: number
 }

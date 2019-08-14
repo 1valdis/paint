@@ -1,5 +1,4 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { ChangeEventHandler, FunctionComponent } from 'react'
 
 import './Colors.css'
 
@@ -9,20 +8,33 @@ import { ColorInput } from '../ColorInput/ColorInput'
 import { Color } from '../Color/Color'
 
 import { rgbToHex } from '../helpers'
+import { Color as ColorObject, SelectedColor } from '../../actions'
 
-const ColorsComponent = props => (
+export interface ColorsComponentProps {
+  colors: ColorObject[]
+  activeColor: SelectedColor
+  onColorClick: (colorIndex: number) => void
+  onActiveColorClick: (activeColorType: SelectedColor) => void
+  onColorInputChange: ChangeEventHandler
+  primary: number
+  secondary: number
+}
+
+export const ColorsComponent: FunctionComponent<
+  ColorsComponentProps
+> = props => (
   <div className="colors">
     <ColorSelection
       header="Цвет 1"
       color={props.colors[props.primary]}
-      active={props.activeColor === 'primary'}
-      onClick={() => props.onActiveColorClick('primary')}
+      active={props.activeColor === SelectedColor.primary}
+      onClick={() => props.onActiveColorClick(SelectedColor.primary)}
     />
     <ColorSelection
       header="Цвет 2"
       color={props.colors[props.secondary]}
-      active={props.activeColor === 'secondary'}
-      onClick={() => props.onActiveColorClick('secondary')}
+      active={props.activeColor === SelectedColor.secondary}
+      onClick={() => props.onActiveColorClick(SelectedColor.secondary)}
     />
     <ColorPalette>
       {[
@@ -32,12 +44,11 @@ const ColorsComponent = props => (
             active={i === props[props.activeColor]}
             onClick={() => props.onColorClick(i)}
             key={'color' + i}
-            colorId={i}
           />
         )),
         ...new Array(30 - props.colors.length)
           .fill(undefined)
-          .map((item, i) => <Color value={null} key={'undefinedcolor' + i} />)
+          .map((item, i) => <Color key={'undefinedcolor' + i} />)
       ]}
     </ColorPalette>
     <ColorInput
@@ -46,19 +57,3 @@ const ColorsComponent = props => (
     />
   </div>
 )
-
-ColorsComponent.propTypes = {
-  colors: PropTypes.arrayOf(
-    PropTypes.shape({
-      r: PropTypes.number.isRequired,
-      g: PropTypes.number.isRequired,
-      b: PropTypes.number.isRequired
-    })
-  ).isRequired,
-  activeColor: PropTypes.oneOf(['primary', 'secondary']).isRequired,
-  onColorClick: PropTypes.func.isRequired,
-  onActiveColorClick: PropTypes.func.isRequired,
-  onColorInputChange: PropTypes.func.isRequired
-}
-
-export default ColorsComponent

@@ -4,16 +4,16 @@ import classNames from 'classnames'
 import './Color.css'
 
 export interface ColorProps {
-  onClick: MouseEventHandler
-  value: {
+  onClick?: MouseEventHandler
+  value?: {
     r: number
     g: number
     b: number
   }
-  active: boolean
+  active?: boolean
 }
 
-export const Color: FunctionComponent<ColorProps> = (props): JSX.Element => {
+export const Color: FunctionComponent<ColorProps> = props => {
   return (
     <div
       onClick={props.onClick}
