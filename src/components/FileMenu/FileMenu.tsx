@@ -1,14 +1,22 @@
 import React, {
   PureComponent,
-  ChangeEventHandler,
-  MouseEventHandler
+  createRef,
+  MouseEventHandler,
+  RefObject,
+  ChangeEventHandler
 } from 'react'
 
-import { FileMenuComponent } from './FileMenuComponent'
+import './FileMenu.css'
+
+import classNames from 'classnames'
+
+import { addClickOutsideListener, removeClickOutsideListener } from '../helpers'
+
+import { Modal } from '../Modal/Modal'
+import { About } from './about/About'
 
 export interface FileMenuProps {
-  onDownload(fileName: string): void
-  downloadName: string
+  onDownload: MouseEventHandler
   onFileCreate: MouseEventHandler
   onFileOpen: ChangeEventHandler
 }
@@ -19,25 +27,64 @@ interface FileMenuState {
 }
 
 export class FileMenu extends PureComponent<FileMenuProps, FileMenuState> {
+  menu: RefObject<HTMLDivElement>
+
+  clickOutsideListener?: Function
+
   constructor(props: FileMenuProps) {
     super(props)
+    this.menu = createRef()
     this.state = { menuOpen: false, aboutOpen: false }
   }
 
   render() {
     return (
-      <FileMenuComponent
-        isOpen={this.state.menuOpen}
-        isAboutOpen={this.state.aboutOpen}
-        onClick={this.toggleMenu}
-        onClickInside={this.closeMenu}
-        onClickOutside={this.closeMenu}
-        onAboutOpen={this.openAbout}
-        onAboutClose={this.closeAbout}
-        {...this.props}
-        onDownload={() => this.props.onDownload(this.props.downloadName)}
-      />
+      <div
+        ref={this.menu}
+        className={classNames('file-menu', {
+          'file-menu_open': this.state.menuOpen
+        })}>
+        <button className="file-menu-button" onClick={this.toggleMenu}>
+          File
+        </button>
+        <nav className="file-menu-items" onClick={this.closeMenu}>
+          <button className="file-menu-item" onClick={this.props.onFileCreate}>
+            Create
+          </button>
+          <label className="file-menu-item">
+            Open
+            <input
+              type="file"
+              className="file-menu-item"
+              accept="image/*"
+              onChange={this.props.onFileOpen}
+            />
+          </label>
+          <button className="file-menu-item" onClick={this.props.onDownload}>
+            Save
+          </button>
+          <button className="file-menu-item" onClick={this.openAbout}>
+            About...
+          </button>
+        </nav>
+        {this.state.aboutOpen && (
+          <Modal>
+            <About onClose={this.closeAbout} />
+          </Modal>
+        )}
+      </div>
     )
+  }
+
+  componentDidMount() {
+    this.clickOutsideListener = addClickOutsideListener(
+      this.menu.current,
+      this.closeMenu
+    )
+  }
+
+  componentWillUnmount() {
+    removeClickOutsideListener(this.clickOutsideListener)
   }
 
   toggleMenu = () => this.setState(state => ({ menuOpen: !state.menuOpen }))

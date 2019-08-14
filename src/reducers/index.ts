@@ -16,4 +16,5 @@ export interface StoreState {
     secondary: number
   }
   instruments: any
+  aboutOpen: boolean
 }
