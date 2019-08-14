@@ -10,7 +10,11 @@ import './FileMenu.css'
 
 import classNames from 'classnames'
 
-import { addClickOutsideListener, removeClickOutsideListener } from '../helpers'
+import {
+  addClickOutsideListener,
+  removeClickOutsideListener,
+  ClickOutsideListener
+} from '../helpers'
 
 import { Modal } from '../Modal/Modal'
 import { About } from './about/About'
@@ -29,7 +33,7 @@ interface FileMenuState {
 export class FileMenu extends PureComponent<FileMenuProps, FileMenuState> {
   menu: RefObject<HTMLDivElement>
 
-  clickOutsideListener?: Function
+  clickOutsideListener?: ClickOutsideListener
 
   constructor(props: FileMenuProps) {
     super(props)
@@ -77,14 +81,16 @@ export class FileMenu extends PureComponent<FileMenuProps, FileMenuState> {
   }
 
   componentDidMount() {
-    this.clickOutsideListener = addClickOutsideListener(
-      this.menu.current,
-      this.closeMenu
-    )
+    if (this.menu.current)
+      this.clickOutsideListener = addClickOutsideListener(
+        this.menu.current,
+        this.closeMenu
+      )
   }
 
   componentWillUnmount() {
-    removeClickOutsideListener(this.clickOutsideListener)
+    if (this.clickOutsideListener)
+      removeClickOutsideListener(this.clickOutsideListener)
   }
 
   toggleMenu = () => this.setState(state => ({ menuOpen: !state.menuOpen }))
