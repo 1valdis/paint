@@ -5,23 +5,22 @@ import { connect } from 'react-redux'
 
 import classNames from 'classnames'
 
-import { selectInstrument } from '../instruments/actions'
+import { selectInstrument } from '../../actions'
 import { changeImage } from '../App/actions'
 
 class Image extends Component {
-  render () {
+  render() {
     return (
-      <nav className='image'>
+      <nav className="image">
         <button
           className={classNames('select', {
             select_active: this.props.instrument === 'selection'
           })}
-          onClick={this.handleClick}
-        >
-          <svg viewBox='0 0 15 10'>
+          onClick={this.handleClick}>
+          <svg viewBox="0 0 15 10">
             <rect
-              width='15'
-              height='10'
+              width="15"
+              height="10"
               style={{
                 fill: 'transparent',
                 strokeWidth: '1',
@@ -32,11 +31,10 @@ class Image extends Component {
           </svg>
           <footer>Выделить</footer>
         </button>
-        <div className='side-buttons'>
+        <div className="side-buttons">
           <button
             onClick={this.handleClipClick}
-            disabled={!(this.props.selection && this.props.selection.coords)}
-          >
+            disabled={!(this.props.selection && this.props.selection.coords)}>
             Обрезать
           </button>
           <button>Изменить размер</button>
@@ -45,9 +43,11 @@ class Image extends Component {
       </nav>
     )
   }
+
   handleClick = () => {
     this.props.selectInstrument('selection')
   }
+
   handleClipClick = () => {
     if (!(this.props.selection && this.props.selection.coords)) {
       return
@@ -82,4 +82,7 @@ const mapDispatchToProps = dispatch => ({
   changeImage: imageData => dispatch(changeImage(imageData))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Image)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Image)

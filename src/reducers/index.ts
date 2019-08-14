@@ -17,6 +17,6 @@ export interface StoreState {
     name: string
   }
   colors: ColorsStoreState
-  instruments: any
+  instruments: any // todo fix that
   aboutOpen: boolean
 }

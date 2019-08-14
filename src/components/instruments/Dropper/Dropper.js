@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react'
 
 import { connect } from 'react-redux'
-import { addColor } from '../../../actions/colors'
-import { selectInstrument } from '../actions'
+import { addColor, selectInstrument } from '../../../actions'
 import './Dropper.css'
 
 class Dropper extends PureComponent {

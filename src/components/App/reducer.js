@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 
 import { types } from './actions'
 import { colorsReducer } from '../../reducers/colors'
-import instrumentsReducer from '../instruments/reducer'
+import { instrumentsReducer } from '../../reducers/instruments'
 
 const canvasReducer = (state, action) => {
   if (state === undefined) {

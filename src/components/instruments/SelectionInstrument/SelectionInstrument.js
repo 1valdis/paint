@@ -17,7 +17,7 @@ import { changeImage } from '../../App/actions'
 // at least it works somehow, will polish it later maybe.
 
 class SelectionInstrument extends PureComponent {
-  constructor (...args) {
+  constructor(...args) {
     super(...args)
 
     this.state = {
@@ -31,12 +31,13 @@ class SelectionInstrument extends PureComponent {
 
     // todo - imageData selection handling
   }
-  render () {
+
+  render() {
     let El
     if (this.state.selecting && this.state.selectingCoords) {
       El = (
         <div
-          className='selecting'
+          className="selecting"
           style={{
             top: `${this.state.selectingCoords.top}px`,
             left: `${this.state.selectingCoords.left}px`,
@@ -64,7 +65,8 @@ class SelectionInstrument extends PureComponent {
           imageData={this.props.imageData}
           coords={this.props.selectionCoords}
           onCoordsChanged={zone =>
-            this.props.changeSelection({ coords: zone, imageData: null })}
+            this.props.changeSelection({ coords: zone, imageData: null })
+          }
           onImageChanged={imageData => this.props.changeImage(imageData)}
           secondaryColor={this.props.secondaryColor}
         />
@@ -72,14 +74,14 @@ class SelectionInstrument extends PureComponent {
     } else El = null
     return (
       <div
-        className='selection'
+        className="selection"
         onPointerDown={this.handlePointerDown}
-        ref={this.containerRef}
-      >
+        ref={this.containerRef}>
         {El}
       </div>
     )
   }
+
   handlePointerDown = (e, trusted) => {
     if (e.target !== e.currentTarget && !trusted) return
 
@@ -110,6 +112,7 @@ class SelectionInstrument extends PureComponent {
       selectingCoords: null
     })
   }
+
   handleDocumentPointerMove = e => {
     if (!this.state.selecting) return
 
@@ -186,6 +189,7 @@ class SelectionInstrument extends PureComponent {
         break // no default
     }
   }
+
   handleDocumentPointerUp = e => {
     this.setState(state => {
       let selectionOriginCoords = null
@@ -218,7 +222,7 @@ class SelectionInstrument extends PureComponent {
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     document.addEventListener('pointermove', this.handleDocumentPointerMove, {
       passive: true
     })
@@ -227,7 +231,8 @@ class SelectionInstrument extends PureComponent {
     })
     document.addEventListener('contextmenu', this.handleContextMenu)
   }
-  componentWillUnmount () {
+
+  componentWillUnmount() {
     document.removeEventListener(
       'pointermove',
       this.handleDocumentPointerMove,
@@ -263,4 +268,7 @@ const mapDispatchToProps = dispatch => ({
   changeImage: imageData => dispatch(changeImage(imageData))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(SelectionInstrument)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SelectionInstrument)

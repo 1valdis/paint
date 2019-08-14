@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 
 import { connect } from 'react-redux'
 
-import { selectInstrument } from './actions'
+import { selectInstrument } from '../../actions'
 
 import classNames from 'classnames'
 import './Instruments.css'
@@ -10,9 +10,9 @@ import './Instruments.css'
 const instruments = ['pen', 'fill', 'text', 'eraser', 'dropper', 'zoom']
 
 class Instruments extends PureComponent {
-  render () {
+  render() {
     return (
-      <div className='instruments'>
+      <div className="instruments">
         {instruments.map(i => (
           <button
             className={classNames(`instrument_${i}`, {
@@ -34,4 +34,7 @@ const mapDispatchToProps = dispatch => ({
   selectInstrument: instrument => dispatch(selectInstrument(instrument))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Instruments)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Instruments)

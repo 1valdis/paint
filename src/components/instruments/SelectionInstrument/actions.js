@@ -1,8 +1,8 @@
-import { types } from '../actions'
+import { ActionTypes } from '../../../actions'
 
-export function changeSelection ({coords, imageData}) {
+export function changeSelection({ coords, imageData }) {
   return {
-    type: types.CHANGE_INSTRUMENT,
+    type: ActionTypes.changeInstrument,
     instrument: 'selection',
     selection: {
       coords,
@@ -11,9 +11,9 @@ export function changeSelection ({coords, imageData}) {
   }
 }
 
-export function disableSelection () {
+export function disableSelection() {
   return {
-    type: types.CHANGE_INSTRUMENT,
+    type: ActionTypes.changeInstrument,
     selection: {
       coords: null,
       imageData: null

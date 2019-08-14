@@ -1,4 +1,4 @@
-import { types as instrumentsTypes } from '../instruments/actions'
+import { ActionTypes } from '../../actions'
 
 export const types = {
   IMAGE_CHANGED: 'app/image-changed'
@@ -8,8 +8,8 @@ const canvas = document.createElement('canvas')
 const ctx = canvas.getContext('2d', { alpha: false })
 let href = null
 
-export function createFile () {
-  return function (dispatch, getState) {
+export function createFile() {
+  return function(dispatch, getState) {
     ;[canvas.width, canvas.height] = [800, 450]
     clearCanvas()
     dispatch({
@@ -20,8 +20,8 @@ export function createFile () {
   }
 }
 
-export function openFile (e) {
-  return function (dispatch, getState) {
+export function openFile(e) {
+  return function(dispatch, getState) {
     const file = e.nativeEvent.target.files[0]
     if (file == null) return
     const reader = new FileReader()
@@ -43,8 +43,8 @@ export function openFile (e) {
   }
 }
 
-export function paste (e) {
-  return function (dispatch, getState) {
+export function paste(e) {
+  return function(dispatch, getState) {
     if (e.clipboardData) {
       const items = e.clipboardData.items
       if (!items) return
@@ -54,18 +54,23 @@ export function paste (e) {
           const blob = items[i].getAsFile()
           const source = window.URL.createObjectURL(blob)
           const pastedImage = new Image()
-          pastedImage.onload = () => {  
+          pastedImage.onload = () => {
             const pastedImageCanvas = document.createElement('canvas')
             pastedImageCanvas.width = pastedImage.width
             pastedImageCanvas.height = pastedImage.height
             const pastedImageCtx = pastedImageCanvas.getContext('2d')
             pastedImageCtx.drawImage(pastedImage, 0, 0)
-            
+
             dispatch({
-              type: instrumentsTypes.CHANGE_INSTRUMENT,
+              type: ActionTypes.changeInstrument,
               instrument: 'selection',
               selection: {
-                imageData: pastedImageCtx.getImageData(0, 0, pastedImageCanvas.width, pastedImageCanvas.height),
+                imageData: pastedImageCtx.getImageData(
+                  0,
+                  0,
+                  pastedImageCanvas.width,
+                  pastedImageCanvas.height
+                ),
                 coords: {
                   top: 0,
                   left: 0,
@@ -84,8 +89,8 @@ export function paste (e) {
   }
 }
 
-function imageChangedActionCreator (imageData) {
-  return function (dispatch, getState) {
+function imageChangedActionCreator(imageData) {
+  return function(dispatch, getState) {
     canvas.width = imageData.width
     canvas.height = imageData.height
     ctx.putImageData(imageData, 0, 0)
@@ -98,12 +103,12 @@ function imageChangedActionCreator (imageData) {
 
 export { imageChangedActionCreator as changeImage }
 
-function clearCanvas () {
+function clearCanvas() {
   ctx.fillStyle = '#FFFFFF'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
 
-export function download (name) {
+export function download(name) {
   canvas.toBlob(blob => {
     if (href !== null) {
       window.URL.revokeObjectURL(href)
