@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react'
 
 import { connect } from 'react-redux'
-import { addColor } from '../../Colors/actions'
+import { addColor } from '../../../actions/colors'
 import { selectInstrument } from '../actions'
 import './Dropper.css'
 
 class Dropper extends PureComponent {
-  render () {
+  render() {
     return (
       <div
-        className='dropper'
+        className="dropper"
         onClick={this.handleClick}
         style={{
           width: this.props.imageData.width,
@@ -18,6 +18,7 @@ class Dropper extends PureComponent {
       />
     )
   }
+
   handleClick = e => {
     if (e.target !== e.currentTarget) return
 
@@ -33,13 +34,13 @@ class Dropper extends PureComponent {
       e.clientY + window.pageYOffset
     ]
     ;[top, left] = [Math.ceil(mouseY - top), Math.ceil(mouseX - left)]
-    
-    const i = (top*this.props.imageData.width + left)*4
-    
+
+    const i = (top * this.props.imageData.width + left) * 4
+
     this.props.addColor({
       r: this.props.imageData.data[i],
-      g: this.props.imageData.data[i+1],
-      b: this.props.imageData.data[i+2]
+      g: this.props.imageData.data[i + 1],
+      b: this.props.imageData.data[i + 2]
     })
     this.props.selectInstrument('pen')
   }
@@ -53,4 +54,7 @@ const mapDispatchToProps = dispatch => ({
   selectInstrument: instrument => dispatch(selectInstrument(instrument))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dropper)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Dropper)

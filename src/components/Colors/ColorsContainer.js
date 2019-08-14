@@ -3,10 +3,14 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import ColorsComponent from './ColorsComponent'
-import { changeActiveColor, selectColor, addColorFromInput } from './actions'
+import {
+  changeActiveColor,
+  selectColor,
+  addColorFromInput
+} from '../../actions/colors'
 
 class ColorsContainer extends PureComponent {
-  render () {
+  render() {
     return <ColorsComponent {...this.props} />
   }
 }
@@ -23,4 +27,7 @@ const mapDispatchToProps = dispatch => ({
   onColorInputChange: e => dispatch(addColorFromInput(e))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(ColorsContainer)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ColorsContainer)

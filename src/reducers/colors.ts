@@ -1,7 +1,8 @@
-import { types } from './actions'
+import { ActionTypes, Action } from '../actions'
+import { ColorsStoreState } from '.'
 
-const colorsReducer = (
-  state = {
+export const colorsReducer = (
+  state: ColorsStoreState = {
     list: [
       { r: 0, g: 0, b: 0 },
       { r: 127, g: 127, b: 127 },
@@ -28,14 +29,14 @@ const colorsReducer = (
     primary: 0,
     secondary: 10
   },
-  action
+  action: Action
 ) => {
   const newState = { ...state }
   switch (action.type) {
-    case types.SELECT_COLOR:
+    case ActionTypes.selectColor:
       newState[newState.activeColor] = action.index
       return newState
-    case types.ADD_COLOR:
+    case ActionTypes.addColor:
       if (newState.list.length !== 30) {
         newState.list = [...newState.list, action.value]
         newState[newState.activeColor] = state.list.length
@@ -48,12 +49,10 @@ const colorsReducer = (
         newState[newState.activeColor] = state.list.length - 1
       }
       return newState
-    case types.CHANGE_ACTIVE_COLOR:
+    case ActionTypes.changeActiveColor:
       newState.activeColor = action.activeColor
       return newState
     default:
       return state
   }
 }
-
-export default colorsReducer

@@ -4,17 +4,19 @@ interface Color {
   b: number
 }
 
+export interface ColorsStoreState {
+  list: Color[]
+  activeColor: 'primary' | 'secondary'
+  primary: number
+  secondary: number
+}
+
 export interface StoreState {
   image: {
     data: ImageData
     name: string
   }
-  colors: {
-    list: Color[]
-    activeColor: 'primary' | 'secondary'
-    primary: number
-    secondary: number
-  }
+  colors: ColorsStoreState
   instruments: any
   aboutOpen: boolean
 }

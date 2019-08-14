@@ -1,13 +1,10 @@
 import { combineReducers } from 'redux'
 
 import { types } from './actions'
-import colorsReducer from '../Colors/reducer'
+import { colorsReducer } from '../../reducers/colors'
 import instrumentsReducer from '../instruments/reducer'
 
-const canvasReducer = (
-  state,
-  action
-) => {
+const canvasReducer = (state, action) => {
   if (state === undefined) {
     const canvasEl = document.createElement('canvas')
     ;[canvasEl.width, canvasEl.height] = [800, 450]
@@ -23,7 +20,7 @@ const canvasReducer = (
     case types.IMAGE_CHANGED:
       return {
         data: action.data,
-        name: action.name || state.name,
+        name: action.name || state.name
       }
     default:
       return state
