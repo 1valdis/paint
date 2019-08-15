@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 
 import './Fill.css'
 import { getCanvasCoordsFromEvent } from '../../helpers'
-import { changeImage } from '../../App/actions'
-import { Color, Action } from '../../../actions'
+import { Color, Action, changeImage } from '../../../actions'
 import { ThunkDispatch } from 'redux-thunk'
 import { StoreState } from '../../../reducers'
 

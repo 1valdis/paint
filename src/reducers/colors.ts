@@ -1,8 +1,9 @@
-import { ActionTypes, Action, SelectedColor } from '../actions'
+import { ActionTypes, SelectedColor } from '../actions'
 import { ColorsStoreState } from '.'
+import { AnyAction } from 'redux'
 
 export const colorsReducer = (
-  state: ColorsStoreState = {
+  state: ColorsStoreState | undefined = {
     list: [
       { r: 0, g: 0, b: 0 },
       { r: 127, g: 127, b: 127 },
@@ -29,7 +30,7 @@ export const colorsReducer = (
     primary: 0,
     secondary: 10
   },
-  action: Action
+  action: AnyAction
 ) => {
   const newState = { ...state }
   switch (action.type) {

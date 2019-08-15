@@ -8,7 +8,7 @@ import ImageDataSelection from './ImageDataSelection/ImageDataSelection'
 import './SelectionInstrument.css'
 
 import { changeSelection } from './actions'
-import { changeImage } from '../../App/actions'
+import { changeImage } from '../../../actions'
 
 // the selection is not working quite right:
 // there's no way a person can select the full width

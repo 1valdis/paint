@@ -1,28 +1,45 @@
-import { ActionTypes } from '../../actions'
+import { ActionTypes } from './types'
+import { ThunkAction } from 'redux-thunk'
+import { StoreState } from '../reducers'
+import { ChangeEvent } from 'react'
+import { ChangeInstrumentAction, Instruments } from './instruments'
 
-export const types = {
-  IMAGE_CHANGED: 'app/image-changed'
+export interface ChangeImageAction {
+  type: ActionTypes.changeImage
+  data: ImageData
+  name?: string
 }
 
 const canvas = document.createElement('canvas')
-const ctx = canvas.getContext('2d', { alpha: false })
-let href = null
 
-export function createFile() {
-  return function(dispatch, getState) {
+const ctx = canvas.getContext('2d', { alpha: false })
+if (!ctx) throw new Error("Coudn't acquire context")
+
+let href: string
+
+export const createFile = (): ThunkAction<
+  void,
+  StoreState,
+  undefined,
+  ChangeImageAction
+> => {
+  return function(dispatch) {
     ;[canvas.width, canvas.height] = [800, 450]
     clearCanvas()
     dispatch({
-      type: types.IMAGE_CHANGED,
+      type: ActionTypes.changeImage,
       data: ctx.getImageData(0, 0, canvas.width, canvas.height),
       name: 'Ваша пикча.png'
     })
   }
 }
 
-export function openFile(e) {
-  return function(dispatch, getState) {
-    const file = e.nativeEvent.target.files[0]
+export const openFile = (
+  e: ChangeEvent<HTMLInputElement>
+): ThunkAction<void, StoreState, undefined, ChangeImageAction> => {
+  return function(dispatch) {
+    const input = e.nativeEvent.currentTarget as HTMLInputElement
+    const file = input.files && input.files[0]
     if (file == null) return
     const reader = new FileReader()
     reader.onload = e => {
@@ -32,19 +49,21 @@ export function openFile(e) {
         canvas.height = img.height
         ctx.drawImage(img, 0, 0)
         dispatch({
-          type: types.IMAGE_CHANGED,
+          type: ActionTypes.changeImage,
           data: ctx.getImageData(0, 0, img.width, img.height),
           name: file.name
         })
       }
-      img.src = e.target.result
+      img.src = (e.currentTarget as FileReader).result as string
     }
     reader.readAsDataURL(file)
   }
 }
 
-export function paste(e) {
-  return function(dispatch, getState) {
+export function paste(
+  e: ClipboardEvent
+): ThunkAction<void, StoreState, undefined, ChangeInstrumentAction> {
+  return function(dispatch) {
     if (e.clipboardData) {
       const items = e.clipboardData.items
       if (!items) return
@@ -59,11 +78,12 @@ export function paste(e) {
             pastedImageCanvas.width = pastedImage.width
             pastedImageCanvas.height = pastedImage.height
             const pastedImageCtx = pastedImageCanvas.getContext('2d')
+            if (!pastedImageCtx) throw new Error("Coudn't acquire context")
             pastedImageCtx.drawImage(pastedImage, 0, 0)
 
             dispatch({
               type: ActionTypes.changeInstrument,
-              instrument: 'selection',
+              instrument: Instruments.selection,
               selection: {
                 imageData: pastedImageCtx.getImageData(
                   0,
@@ -89,26 +109,26 @@ export function paste(e) {
   }
 }
 
-function imageChangedActionCreator(imageData) {
+export const changeImage = (
+  imageData: ImageData
+): ThunkAction<void, StoreState, undefined, ChangeImageAction> => {
   return function(dispatch, getState) {
     canvas.width = imageData.width
     canvas.height = imageData.height
     ctx.putImageData(imageData, 0, 0)
     dispatch({
-      type: types.IMAGE_CHANGED,
+      type: ActionTypes.changeImage,
       data: imageData
     })
   }
 }
 
-export { imageChangedActionCreator as changeImage }
-
-function clearCanvas() {
+export const clearCanvas = () => {
   ctx.fillStyle = '#FFFFFF'
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
 
-export function download(name) {
+export const download = (name: string) => {
   canvas.toBlob(blob => {
     if (href !== null) {
       window.URL.revokeObjectURL(href)

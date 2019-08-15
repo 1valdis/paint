@@ -4,12 +4,14 @@ import {
   ChangeSelectedColorAction
 } from './colors'
 import { ChangeInstrumentAction } from './instruments'
+import { ChangeImageAction } from './app'
 
 export enum ActionTypes {
   addColor,
   selectColor,
   changeActiveColor,
-  changeInstrument
+  changeInstrument,
+  changeImage
 }
 
 export type Action =
@@ -17,3 +19,4 @@ export type Action =
   | SelectColorAction
   | ChangeSelectedColorAction
   | ChangeInstrumentAction
+  | ChangeImageAction

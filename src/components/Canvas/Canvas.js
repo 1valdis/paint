@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { connect } from 'react-redux'
 
-import { changeImage } from '../App/actions'
+import { changeImage } from '../../actions'
 import { disableSelection } from '../instruments/SelectionInstrument/actions'
 
 import Resizer from '../Resizer/Resizer'

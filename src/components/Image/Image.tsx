@@ -5,8 +5,13 @@ import { connect } from 'react-redux'
 
 import classNames from 'classnames'
 
-import { selectInstrument, Action, Instruments } from '../../actions'
-import { changeImage } from '../App/actions'
+import {
+  selectInstrument,
+  Action,
+  Instruments,
+  changeImage
+} from '../../actions'
+
 import { ThunkDispatch } from 'redux-thunk'
 import { StoreState } from '../../reducers'
 

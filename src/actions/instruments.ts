@@ -13,6 +13,7 @@ export enum Instruments {
 export interface ChangeInstrumentAction {
   type: ActionTypes.changeInstrument
   instrument: Instruments
+  selection?: any // todo fix
 }
 
 export const selectInstrument = (

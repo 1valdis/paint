@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent, ChangeEvent } from 'react'
 
 import './App.css'
 
@@ -13,9 +13,18 @@ import { Image } from '../Image/Image'
 import Instruments from '../instruments/Instruments'
 import { ColorsContainer } from '../Colors/ColorsContainer'
 
-import { openFile, createFile, paste, download } from './actions'
+import { openFile, createFile, paste, download, Action } from '../../actions'
+import { StoreState } from '../../reducers'
+import { ThunkDispatch } from 'redux-thunk'
 
-class App extends PureComponent {
+export interface AppProps {
+  downloadName: string
+  onFileCreate: () => void
+  onFileOpen: (e: ChangeEvent<HTMLInputElement>) => void
+  onPaste: (e: ClipboardEvent) => void
+}
+
+class _App extends PureComponent<AppProps> {
   render() {
     return (
       <React.Fragment>
@@ -26,10 +35,7 @@ class App extends PureComponent {
         />
         <NavBar>
           <NavBarItem footer="Clipboard">
-            <Clipboard
-              onPasteClick={this.props.onClipboardPasteClick}
-              disabled={this.props.clipboardDisabled}
-            />
+            <Clipboard />
           </NavBarItem>
           <NavBarItem footer="Image">
             <Image />
@@ -41,7 +47,7 @@ class App extends PureComponent {
             <ColorsContainer />
           </NavBarItem>
         </NavBar>
-        <Canvas onCanvasRef={this.handleCanvasRef} />
+        <Canvas />
       </React.Fragment>
     )
   }
@@ -55,17 +61,18 @@ class App extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: StoreState) => ({
   downloadName: state.image.name
 })
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StoreState, undefined, Action>
+) => ({
   onFileCreate: () => dispatch(createFile()),
-  onFileOpen: e => dispatch(openFile(e)),
-  onPaste: e => dispatch(paste(e))
+  onFileOpen: (e: ChangeEvent<HTMLInputElement>) => dispatch(openFile(e)),
+  onPaste: (e: ClipboardEvent) => dispatch(paste(e))
 })
 
-export { default as rootReducer } from './reducer'
-export default connect(
+export const App = connect(
   mapStateToProps,
   mapDispatchToProps
-)(App)
+)(_App)

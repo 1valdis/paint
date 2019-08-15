@@ -4,7 +4,8 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 
-import App, { rootReducer } from './components/App/App'
+import { App } from './components/App/App'
+import reducer from './reducers'
 
 declare global {
   interface Window {
@@ -13,7 +14,7 @@ declare global {
 }
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)))
+const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)))
 
 render(
   <StrictMode>

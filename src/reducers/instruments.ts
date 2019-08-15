@@ -1,8 +1,9 @@
-import { ActionTypes, Action } from '../actions'
+import { ActionTypes } from '../actions'
+import { AnyAction } from 'redux'
 
 export const instrumentsReducer = (
-  state = { instrument: 'pen' },
-  action: Action
+  state: any | undefined = { instrument: 'pen' },
+  action: AnyAction
 ) => {
   switch (action.type) {
     case ActionTypes.changeInstrument:

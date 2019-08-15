@@ -9,8 +9,7 @@ import { connect } from 'react-redux'
 
 import './Eraser.css'
 import { bresenhamLine, getCanvasCoordsFromEvent } from '../../helpers'
-import { changeImage } from '../../App/actions'
-import { Color, Action } from '../../../actions'
+import { Color, Action, changeImage } from '../../../actions'
 import { StoreState } from '../../../reducers'
 import { ThunkDispatch } from 'redux-thunk'
 

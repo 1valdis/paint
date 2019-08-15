@@ -9,8 +9,8 @@ import { connect } from 'react-redux'
 
 import './Pen.css'
 import { bresenhamLine, getCanvasCoordsFromEvent } from '../../helpers'
-import { changeImage } from '../../App/actions'
-import { Color, Action } from '../../../actions'
+import { changeImage, Color, Action } from '../../../actions'
+
 import { ThunkDispatch } from 'redux-thunk'
 import { StoreState } from '../../../reducers'
 
