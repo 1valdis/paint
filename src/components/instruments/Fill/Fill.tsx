@@ -1,20 +1,36 @@
-import React, { PureComponent, createRef } from 'react'
+import React, { PureComponent, createRef, RefObject, MouseEvent } from 'react'
 
 import { connect } from 'react-redux'
 
 import './Fill.css'
 import { getCanvasCoordsFromEvent } from '../../helpers'
 import { changeImage } from '../../App/actions'
+import { Color, Action } from '../../../actions'
+import { ThunkDispatch } from 'redux-thunk'
+import { StoreState } from '../../../reducers'
 
-class Fill extends PureComponent {
-  constructor (...args) {
-    super(...args)
-    this.canvasRef = createRef()
+export interface FillProps {
+  color: Color
+  imageData: ImageData
+  changeImage: (imageData: ImageData) => void
+}
+
+type Point = [number, number]
+
+class _Fill extends PureComponent<FillProps> {
+  canvasRef: RefObject<HTMLCanvasElement>
+
+  ctx?: CanvasRenderingContext2D
+
+  constructor(props: FillProps) {
+    super(props)
+    this.canvasRef = createRef<HTMLCanvasElement>()
   }
-  render () {
+
+  render() {
     return (
       <canvas
-        className='fill-canvas'
+        className="fill-canvas"
         ref={this.canvasRef}
         width={this.props.imageData ? this.props.imageData.width : 0}
         height={this.props.imageData ? this.props.imageData.height : 0}
@@ -22,8 +38,11 @@ class Fill extends PureComponent {
       />
     )
   }
-  handleMouseDown = e => {
+
+  handleMouseDown = (e: MouseEvent) => {
+    if (!this.canvasRef.current) throw new Error("Canvas didn't mount")
     const [x, y] = getCanvasCoordsFromEvent(this.canvasRef.current, e)
+    if (!this.ctx) throw new Error("Coudn't acquire context")
     const data = this.ctx.getImageData(
       0,
       0,
@@ -41,29 +60,38 @@ class Fill extends PureComponent {
       },
       this.props.color
     )
-    this.props.dispatch(changeImage(data))
+    this.props.changeImage(data)
   }
-  // optimized the shit out of it (as I can judge) 
-  floodFill = (data, x, y, colorToReplace, colorToFillWith) => {
-    const replaceR = colorToReplace.r,
-      replaceG = colorToReplace.g,
-      replaceB = colorToReplace.b
-    const fillR = colorToFillWith.r,
-      fillG = colorToFillWith.g,
-      fillB = colorToFillWith.b
+
+  // optimized the shit out of it (as I can judge)
+  floodFill = (
+    data: ImageData,
+    x: number,
+    y: number,
+    colorToReplace: Color,
+    colorToFillWith: Color
+  ) => {
+    const replaceR = colorToReplace.r
+    const replaceG = colorToReplace.g
+    const replaceB = colorToReplace.b
+    const fillR = colorToFillWith.r
+    const fillG = colorToFillWith.g
+    const fillB = colorToFillWith.b
 
     const i = (y * data.width + x) * 4
 
     if (
-      !(replaceR === data.data[i] &&
+      !(
+        replaceR === data.data[i] &&
         replaceG === data.data[i + 1] &&
-        replaceB === data.data[i + 2]) ||
+        replaceB === data.data[i + 2]
+      ) ||
       (replaceR === fillR && replaceG === fillG && replaceB === fillB)
     ) {
       return
     }
 
-    const q = []
+    const q: Point[] = []
 
     data.data[i] = fillR
     data.data[i + 1] = fillG
@@ -72,7 +100,7 @@ class Fill extends PureComponent {
     q.push([x, y])
 
     while (q.length !== 0) {
-      const n = q.shift()
+      const n = q.shift()!
       const i = (n[1] * data.width + n[0]) * 4
       if (
         n[0] > 0 &&
@@ -120,20 +148,34 @@ class Fill extends PureComponent {
       }
     }
   }
-  componentDidMount () {
-    this.ctx = this.canvasRef.current.getContext('2d')
+
+  componentDidMount() {
+    if (!this.canvasRef.current) throw new Error("Canvas didn't mount")
+    this.ctx = this.canvasRef.current.getContext('2d') || undefined
+    if (!this.ctx) throw new Error("Coudn't acquire context")
     if (this.props.imageData != null) {
       this.ctx.putImageData(this.props.imageData, 0, 0)
     }
   }
-  componentDidUpdate () {
+
+  componentDidUpdate() {
+    if (!this.ctx) throw new Error("Coudn't acquire context")
     this.ctx.putImageData(this.props.imageData, 0, 0)
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: StoreState) => ({
   color: state.colors.list[state.colors.primary],
   imageData: state.image.data
 })
 
-export default connect(mapStateToProps)(Fill)
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StoreState, undefined, Action>
+) => ({
+  changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
+})
+
+export const Fill = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(_Fill)

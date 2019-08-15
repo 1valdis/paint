@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import SelectionInstrument from '../instruments/SelectionInstrument/SelectionInstrument'
 import Pen from '../instruments/Pen/Pen'
-import Fill from '../instruments/Fill/Fill'
+import { Fill } from '../instruments/Fill/Fill'
 import { Dropper } from '../instruments/Dropper/Dropper'
 import { Eraser } from '../instruments/Eraser/Eraser'
 
