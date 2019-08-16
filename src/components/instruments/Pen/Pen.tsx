@@ -20,7 +20,7 @@ export interface PenProps {
   changeImage: (imageData: ImageData) => void
 }
 
-class Pen extends PureComponent<PenProps> {
+class _Pen extends PureComponent<PenProps> {
   canvasRef: RefObject<HTMLCanvasElement> = createRef<HTMLCanvasElement>()
 
   ctx?: CanvasRenderingContext2D
@@ -189,7 +189,7 @@ const mapDispatchToProps = (
   changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
 })
 
-export default connect(
+export const Pen = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Pen)
+)(_Pen)

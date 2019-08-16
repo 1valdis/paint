@@ -12,8 +12,8 @@ export const changeSelection = ({
   coords,
   imageData
 }: {
-  coords: SelectionCoords
-  imageData: ImageData
+  coords?: SelectionCoords | null
+  imageData?: ImageData | null
 }): ChangeInstrumentAction => {
   return {
     type: ActionTypes.changeInstrument,

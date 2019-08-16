@@ -1,4 +1,9 @@
-import React, { PureComponent, createRef } from 'react'
+import React, {
+  PureComponent,
+  createRef,
+  RefObject,
+  PointerEvent as ReactPointerEvent
+} from 'react'
 
 import { connect } from 'react-redux'
 
@@ -7,7 +12,15 @@ import ImageDataSelection from './ImageDataSelection/ImageDataSelection'
 
 import './SelectionInstrument.css'
 
-import { changeImage, changeSelection } from '../../../actions'
+import {
+  changeImage,
+  changeSelection,
+  SelectionCoords,
+  Color,
+  Action
+} from '../../../actions'
+import { StoreState } from '../../../reducers'
+import { ThunkDispatch } from 'redux-thunk'
 
 // the selection is not working quite right:
 // there's no way a person can select the full width
@@ -15,18 +28,46 @@ import { changeImage, changeSelection } from '../../../actions'
 // interesting that full height is selectable though.
 // at least it works somehow, will polish it later maybe.
 
-class SelectionInstrument extends PureComponent {
-  constructor(...args) {
-    super(...args)
+export interface SelectionInstrumentProps {
+  imageData: ImageData
+  selectionCoords?: SelectionCoords
+  selectionImageData?: ImageData
+  secondaryColor: Color
+  changeSelection: (data: {
+    coords?: SelectionCoords | null
+    imageData?: ImageData | null
+  }) => void
+  changeImage: (imageData: ImageData) => void
+}
+
+export interface SelectionInstrumentState {
+  selecting: boolean
+  selectingX: number | null
+  selectingY: number | null
+  selectingCoords: SelectionCoords | null
+  selectionOriginCoords: SelectionCoords | null
+}
+
+class _SelectionInstrument extends PureComponent<
+  SelectionInstrumentProps,
+  SelectionInstrumentState
+> {
+  containerRef: RefObject<HTMLDivElement> = createRef()
+
+  backgroundColor: Color | null = null
+
+  preventContextMenu: boolean = false
+
+  constructor(props: SelectionInstrumentProps) {
+    super(props)
 
     this.state = {
       selecting: false,
       selectingX: null,
       selectingY: null,
-      selectingCoords: null
+      selectingCoords: null,
+      selectionOriginCoords: null
     }
-
-    this.containerRef = createRef()
 
     // todo - imageData selection handling
   }
@@ -48,25 +89,29 @@ class SelectionInstrument extends PureComponent {
     } else if (this.props.selectionImageData) {
       El = (
         <ImageDataSelection
-          onClickOutside={e => this.handlePointerDown(e, true)}
+          onClickOutside={(e: MouseEvent) => this.handlePointerDown(e, true)}
           imageData={this.props.imageData}
           coords={this.props.selectionCoords}
           selectionImageData={this.props.selectionImageData}
           onSelectionChanged={this.props.changeSelection}
-          onImageChanged={imageData => this.props.changeImage(imageData)}
+          onImageChanged={(imageData: ImageData) =>
+            this.props.changeImage(imageData)
+          }
           secondaryColor={this.props.secondaryColor}
         />
       )
     } else if (this.props.selectionCoords) {
       El = (
         <ZoneSelection
-          onClickOutside={e => this.handlePointerDown(e, true)}
+          onClickOutside={(e: MouseEvent) => this.handlePointerDown(e, true)}
           imageData={this.props.imageData}
           coords={this.props.selectionCoords}
-          onCoordsChanged={zone =>
-            this.props.changeSelection({ coords: zone, imageData: null })
+          onCoordsChanged={(zone: SelectionCoords) =>
+            this.props.changeSelection({ coords: zone })
           }
-          onImageChanged={imageData => this.props.changeImage(imageData)}
+          onImageChanged={(imageData: ImageData) =>
+            this.props.changeImage(imageData)
+          }
           secondaryColor={this.props.secondaryColor}
         />
       )
@@ -81,11 +126,15 @@ class SelectionInstrument extends PureComponent {
     )
   }
 
-  handlePointerDown = (e, trusted) => {
-    if (e.target !== e.currentTarget && !trusted) return
+  handlePointerDown = (
+    e: ReactPointerEvent<HTMLDivElement> | MouseEvent,
+    trusted?: boolean
+  ) => {
+    if (e.target !== e.currentTarget) return
 
-    this.backgroundColor = null
-    this.props.changeSelection({ coords: null, imageData: null })
+    this.props.changeSelection({})
+
+    if (!this.containerRef.current) throw new Error("Couldn't get ref to div")
 
     let {
       top,
@@ -112,13 +161,15 @@ class SelectionInstrument extends PureComponent {
     })
   }
 
-  handleDocumentPointerMove = e => {
+  handleDocumentPointerMove = (e: PointerEvent) => {
     if (!this.state.selecting) return
 
     switch (e.buttons) {
       case 1:
         this.setState(state => {
           // getting bounding rect and mouse coords relatively to document, not viewport
+          if (!this.containerRef.current)
+            throw new Error("Couldn't get ref to div")
           let {
             top,
             left,
@@ -138,11 +189,11 @@ class SelectionInstrument extends PureComponent {
 
           // getting top and left coordinates of current mouse position relatively to canvas
           let [canvasRelativeTop, canvasRelativeLeft] = [
-            Math.trunc(mouseY - top),
-            Math.trunc(mouseX - left)
-          ]
-          // clamping top and left coordinates between 0 and canvas width
-          //
+              Math.trunc(mouseY - top),
+              Math.trunc(mouseX - left)
+            ]
+            // clamping top and left coordinates between 0 and canvas width
+            //
           ;[canvasRelativeTop, canvasRelativeLeft] = [
             Math.max(
               0,
@@ -156,6 +207,11 @@ class SelectionInstrument extends PureComponent {
 
           // console.log(canvasRelativeTop, canvasRelativeLeft)
 
+          if (
+            typeof state.selectingX !== 'number' ||
+            typeof state.selectingY !== 'number'
+          )
+            throw new Error('No coordinates in the state')
           const selectingCoords = {
             top: Math.min(state.selectingY, canvasRelativeTop),
             left: Math.min(state.selectingX, canvasRelativeLeft),
@@ -189,20 +245,45 @@ class SelectionInstrument extends PureComponent {
     }
   }
 
-  handleDocumentPointerUp = e => {
+  handleDocumentPointerUp = (e: PointerEvent) => {
     this.setState(state => {
-      let selectionOriginCoords = null
+      let selectionOriginCoords: SelectionCoords | null = null
       // also checking if user just clicked without moving (so there's no selectionCoords)
-      if (state.selecting && this.state.selectingCoords) {
+      // if (state.selecting && state.selectingCoords) {
+      //   if (
+      //     state.selectingCoords.width > 0 &&
+      //     state.selectingCoords.height > 0
+      //   ) {
+      //     this.props.changeSelection({
+      //       coords: state.selectingCoords,
+      //       imageData: null
+      //     })
+      //     selectionOriginCoords = state.selectingCoords
+      //   }
+      //   return {
+      //     selecting: false,
+      //     selectingX: null,
+      //     selectingY: null,
+      //     selectingCoords: null,
+      //     selectionOriginCoords
+      //   }
+      // } else {
+      //   return {
+      //     selecting: false,
+      //     selectingX: null,
+      //     selectingY: null
+      //   }
+      // }
+      if (state.selecting && state.selectingCoords) {
         if (
-          this.state.selectingCoords.width > 0 &&
-          this.state.selectingCoords.height > 0
+          state.selectingCoords.width > 0 &&
+          state.selectingCoords.height > 0
         ) {
           this.props.changeSelection({
-            coords: this.state.selectingCoords,
+            coords: state.selectingCoords,
             imageData: null
           })
-          selectionOriginCoords = this.state.selectingCoords
+          selectionOriginCoords = state.selectingCoords
         }
         return {
           selecting: false,
@@ -211,13 +292,14 @@ class SelectionInstrument extends PureComponent {
           selectingCoords: null,
           selectionOriginCoords
         }
-      } else {
+      } else
         return {
           selecting: false,
           selectingX: null,
-          selectingY: null
+          selectingY: null,
+          selectingCoords: state.selectingCoords,
+          selectionOriginCoords: state.selectionOriginCoords
         }
-      }
     })
   }
 
@@ -232,18 +314,12 @@ class SelectionInstrument extends PureComponent {
   }
 
   componentWillUnmount() {
-    document.removeEventListener(
-      'pointermove',
-      this.handleDocumentPointerMove,
-      { passive: true }
-    )
-    document.removeEventListener('pointerup', this.handleDocumentPointerUp, {
-      passive: true
-    })
+    document.removeEventListener('pointermove', this.handleDocumentPointerMove)
+    document.removeEventListener('pointerup', this.handleDocumentPointerUp)
     document.removeEventListener('contextmenu', this.handleContextMenu)
   }
 
-  handleContextMenu = e => {
+  handleContextMenu = (e: Event) => {
     if (this.preventContextMenu) {
       e.preventDefault()
       this.preventContextMenu = false
@@ -251,23 +327,30 @@ class SelectionInstrument extends PureComponent {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: StoreState) => ({
   imageData: state.image.data,
   selectionCoords: state.instruments.selection
     ? state.instruments.selection.coords
-    : null,
+    : undefined,
   selectionImageData: state.instruments.selection
     ? state.instruments.selection.imageData
-    : null,
+    : undefined,
   secondaryColor: state.colors.list[state.colors.secondary]
 })
-const mapDispatchToProps = dispatch => ({
-  changeSelection: (zone, imageData) =>
-    dispatch(changeSelection(zone, imageData)),
-  changeImage: imageData => dispatch(changeImage(imageData))
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StoreState, undefined, Action>
+) => ({
+  changeSelection: ({
+    coords,
+    imageData
+  }: {
+    coords?: SelectionCoords | null
+    imageData?: ImageData | null
+  }) => dispatch(changeSelection({ coords, imageData })),
+  changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
 })
 
-export default connect(
+export const SelectionInstrument = connect(
   mapStateToProps,
   mapDispatchToProps
-)(SelectionInstrument)
+)(_SelectionInstrument)
