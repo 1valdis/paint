@@ -1,11 +1,44 @@
-import React, { PureComponent, Fragment, createRef } from 'react'
-import PropTypes from 'prop-types'
+import React, {
+  PureComponent,
+  Fragment,
+  createRef,
+  RefObject,
+  PointerEvent as ReactPointerEvent
+} from 'react'
 
 import MovableSelection from '../../../MovableSelection/MovableSelection'
+import { SelectionCoords, Color } from '../../../../actions'
 
-class ImageDataSelection extends PureComponent {
-  constructor (...args) {
-    super(...args)
+export interface ImageDataSelectionProps {
+  imageData: ImageData
+  coords: SelectionCoords
+  selectionImageData: ImageData
+  secondaryColor: Color
+  changeSelection: (data: {
+    coords?: SelectionCoords | null
+    imageData?: ImageData | null
+  }) => void
+  changeImage: (imageData: ImageData) => void
+  onClickOutside: (e: ReactPointerEvent<HTMLCanvasElement>) => void
+}
+
+export class ImageDataSelection extends PureComponent<ImageDataSelectionProps> {
+  canvasRef: RefObject<HTMLCanvasElement> = createRef()
+
+  oldCtx?: CanvasRenderingContext2D
+
+  newCtx?: CanvasRenderingContext2D
+
+  selectionCtx?: CanvasRenderingContext2D
+
+  backgroundColor?: Color
+
+  resized?: boolean
+
+  updateOld?: boolean
+
+  constructor(props: ImageDataSelectionProps) {
+    super(props)
 
     this.canvasRef = createRef()
 
@@ -15,7 +48,7 @@ class ImageDataSelection extends PureComponent {
     ) {
       this.resized = true
       this.resizeCanvasToFitPasted()
-      this.props.onSelectionChanged({
+      this.props.changeSelection({
         coords: this.props.coords,
         imageData: this.props.selectionImageData
       })
@@ -23,13 +56,14 @@ class ImageDataSelection extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     return (
       <Fragment>
         <canvas
           ref={this.canvasRef}
           onPointerDown={e =>
-            e.target === e.currentTarget && this.props.onClickOutside(e)}
+            e.target === e.currentTarget && this.props.onClickOutside(e)
+          }
         />
         <MovableSelection
           {...this.props.coords}
@@ -43,11 +77,12 @@ class ImageDataSelection extends PureComponent {
     )
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.updateOldCanvas()
     this.updateSelectionCanvas()
     this.updateNewCanvas()
-    this.props.onImageChanged(
+    if (!this.newCtx) throw new Error("Coudn't acquire context")
+    this.props.changeImage(
       this.newCtx.getImageData(
         0,
         0,
@@ -57,7 +92,7 @@ class ImageDataSelection extends PureComponent {
     )
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps: ImageDataSelectionProps) {
     if (this.updateOld) {
       this.updateOldCanvas()
     }
@@ -65,9 +100,10 @@ class ImageDataSelection extends PureComponent {
       this.updateSelectionCanvas()
     }
     this.updateNewCanvas()
+    if (!this.newCtx) throw new Error("Coudn't acquire context")
     if (this.resized) {
       this.resized = false
-      this.props.onImageChanged(
+      this.props.changeImage(
         this.newCtx.getImageData(
           0,
           0,
@@ -80,7 +116,7 @@ class ImageDataSelection extends PureComponent {
     }
     this.updateOld = true
     if (this.props.selectionImageData !== prevProps.selectionImageData) {
-      this.props.onImageChanged(
+      this.props.changeImage(
         this.newCtx.getImageData(
           0,
           0,
@@ -94,8 +130,9 @@ class ImageDataSelection extends PureComponent {
   updateOldCanvas = () => {
     if (!this.oldCtx) {
       const oldCanvas = document.createElement('canvas')
-      this.oldCtx = oldCanvas.getContext('2d')
+      this.oldCtx = oldCanvas.getContext('2d') || undefined
     }
+    if (!this.oldCtx) throw new Error("Coudn't acquire context")
     this.oldCtx.canvas.width = this.props.imageData.width
     this.oldCtx.canvas.height = this.props.imageData.height
     this.oldCtx.putImageData(this.props.imageData, 0, 0)
@@ -104,18 +141,23 @@ class ImageDataSelection extends PureComponent {
   updateSelectionCanvas = () => {
     if (!this.selectionCtx) {
       const selectionCanvas = document.createElement('canvas')
-      this.selectionCtx = selectionCanvas.getContext('2d')
+      this.selectionCtx = selectionCanvas.getContext('2d') || undefined
     }
+    if (!this.selectionCtx) throw new Error("Coudn't acquire context")
     this.selectionCtx.canvas.width = this.props.selectionImageData.width
     this.selectionCtx.canvas.height = this.props.selectionImageData.height
     this.selectionCtx.putImageData(this.props.selectionImageData, 0, 0)
   }
 
   updateNewCanvas = () => {
+    if (!this.selectionCtx || !this.oldCtx)
+      throw new Error("Coudn't acquire context")
     if (!this.newCtx) {
+      if (!this.canvasRef.current) throw new Error("Canvas didn't mount")
       this.canvasRef.current.width = this.oldCtx.canvas.width
       this.canvasRef.current.height = this.oldCtx.canvas.height
-      this.newCtx = this.canvasRef.current.getContext('2d')
+      this.newCtx = this.canvasRef.current.getContext('2d') || undefined
+      if (!this.newCtx) throw new Error("Coudn't acquire context")
       this.newCtx.imageSmoothingEnabled = false
     }
 
@@ -143,19 +185,21 @@ class ImageDataSelection extends PureComponent {
     )
   }
 
-  handleResizing = ({ top, left, width, height }) => {}
-  handleResizeEnd = ({ top, left, width, height }) => {
+  handleResizing = ({ top, left, width, height }: SelectionCoords) => {}
+
+  handleResizeEnd = ({ top, left, width, height }: SelectionCoords) => {
+    if (!this.newCtx) throw new Error("Coudn't acquire context")
     if (!this.backgroundColor) {
       this.backgroundColor = this.props.secondaryColor
       this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
     }
     this.updateOld = false
-    this.props.onSelectionChanged({
+    this.props.changeSelection({
       coords: { top, left, width, height },
       imageData: this.props.selectionImageData
     })
     this.updateOld = false
-    this.props.onImageChanged(
+    this.props.changeImage(
       this.newCtx.getImageData(
         0,
         0,
@@ -164,20 +208,24 @@ class ImageDataSelection extends PureComponent {
       )
     )
   }
-  handleMoving = ({ top, left, width, height }) => {
+
+  handleMoving = ({ top, left, width, height }: SelectionCoords) => {
     if (!this.backgroundColor) {
       this.backgroundColor = this.props.secondaryColor
+      if (!this.newCtx) throw new Error("Coudn't acquire context")
       this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
     }
     this.updateOld = false
-    this.props.onSelectionChanged({
+    this.props.changeSelection({
       coords: { top, left, width, height },
       imageData: this.props.selectionImageData
     })
   }
-  handleMoveEnd = ({ top, left, width, height }) => {
+
+  handleMoveEnd = ({ top, left, width, height }: SelectionCoords) => {
+    if (!this.newCtx) throw new Error("Coudn't acquire context")
     this.updateOld = false
-    this.props.onImageChanged(
+    this.props.changeImage(
       this.newCtx.getImageData(
         0,
         0,
@@ -199,33 +247,13 @@ class ImageDataSelection extends PureComponent {
     )
     const ctx = canvas.getContext('2d')
 
+    if (!ctx) throw new Error("Coudn't acquire context")
     ctx.fillStyle = `rgb(${this.props.secondaryColor.r}, ${this.props.secondaryColor.g}, ${this.props.secondaryColor.b})`
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     ctx.putImageData(this.props.imageData, 0, 0)
 
-    this.props.onImageChanged(
+    this.props.changeImage(
       ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height)
     )
   }
 }
-
-ImageDataSelection.propTypes = {
-  coords: PropTypes.shape({
-    top: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired
-  }).isRequired,
-  selectionImageData: PropTypes.instanceOf(ImageData).isRequired,
-  backgroundColor: PropTypes.shape({
-    r: PropTypes.number.isRequired,
-    g: PropTypes.number.isRequired,
-    b: PropTypes.number.isRequired
-  }),
-  imageData: PropTypes.instanceOf(ImageData).isRequired,
-  onSelectionChanged: PropTypes.func.isRequired,
-  onImageChanged: PropTypes.func.isRequired,
-  onClickOutside: PropTypes.func.isRequired
-}
-
-export default ImageDataSelection

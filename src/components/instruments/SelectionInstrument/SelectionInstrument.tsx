@@ -7,8 +7,8 @@ import React, {
 
 import { connect } from 'react-redux'
 
-import ZoneSelection from './ZoneSelection/ZoneSelection'
-import ImageDataSelection from './ImageDataSelection/ImageDataSelection'
+import { ZoneSelection } from './ZoneSelection/ZoneSelection'
+import { ImageDataSelection } from './ImageDataSelection/ImageDataSelection'
 
 import './SelectionInstrument.css'
 
@@ -87,14 +87,18 @@ class _SelectionInstrument extends PureComponent<
         />
       )
     } else if (this.props.selectionImageData) {
+      if (!this.props.selectionCoords)
+        throw new Error('No selection coords were passed')
       El = (
         <ImageDataSelection
-          onClickOutside={(e: MouseEvent) => this.handlePointerDown(e, true)}
+          onClickOutside={(e: ReactPointerEvent<HTMLCanvasElement>) =>
+            this.handlePointerDown(e, true)
+          }
           imageData={this.props.imageData}
           coords={this.props.selectionCoords}
           selectionImageData={this.props.selectionImageData}
-          onSelectionChanged={this.props.changeSelection}
-          onImageChanged={(imageData: ImageData) =>
+          changeSelection={this.props.changeSelection}
+          changeImage={(imageData: ImageData) =>
             this.props.changeImage(imageData)
           }
           secondaryColor={this.props.secondaryColor}
@@ -103,7 +107,7 @@ class _SelectionInstrument extends PureComponent<
     } else if (this.props.selectionCoords) {
       El = (
         <ZoneSelection
-          onClickOutside={(e: MouseEvent) => this.handlePointerDown(e, true)}
+          onClickOutside={e => this.handlePointerDown(e, true)}
           imageData={this.props.imageData}
           coords={this.props.selectionCoords}
           onCoordsChanged={(zone: SelectionCoords) =>
@@ -127,7 +131,10 @@ class _SelectionInstrument extends PureComponent<
   }
 
   handlePointerDown = (
-    e: ReactPointerEvent<HTMLDivElement> | MouseEvent,
+    e:
+      | ReactPointerEvent<HTMLDivElement>
+      | ReactPointerEvent<HTMLCanvasElement>
+      | MouseEvent,
     trusted?: boolean
   ) => {
     if (e.target !== e.currentTarget) return
