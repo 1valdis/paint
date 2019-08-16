@@ -12,7 +12,7 @@ export enum Instruments {
 
 export interface ChangeInstrumentAction {
   type: ActionTypes.changeInstrument
-  instrument: Instruments
+  instrument?: Instruments
   selection?: any // todo fix
 }
 

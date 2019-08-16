@@ -1,21 +1,25 @@
-import React, { PureComponent, createRef } from 'react'
-import PropTypes from 'prop-types'
+import React, { PureComponent, createRef, RefObject } from 'react'
 
 import { connect } from 'react-redux'
 
-import { changeImage } from '../../actions'
-import { disableSelection } from '../instruments/SelectionInstrument/actions'
+import { changeImage, Color, Action, disableSelection } from '../../actions'
 
 import Resizer from '../Resizer/Resizer'
 import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
 
 import './Canvas.css'
+import { StoreState } from '../../reducers'
+import { ThunkDispatch } from 'redux-thunk'
 
-class Canvas extends PureComponent {
-  constructor(...args) {
-    super(...args)
-    this.canvas = createRef()
-  }
+export interface CanvasProps {
+  data: ImageData
+  secondaryColor: Color
+  changeImage: (imageData: ImageData) => void
+  disableSelection: () => void
+}
+
+class Canvas extends PureComponent<CanvasProps> {
+  canvas: RefObject<HTMLCanvasElement> = createRef()
 
   render() {
     return (
@@ -55,11 +59,12 @@ class Canvas extends PureComponent {
         this.props.data.height
       ]
       const ctx = canvas.getContext('2d')
+      if (!ctx) throw new Error("Coudn't acquire context")
       ctx.putImageData(this.props.data, 0, 0)
     }
   }
 
-  onResize = (top, left, toWidth, toHeight) => {
+  onResize = (top: number, left: number, toWidth: number, toHeight: number) => {
     if (
       this.props.data.width !== toWidth ||
       this.props.data.height !== toHeight
@@ -68,6 +73,7 @@ class Canvas extends PureComponent {
       newCanvas.width = toWidth
       newCanvas.height = toHeight
       const newCtx = newCanvas.getContext('2d')
+      if (!newCtx) throw new Error("Coudn't acquire context")
       newCtx.fillStyle = `rgb(${this.props.secondaryColor.r},${this.props.secondaryColor.g},${this.props.secondaryColor.b})`
       newCtx.fillRect(0, 0, toWidth, toHeight)
       newCtx.putImageData(this.props.data, 0, 0)
@@ -84,17 +90,15 @@ class Canvas extends PureComponent {
   }
 }
 
-Canvas.propTypes = {
-  data: PropTypes.object
-}
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state: StoreState) => ({
   data: state.image.data,
   secondaryColor: state.colors.list[state.colors.secondary]
 })
 
-const mapDispatchToProps = dispatch => ({
-  changeImage: data => dispatch(changeImage(data)),
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<StoreState, undefined, Action>
+) => ({
+  changeImage: (data: ImageData) => dispatch(changeImage(data)),
   disableSelection: () => dispatch(disableSelection())
 })
 
