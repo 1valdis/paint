@@ -1,4 +1,4 @@
-import React, { PureComponent, createRef } from 'react'
+import React, { PureComponent, createRef, RefObject } from 'react'
 import PropTypes from 'prop-types'
 
 import './Resizer.css'
@@ -7,14 +7,62 @@ import classNames from 'classnames'
 
 import ResizerPoint from '../ResizerPoint/ResizerPoint'
 
-const directions = {
-  canvas: ['e', 'se', 's'],
-  selection: ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
+export enum ResizerDirections {
+  n = 'n',
+  ne = 'ne',
+  e = 'e',
+  se = 'se',
+  s = 's',
+  sw = 'sw',
+  w = 'w',
+  nw = 'nw'
 }
 
-class Resizer extends PureComponent {
-  constructor (...args) {
-    super(...args)
+export enum ResizerMode {
+  canvas,
+  selection
+}
+
+const directions = {
+  [ResizerMode.canvas]: [
+    ResizerDirections.e,
+    ResizerDirections.se,
+    ResizerDirections.s
+  ],
+  [ResizerMode.selection]: [
+    ResizerDirections.n,
+    ResizerDirections.ne,
+    ResizerDirections.e,
+    ResizerDirections.se,
+    ResizerDirections.s,
+    ResizerDirections.sw,
+    ResizerDirections.w,
+    ResizerDirections.nw
+  ]
+}
+
+export interface ResizerProps {
+  top: number
+  left: number
+  width: number
+  height: number
+  hideBorderOnResizing: boolean
+  mode: ResizerMode
+}
+
+export interface ResizerState {
+  resizing: boolean
+  resizeTop: number
+  resizeLeft: number
+  resizeWidth: number
+  resizeHeight: number
+}
+
+class Resizer extends PureComponent<ResizerProps, ResizerState> {
+  resizeRect: RefObject<HTMLDivElement> = createRef()
+
+  constructor(props: ResizerProps) {
+    super(props)
     this.state = {
       resizing: false,
       resizeTop: this.props.top,
@@ -22,9 +70,9 @@ class Resizer extends PureComponent {
       resizeWidth: this.props.width,
       resizeHeight: this.props.height
     }
-    this.resizeRect = createRef()
   }
-  render () {
+
+  render() {
     return (
       <div
         className={classNames('resizer', {
@@ -33,18 +81,25 @@ class Resizer extends PureComponent {
         })}
         ref={this.resizeRect}
         style={{
-          width: `${this.state.resizing ? this.state.resizeWidth : this.props.width}px`,
-          height: `${this.state.resizing ? this.state.resizeHeight : this.props.height}px`,
-          top: `${this.state.resizing ? this.state.resizeTop : this.props.top}px`,
-          left: `${this.state.resizing ? this.state.resizeLeft : this.props.left}px`
-        }}
-      >
+          width: `${
+            this.state.resizing ? this.state.resizeWidth : this.props.width
+          }px`,
+          height: `${
+            this.state.resizing ? this.state.resizeHeight : this.props.height
+          }px`,
+          top: `${
+            this.state.resizing ? this.state.resizeTop : this.props.top
+          }px`,
+          left: `${
+            this.state.resizing ? this.state.resizeLeft : this.props.left
+          }px`
+        }}>
         {directions[this.props.mode].map(d => (
           <ResizerPoint
-            onResizeStart={this.onResizeStart.bind(this, d)}
-            onResizeMove={this.onResizeMove.bind(this, d)}
-            onResizeEnd={this.onResizeEnd.bind(this, d)}
-            onResizeCancel={this.onResizeCancel.bind(this, d)}
+            onResizeStart={e => this.onResizeStart(d, e)}
+            onResizeMove={e => this.onResizeMove(d, e)}
+            onResizeEnd={e => this.onResizeEnd(d, e)}
+            onResizeCancel={e => this.onResizeCancel(d, e)}
             key={`${d}-resizer-point`}
             className={d}
           />
@@ -52,8 +107,10 @@ class Resizer extends PureComponent {
       </div>
     )
   }
-  onResizeStart (direction, e) {}
-  onResizeMove (direction, e) {
+
+  onResizeStart(direction, e) {}
+
+  onResizeMove(direction, e) {
     let {
       top,
       left,
@@ -145,7 +202,8 @@ class Resizer extends PureComponent {
     }
     this.setState(state)
   }
-  onResizeEnd (direction, e) {
+
+  onResizeEnd(direction, e) {
     if (this.props.onResizeEnd) {
       this.props.onResizeEnd(
         this.state.resizeTop,
@@ -156,22 +214,24 @@ class Resizer extends PureComponent {
     }
     this.setState({ resizing: false })
   }
-  onResizeCancel (direction, e) {
+
+  onResizeCancel(direction, e) {
     this.setState({
       resizing: false,
       resizeWidth: this.props.width,
       resizeHeight: this.props.height
     })
   }
-  static getDerivedStateFromProps (nextProps, prevState = { resizing: false }) {
+
+  static getDerivedStateFromProps(nextProps, prevState = { resizing: false }) {
     return prevState.resizing
       ? null
       : {
-        resizeTop: nextProps.top,
-        resizeLeft: nextProps.left,
-        resizeWidth: nextProps.width,
-        resizeHeight: nextProps.height
-      }
+          resizeTop: nextProps.top,
+          resizeLeft: nextProps.left,
+          resizeWidth: nextProps.width,
+          resizeHeight: nextProps.height
+        }
   }
 }
 
