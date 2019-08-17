@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/paint/static/css/main.32af49d5.chunk.css",
-    "main.js": "/paint/static/js/main.52eceffb.chunk.js",
-    "main.js.map": "/paint/static/js/main.52eceffb.chunk.js.map",
-    "runtime~main.js": "/paint/static/js/runtime~main.098c9039.js",
-    "runtime~main.js.map": "/paint/static/js/runtime~main.098c9039.js.map",
-    "static/js/2.4ee69d6f.chunk.js": "/paint/static/js/2.4ee69d6f.chunk.js",
-    "static/js/2.4ee69d6f.chunk.js.map": "/paint/static/js/2.4ee69d6f.chunk.js.map",
+    "main.css": "/paint/static/css/main.5a2359f1.chunk.css",
+    "main.js": "/paint/static/js/main.514bbf9c.chunk.js",
+    "main.js.map": "/paint/static/js/main.514bbf9c.chunk.js.map",
+    "runtime~main.js": "/paint/static/js/runtime~main.b1b46447.js",
+    "runtime~main.js.map": "/paint/static/js/runtime~main.b1b46447.js.map",
+    "static/js/2.ea1a157d.chunk.js": "/paint/static/js/2.ea1a157d.chunk.js",
+    "static/js/2.ea1a157d.chunk.js.map": "/paint/static/js/2.ea1a157d.chunk.js.map",
     "index.html": "/paint/index.html",
-    "precache-manifest.372227dcf15336a26fd4928b90ef3a2f.js": "/paint/precache-manifest.372227dcf15336a26fd4928b90ef3a2f.js",
+    "precache-manifest.bbe019686c78af1eef181573e9dbc830.js": "/paint/precache-manifest.bbe019686c78af1eef181573e9dbc830.js",
     "service-worker.js": "/paint/service-worker.js",
-    "static/css/main.32af49d5.chunk.css.map": "/paint/static/css/main.32af49d5.chunk.css.map",
+    "static/css/main.5a2359f1.chunk.css.map": "/paint/static/css/main.5a2359f1.chunk.css.map",
     "static/media/ColorInput.css": "/paint/static/media/color-input-icon.e9f5edd1.png",
-    "static/media/SelectionInstrument.css": "/paint/static/media/crosshair-monochrome.709f62d7.svg",
-    "static/media/Instruments.css": "/paint/static/media/zoom_colorful.4e2fe956.svg",
-    "static/media/Dropper.css": "/paint/static/media/dropper_monochrome.62c15781.svg"
+    "static/media/SelectionInstrument.css": "/paint/static/media/crosshair-monochrome.be0d253d.svg",
+    "static/media/Instruments.css": "/paint/static/media/zoom_colorful.70d7efe5.svg",
+    "static/media/Dropper.css": "/paint/static/media/dropper_monochrome.e172e5fc.svg"
   }
 }
