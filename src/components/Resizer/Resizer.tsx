@@ -1,11 +1,10 @@
 import React, { PureComponent, createRef, RefObject } from 'react'
-import PropTypes from 'prop-types'
 
 import './Resizer.css'
 
 import classNames from 'classnames'
 
-import ResizerPoint from '../ResizerPoint/ResizerPoint'
+import { ResizerPoint } from '../ResizerPoint/ResizerPoint'
 
 export enum ResizerDirections {
   n = 'n',
@@ -46,8 +45,20 @@ export interface ResizerProps {
   left: number
   width: number
   height: number
-  hideBorderOnResizing: boolean
+  hideBorderOnResizing?: boolean
   mode: ResizerMode
+  onResizing?: (
+    top: number,
+    left: number,
+    width: number,
+    height: number
+  ) => void
+  onResizeEnd?: (
+    top: number,
+    left: number,
+    width: number,
+    height: number
+  ) => void
 }
 
 export interface ResizerState {
@@ -58,7 +69,7 @@ export interface ResizerState {
   resizeHeight: number
 }
 
-class Resizer extends PureComponent<ResizerProps, ResizerState> {
+export class Resizer extends PureComponent<ResizerProps, ResizerState> {
   resizeRect: RefObject<HTMLDivElement> = createRef()
 
   constructor(props: ResizerProps) {
@@ -96,10 +107,10 @@ class Resizer extends PureComponent<ResizerProps, ResizerState> {
         }}>
         {directions[this.props.mode].map(d => (
           <ResizerPoint
-            onResizeStart={e => this.onResizeStart(d, e)}
+            onResizeStart={e => this.onResizeStart()}
             onResizeMove={e => this.onResizeMove(d, e)}
-            onResizeEnd={e => this.onResizeEnd(d, e)}
-            onResizeCancel={e => this.onResizeCancel(d, e)}
+            onResizeEnd={e => this.onResizeEnd()}
+            onResizeCancel={e => this.onResizeCancel()}
             key={`${d}-resizer-point`}
             className={d}
           />
@@ -108,16 +119,19 @@ class Resizer extends PureComponent<ResizerProps, ResizerState> {
     )
   }
 
-  onResizeStart(direction, e) {}
+  onResizeStart() {}
 
-  onResizeMove(direction, e) {
+  onResizeMove(direction: ResizerDirections, e: PointerEvent) {
+    if (!this.resizeRect.current)
+      throw new Error('The ref contains no rect element')
     let {
       top,
       left,
       bottom,
       right
     } = this.resizeRect.current.getBoundingClientRect()
-    const parentRect = this.resizeRect.current.parentNode.getBoundingClientRect()
+    const parentRect = (this.resizeRect.current
+      .parentNode as Element).getBoundingClientRect()
     ;[top, left, bottom, right] = [
       top + window.pageYOffset,
       left + window.pageXOffset,
@@ -138,40 +152,40 @@ class Resizer extends PureComponent<ResizerProps, ResizerState> {
     }
 
     switch (direction) {
-      case 'n':
+      case ResizerDirections.n:
         state.resizeTop = mouseY - parentRect.top
         state.resizeHeight = this.props.height - state.resizeTop
         break
-      case 'ne':
+      case ResizerDirections.ne:
         state.resizeTop = mouseY - parentRect.top
         state.resizeHeight = this.props.height - state.resizeTop
         state.resizeWidth = mouseX - left
         break
-      case 'e':
+      case ResizerDirections.e:
         state.resizeWidth = mouseX - left
         break
-      case 'se':
+      case ResizerDirections.se:
         state.resizeHeight = mouseY - top
         state.resizeWidth = mouseX - left
         break
-      case 's':
+      case ResizerDirections.s:
         state.resizeHeight = mouseY - top
         break
-      case 'sw':
+      case ResizerDirections.sw:
         state.resizeHeight = mouseY - top
         state.resizeLeft = mouseX - parentRect.left
         state.resizeWidth = this.props.width - state.resizeLeft
         break
-      case 'w':
+      case ResizerDirections.w:
         state.resizeLeft = mouseX - parentRect.left
         state.resizeWidth = this.props.width - state.resizeLeft
         break
-      case 'nw':
+      case ResizerDirections.nw:
         state.resizeTop = mouseY - parentRect.top
         state.resizeHeight = this.props.height - state.resizeTop
         state.resizeLeft = mouseX - parentRect.left
         state.resizeWidth = this.props.width - state.resizeLeft
-        break // no default
+        break
     }
 
     state.resizeTop = Math.round(
@@ -203,7 +217,7 @@ class Resizer extends PureComponent<ResizerProps, ResizerState> {
     this.setState(state)
   }
 
-  onResizeEnd(direction, e) {
+  onResizeEnd() {
     if (this.props.onResizeEnd) {
       this.props.onResizeEnd(
         this.state.resizeTop,
@@ -215,7 +229,7 @@ class Resizer extends PureComponent<ResizerProps, ResizerState> {
     this.setState({ resizing: false })
   }
 
-  onResizeCancel(direction, e) {
+  onResizeCancel() {
     this.setState({
       resizing: false,
       resizeWidth: this.props.width,
@@ -223,7 +237,10 @@ class Resizer extends PureComponent<ResizerProps, ResizerState> {
     })
   }
 
-  static getDerivedStateFromProps(nextProps, prevState = { resizing: false }) {
+  static getDerivedStateFromProps(
+    nextProps: ResizerProps,
+    prevState = { resizing: false }
+  ) {
     return prevState.resizing
       ? null
       : {
@@ -234,13 +251,3 @@ class Resizer extends PureComponent<ResizerProps, ResizerState> {
         }
   }
 }
-
-Resizer.propTypes = {
-  mode: PropTypes.oneOf(['canvas', 'selection']),
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  onResizeEnd: PropTypes.func,
-  onResizing: PropTypes.func
-}
-
-export default Resizer

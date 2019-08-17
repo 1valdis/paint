@@ -228,4 +228,4 @@ ImageDataSelection.propTypes = {
   onClickOutside: PropTypes.func.isRequired
 }
 
-export default ImageDataSelection
+//export default ImageDataSelection

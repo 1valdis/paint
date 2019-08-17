@@ -6,7 +6,7 @@ import React, {
   PointerEvent as ReactPointerEvent
 } from 'react'
 
-import MovableSelection from '../../../MovableSelection/MovableSelection'
+import { MovableSelection } from '../../../MovableSelection/MovableSelection'
 import { SelectionCoords, Color } from '../../../../actions'
 
 interface ZoneSelectionProps {

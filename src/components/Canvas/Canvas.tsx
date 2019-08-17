@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 import { changeImage, Color, Action, disableSelection } from '../../actions'
 
-import Resizer from '../Resizer/Resizer'
+import { Resizer, ResizerMode } from '../Resizer/Resizer'
 import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
 
 import './Canvas.css'
@@ -37,7 +37,7 @@ class Canvas extends PureComponent<CanvasProps> {
             height: this.props.data ? this.props.data.height : 0
           }}>
           <Resizer
-            mode="canvas"
+            mode={ResizerMode.canvas}
             onResizeEnd={this.onResize}
             onResizing={this.props.disableSelection}
             width={this.props.data ? this.props.data.width : 0}

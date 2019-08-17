@@ -11,7 +11,7 @@ export interface ResizerPointProps {
   onResizeCancel: (e: Event) => void
 }
 
-class ResizerPoint extends Component<ResizerPointProps> {
+export class ResizerPoint extends Component<ResizerPointProps> {
   resizing = false
 
   preventContextMenu = false
@@ -119,5 +119,3 @@ class ResizerPoint extends Component<ResizerPointProps> {
     }
   }
 }
-
-export default ResizerPoint

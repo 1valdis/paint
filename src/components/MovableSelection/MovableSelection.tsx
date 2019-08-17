@@ -1,22 +1,48 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
+import React, { PureComponent, PointerEvent as ReactPointerEvent } from 'react'
 
 import './MovableSelection.css'
 
-import Resizer from '../Resizer/Resizer'
+import { Resizer, ResizerMode } from '../Resizer/Resizer'
+import { SelectionCoords } from '../../actions'
 
-class MovableSelection extends PureComponent {
-  constructor (...args) {
-    super(...args)
+export interface MovableSelectionProps {
+  top: number
+  left: number
+  width: number
+  height: number
+  hideBorderOnResizing: boolean
+  onResizeEnd: (coords: SelectionCoords) => void
+  onResizing: (coords: SelectionCoords) => void
+  onMoveEnd: (coords: SelectionCoords) => void
+  onMoving: (coords: SelectionCoords) => void
+}
+
+export interface MovableSelectionState {
+  moving: boolean
+  startX: number | null
+  startY: number | null
+  left: number
+  top: number
+}
+
+export class MovableSelection extends PureComponent<
+  MovableSelectionProps,
+  MovableSelectionState
+> {
+  preventContextMenu: boolean = false
+
+  constructor(props: MovableSelectionProps) {
+    super(props)
     this.state = {
       moving: false,
       startX: null,
       startY: null,
-      top: this.props.top,
-      left: this.props.left
+      left: this.props.left,
+      top: this.props.top
     }
   }
-  render () {
+
+  render() {
     const {
       onResizeEnd,
       onResizing,
@@ -24,23 +50,17 @@ class MovableSelection extends PureComponent {
       onMoving,
       ...withoutOnChange
     } = this.props
-    if (this.props.onResizing) {
-      withoutOnChange.onResizing = this.onResizing
-    }
-    if (this.props.onResizeEnd) {
-      withoutOnChange.onResizeEnd = this.onResizeEnd
-    }
     return (
       <div
         style={this.props}
         onPointerDown={this.handlePointerDown}
-        className='movable-selection'
-      >
-        <Resizer mode='selection' {...withoutOnChange} top={0} left={0} />
+        className="movable-selection">
+        <Resizer mode={ResizerMode.selection} {...withoutOnChange} onResizing={this.onResizing} onResizeEnd={this.onResizeEnd} top={0} left={0} />
       </div>
     )
   }
-  onResizeEnd = (top, left, width, height) => {
+
+  onResizeEnd = (top: number, left: number, width: number, height: number) => {
     this.props.onResizeEnd({
       top: this.props.top + top,
       left: this.props.left + left,
@@ -48,7 +68,8 @@ class MovableSelection extends PureComponent {
       height
     })
   }
-  onResizing = (top, left, width, height) => {
+
+  onResizing = (top: number, left: number, width: number, height: number) => {
     this.props.onResizing({
       top: this.props.top + top,
       left: this.props.left + left,
@@ -56,7 +77,8 @@ class MovableSelection extends PureComponent {
       height
     })
   }
-  handlePointerDown = e => {
+
+  handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       this.setState({
         moving: true,
@@ -65,10 +87,12 @@ class MovableSelection extends PureComponent {
       })
     }
   }
-  handleDocumentPointerMove = e => {
+
+  handleDocumentPointerMove = (e: PointerEvent) => {
     if (
       this.state.moving &&
       this.state.startX !== null &&
+      this.state.startY !== null &&
       this.props.onMoving
     ) {
       switch (e.buttons) {
@@ -94,20 +118,22 @@ class MovableSelection extends PureComponent {
             top: this.state.top,
             left: this.state.left,
             width: this.props.width,
-            height: this.props.height,
+            height: this.props.height
           })
           this.setState({
             moving: false
           })
           this.preventContextMenu = true
-          break // no default
+          break
       }
     }
   }
-  handleDocumentPointerUp = e => {
+
+  handleDocumentPointerUp = (e: PointerEvent) => {
     if (
       this.state.moving &&
       this.state.startX !== null &&
+      this.state.startY !== null &&
       this.props.onMoving
     ) {
       const {
@@ -129,7 +155,8 @@ class MovableSelection extends PureComponent {
       startY: null
     })
   }
-  static getDerivedStateFromProps = (props, state) => {
+
+  static getDerivedStateFromProps = (props: MovableSelectionProps, state: MovableSelectionState) => {
     if (!state.moving) {
       return {
         top: props.top,
@@ -138,35 +165,27 @@ class MovableSelection extends PureComponent {
     }
     return null
   }
-  componentDidMount () {
-    document.addEventListener('pointermove', this.handleDocumentPointerMove, {passive: true})
-    document.addEventListener('pointerup', this.handleDocumentPointerUp, {passive: true})
+
+  componentDidMount() {
+    document.addEventListener('pointermove', this.handleDocumentPointerMove, {
+      passive: true
+    })
+    document.addEventListener('pointerup', this.handleDocumentPointerUp, {
+      passive: true
+    })
     document.addEventListener('contextmenu', this.handleContextMenu)
   }
-  componentWillUnmount () {
-    document.removeEventListener('pointermove', this.handleDocumentPointerUp, {passive: true})
-    document.removeEventListener('pointerup', this.handleDocumentPointerUp, {passive: true})
+
+  componentWillUnmount() {
+    document.removeEventListener('pointermove', this.handleDocumentPointerUp)
+    document.removeEventListener('pointerup', this.handleDocumentPointerUp)
     document.removeEventListener('contextmenu', this.handleContextMenu)
   }
-  
-  handleContextMenu = e => {
+
+  handleContextMenu = (e: Event) => {
     if (this.preventContextMenu) {
       e.preventDefault()
       this.preventContextMenu = false
     }
   }
 }
-
-MovableSelection.propTypes = {
-  top: PropTypes.number.isRequired,
-  left: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  hideBorderOnResizing: PropTypes.bool,
-  onResizeEnd: PropTypes.func,
-  onResizing: PropTypes.func,
-  onMoveEnd: PropTypes.func,
-  onMoving: PropTypes.func
-}
-
-export default MovableSelection
