@@ -9,11 +9,7 @@ export interface AboutProps {
 export const About: FunctionComponent<AboutProps> = props => (
   <div className="about">
     <button className="about-close-button" onClick={props.onClose} />
-    <p>Вы серьёзно ожидали здесь увидеть что-то нормальное? :D</p>
-    <p>
-      Ну ладно, вот немного языка legalese, поскольку авторов иконок надо
-      указать в эбауте прожки)))
-    </p>
+    <p>Greetings, stranger.</p>
     <div>
       Icons made by{' '}
       <a href="https://www.flaticon.com/authors/good-ware" title="Good Ware">

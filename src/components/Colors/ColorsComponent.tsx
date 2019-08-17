@@ -25,13 +25,13 @@ export const ColorsComponent: FunctionComponent<
 > = props => (
   <div className="colors">
     <ColorSelection
-      header="Цвет 1"
+      header="Color 1"
       color={props.colors[props.primary]}
       active={props.activeColor === SelectedColor.primary}
       onClick={() => props.onActiveColorClick(SelectedColor.primary)}
     />
     <ColorSelection
-      header="Цвет 2"
+      header="Color 2"
       color={props.colors[props.secondary]}
       active={props.activeColor === SelectedColor.secondary}
       onClick={() => props.onActiveColorClick(SelectedColor.secondary)}

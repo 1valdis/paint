@@ -44,16 +44,16 @@ class _Image extends Component<ImageProps> {
               }}
             />
           </svg>
-          <footer>Выделить</footer>
+          <footer>Select</footer>
         </button>
         <div className="side-buttons">
           <button
             onClick={this.handleClipClick}
             disabled={!(this.props.selection && this.props.selection.coords)}>
-            Обрезать
+            Cut
           </button>
-          <button>Изменить размер</button>
-          <button>Повернуть</button>
+          <button>Change size</button>
+          <button>Rotate</button>
         </div>
       </nav>
     )
