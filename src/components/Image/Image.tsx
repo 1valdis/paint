@@ -50,7 +50,7 @@ class _Image extends Component<ImageProps> {
           <button
             onClick={this.handleClipClick}
             disabled={!(this.props.selection && this.props.selection.coords)}>
-            Cut
+            Crop
           </button>
           <button>Change size</button>
           <button>Rotate</button>

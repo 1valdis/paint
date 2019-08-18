@@ -1,6 +1,12 @@
-import { ActionTypes, SelectedColor } from '../actions'
-import { ColorsStoreState } from '.'
+import { ActionTypes, SelectedColor, Color } from '../actions'
 import { AnyAction } from 'redux'
+
+export interface ColorsStoreState {
+  list: Color[]
+  activeColor: SelectedColor
+  primary: number
+  secondary: number
+}
 
 export const colorsReducer = (
   state: ColorsStoreState | undefined = {
