@@ -17,7 +17,8 @@ import {
   changeSelection,
   SelectionCoords,
   Color,
-  Action
+  Action,
+  Instruments
 } from '../../../actions'
 import { StoreState } from '../../../reducers'
 import { ThunkDispatch } from 'redux-thunk'
@@ -336,11 +337,11 @@ class _SelectionInstrument extends PureComponent<
 
 const mapStateToProps = (state: StoreState) => ({
   imageData: state.image.data,
-  selectionCoords: state.instruments.selection
-    ? state.instruments.selection.coords
+  selectionCoords: state.instruments.instrument === Instruments.selection
+    ? state.instruments.coords
     : undefined,
-  selectionImageData: state.instruments.selection
-    ? state.instruments.selection.imageData
+  selectionImageData: state.instruments.instrument === Instruments.selection
+    ? state.instruments.selectionImageData
     : undefined,
   secondaryColor: state.colors.list[state.colors.secondary]
 })

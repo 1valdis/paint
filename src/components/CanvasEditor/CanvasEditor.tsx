@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, ComponentType } from 'react'
 import { connect } from 'react-redux'
 
 import { SelectionInstrument } from '../instruments/SelectionInstrument/SelectionInstrument'
@@ -8,9 +8,9 @@ import { Dropper } from '../instruments/Dropper/Dropper'
 import { Eraser } from '../instruments/Eraser/Eraser'
 
 import { StoreState } from '../../reducers'
+import { Instruments } from '../../actions'
 
-// todo maybe can be done better?
-const instruments = {
+const instruments: {[key in Instruments]?: ComponentType} = {
   pen: Pen,
   fill: Fill,
   selection: SelectionInstrument,
@@ -19,14 +19,14 @@ const instruments = {
 }
 
 interface CanvasEditorProps {
-  instrument: keyof typeof instruments
+  instrument: Instruments
 }
 
 const _CanvasEditor: FunctionComponent<CanvasEditorProps> = (
   props
-): JSX.Element | null => {
-  const Element = instruments[props.instrument]
-  return Element != null ? <Element /> : null
+) => {
+  const El = instruments[props.instrument]
+  return El ? <El /> : null
 }
 
 const mapStateToProps = (state: StoreState) => ({

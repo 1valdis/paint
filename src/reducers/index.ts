@@ -1,13 +1,13 @@
 import { combineReducers } from 'redux'
 
 import { colorsReducer, ColorsStoreState } from './colors'
-import { instrumentsReducer } from './instruments'
+import { instrumentsReducer, InstrumentStoreState } from './instruments'
 import { imageReducer, ImageStoreState } from './image';
 
 export interface StoreState {
   image: ImageStoreState
   colors: ColorsStoreState
-  instruments: any // todo fix that
+  instruments: InstrumentStoreState
 }
 export const reducer = combineReducers<StoreState>({
   image: imageReducer,

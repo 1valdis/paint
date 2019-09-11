@@ -9,7 +9,8 @@ import {
   selectInstrument,
   Action,
   Instruments,
-  changeImage
+  changeImage,
+  SelectionCoords
 } from '../../actions'
 
 import { ThunkDispatch } from 'redux-thunk'
@@ -17,8 +18,8 @@ import { StoreState } from '../../reducers'
 
 interface ImageProps {
   image: ImageData
-  instrument: Instruments
-  selection: any // todo fix
+  instrument: Instruments,
+  selectionCoords?: SelectionCoords
   selectInstrument: (instrument: Instruments) => void
   changeImage: (imageData: ImageData) => void
 }
@@ -49,7 +50,7 @@ class _Image extends Component<ImageProps> {
         <div className="side-buttons">
           <button
             onClick={this.handleClipClick}
-            disabled={!(this.props.selection && this.props.selection.coords)}>
+            disabled={!this.props.selectionCoords}>
             Crop
           </button>
           <button>Change size</button>
@@ -64,7 +65,7 @@ class _Image extends Component<ImageProps> {
   }
 
   handleClipClick = () => {
-    if (!(this.props.selection && this.props.selection.coords)) {
+    if (!this.props.selectionCoords) {
       return
     }
     const newCanvas = document.createElement('canvas')
@@ -72,16 +73,16 @@ class _Image extends Component<ImageProps> {
     ;({
       width: newCanvas.width,
       height: newCanvas.height
-    } = this.props.selection.coords)
+    } = this.props.selectionCoords)
 
     if (!newCtx) throw new Error("Couldn't acquire canvas context")
     newCtx.putImageData(this.props.image, 0, 0)
     this.props.changeImage(
       newCtx.getImageData(
-        this.props.selection.coords.left,
-        this.props.selection.coords.top,
-        this.props.selection.coords.width,
-        this.props.selection.coords.height
+        this.props.selectionCoords.left,
+        this.props.selectionCoords.top,
+        this.props.selectionCoords.width,
+        this.props.selectionCoords.height
       )
     )
     this.props.selectInstrument(Instruments.selection)
@@ -91,7 +92,7 @@ class _Image extends Component<ImageProps> {
 const mapStateToProps = (state: StoreState) => ({
   image: state.image.data,
   instrument: state.instruments.instrument,
-  selection: state.instruments.selection
+  selectionCoords: state.instruments.instrument === Instruments.selection ? state.instruments.coords : undefined
 })
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
