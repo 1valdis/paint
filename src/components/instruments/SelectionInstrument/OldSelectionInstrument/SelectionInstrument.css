@@ -1,0 +1,18 @@
+.selection {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: url('./crosshair-monochrome.svg') 12 12, crosshair;
+}
+.selecting {
+  position: relative;
+  outline: 1px dashed white;
+  mix-blend-mode: difference;
+}
+.selection canvas{
+  position: absolute;
+  top: 0;
+  left: 0;
+}

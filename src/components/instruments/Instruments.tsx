@@ -3,7 +3,7 @@ import React, { FunctionComponent } from 'react'
 import { connect } from 'react-redux'
 
 import {
-  selectInstrument,
+  changeInstrument,
   Instruments as InstrumentsList,
   Action
 } from '../../actions'
@@ -44,7 +44,7 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   selectInstrument: (instrument: InstrumentsList) =>
-    dispatch(selectInstrument(instrument))
+    dispatch(changeInstrument({instrument}))
 })
 
 export const Instruments = connect(

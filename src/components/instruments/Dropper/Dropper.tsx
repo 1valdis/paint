@@ -3,7 +3,7 @@ import React, { PureComponent, MouseEventHandler } from 'react'
 import { connect } from 'react-redux'
 import {
   addColor,
-  selectInstrument,
+  changeInstrument,
   Action,
   Color,
   Instruments
@@ -72,7 +72,7 @@ const mapDispatchToProps = (
 ) => ({
   addColor: (color: Color) => dispatch(addColor(color)),
   selectInstrument: (instrument: Instruments) =>
-    dispatch(selectInstrument(instrument))
+    dispatch(changeInstrument({ instrument }))
 })
 
 export const Dropper = connect(

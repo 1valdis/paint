@@ -2,7 +2,7 @@ import React, { PureComponent, createRef, RefObject } from 'react'
 
 import { connect } from 'react-redux'
 
-import { changeImage, Color, Action, disableSelection } from '../../actions'
+import { changeImage, Color, Action, changeInstrument, Instruments } from '../../actions'
 
 import { Resizer, ResizerMode } from '../Resizer/Resizer'
 import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
@@ -10,15 +10,17 @@ import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
 import './Canvas.css'
 import { StoreState } from '../../reducers'
 import { ThunkDispatch } from 'redux-thunk'
+import { InstrumentStoreState } from '../../reducers/instruments'
 
 export interface CanvasProps {
   data: ImageData
   secondaryColor: Color
+  selectedInstrument: Instruments
   changeImage: (imageData: ImageData) => void
-  disableSelection: () => void
+  changeInstrument: (intstrumentData: InstrumentStoreState) => void
 }
 
-class Canvas extends PureComponent<CanvasProps> {
+class _Canvas extends PureComponent<CanvasProps> {
   canvas: RefObject<HTMLCanvasElement> = createRef()
 
   render() {
@@ -39,7 +41,7 @@ class Canvas extends PureComponent<CanvasProps> {
           <Resizer
             mode={ResizerMode.canvas}
             onResizeEnd={this.onResize}
-            onResizing={this.props.disableSelection}
+            onResizing={() => changeInstrument({ instrument: this.props.selectedInstrument })}
             width={this.props.data ? this.props.data.width : 0}
             height={this.props.data ? this.props.data.height : 0}
             top={0}
@@ -92,17 +94,18 @@ class Canvas extends PureComponent<CanvasProps> {
 
 const mapStateToProps = (state: StoreState) => ({
   data: state.image.data,
-  secondaryColor: state.colors.list[state.colors.secondary]
+  secondaryColor: state.colors.list[state.colors.secondary],
+  selectedInstrument: state.instruments.instrument
 })
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   changeImage: (data: ImageData) => dispatch(changeImage(data)),
-  disableSelection: () => dispatch(disableSelection())
+  changeInstrument: (instrumentData: InstrumentStoreState) => dispatch(changeInstrument(instrumentData))
 })
 
-export default connect(
+export const Canvas = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Canvas)
+)(_Canvas)

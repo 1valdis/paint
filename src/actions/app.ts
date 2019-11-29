@@ -83,9 +83,9 @@ export function paste(
 
             dispatch({
               type: ActionTypes.changeInstrument,
-              instrument: Instruments.selection,
-              selection: {
-                imageData: pastedImageCtx.getImageData(
+              instrumentData: {
+                instrument: Instruments.selection,
+                selectionImageData: pastedImageCtx.getImageData(
                   0,
                   0,
                   pastedImageCanvas.width,

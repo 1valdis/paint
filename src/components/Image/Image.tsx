@@ -6,15 +6,15 @@ import { connect } from 'react-redux'
 import classNames from 'classnames'
 
 import {
-  selectInstrument,
+  changeInstrument,
   Action,
   Instruments,
   changeImage,
-  SelectionCoords
 } from '../../actions'
 
 import { ThunkDispatch } from 'redux-thunk'
 import { StoreState } from '../../reducers'
+import { SelectionCoords } from '../../reducers/instruments'
 
 interface ImageProps {
   image: ImageData
@@ -98,7 +98,7 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   selectInstrument: (instrument: Instruments) =>
-    dispatch(selectInstrument(instrument)),
+    dispatch(changeInstrument({instrument})),
   changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
 })
 

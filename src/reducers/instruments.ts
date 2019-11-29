@@ -1,4 +1,4 @@
-import { ActionTypes, Instruments, SelectionCoords } from '../actions'
+import { ActionTypes, Instruments } from '../actions'
 import { AnyAction } from 'redux'
 
 export interface OtherInstrumentStoreState {
@@ -8,6 +8,13 @@ export interface OtherInstrumentStoreState {
     Instruments.fill |
     Instruments.text |
     Instruments.zoom
+}
+
+export interface SelectionCoords {
+  left: number
+  top: number
+  width: number
+  height: number
 }
 
 export interface SelectionStoreState {
@@ -22,11 +29,10 @@ export type InstrumentStoreState = OtherInstrumentStoreState | SelectionStoreSta
 export const instrumentsReducer = (
   state: InstrumentStoreState = { instrument: Instruments.pen },
   action: AnyAction
-) => {
+): InstrumentStoreState => {
   switch (action.type) {
     case ActionTypes.changeInstrument:
-      const { type, ...withoutType } = action
-      return { ...state, ...withoutType }
+      return action.instrumentData
     default:
       return state
   }

@@ -1,4 +1,5 @@
 import { ActionTypes } from './types'
+import { InstrumentStoreState } from '../reducers/instruments'
 
 export enum Instruments {
   pen = 'pen',
@@ -12,15 +13,14 @@ export enum Instruments {
 
 export interface ChangeInstrumentAction {
   type: ActionTypes.changeInstrument
-  instrument?: Instruments
-  selection?: any // todo fix
+  instrumentData: InstrumentStoreState
 }
 
-export const selectInstrument = (
-  instrument: Instruments
+export const changeInstrument = (
+  instrumentData: InstrumentStoreState
 ): ChangeInstrumentAction => {
   return {
     type: ActionTypes.changeInstrument,
-    instrument
+    instrumentData
   }
 }

@@ -3,7 +3,7 @@ import React, { PureComponent, PointerEvent as ReactPointerEvent } from 'react'
 import './MovableSelection.css'
 
 import { Resizer, ResizerMode } from '../Resizer/Resizer'
-import { SelectionCoords } from '../../actions'
+import { SelectionCoords } from '../../reducers/instruments'
 
 export interface MovableSelectionProps {
   top: number
