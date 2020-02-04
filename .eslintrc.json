@@ -6,7 +6,8 @@
   ],
   "plugins": ["react", "@typescript-eslint", "prettier"],
   "env": {
-    "browser": true
+    "browser": true,
+    "mocha": true
   },
   "settings": {
     "react": {
@@ -15,7 +16,9 @@
     }
   },
   "rules": {
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "no-useless-constructor": "off",
+    "@typescript-eslint/no-useless-constructor": "error"
   },
   "parser": "@typescript-eslint/parser"
 }

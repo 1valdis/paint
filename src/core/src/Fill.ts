@@ -1,7 +1,7 @@
-import { Canvas } from './Canvas';
-import { Point } from './interfaces/Point';
-import { Color } from './interfaces/Color';
-import { createCanvas } from './utils';
+import { Canvas } from './Canvas'
+import { Point } from './interfaces/Point'
+import { Color } from './interfaces/Color'
+import { createCanvas } from './utils'
 
 export class Fill {
   constructor(private appCanvas: Canvas) {}
@@ -13,33 +13,29 @@ export class Fill {
       x >= this.appCanvas.canvas.width ||
       y >= this.appCanvas.canvas.height
     ) {
-      return;
+      return
     }
     const { canvas: canvasToBeFilled, context } = createCanvas(
       this.appCanvas.canvas.width,
       this.appCanvas.canvas.height
-    );
-    console.log('fill copies image');
-    context.drawImage(this.appCanvas.canvas, 0, 0);
+    )
+    context.drawImage(this.appCanvas.canvas, 0, 0)
     const imageData = context.getImageData(
       0,
       0,
       canvasToBeFilled.width,
       canvasToBeFilled.height
-    );
-    console.log(JSON.stringify(imageData));
+    )
 
     const colorToReplace = {
       r: imageData.data[(y * imageData.width + x) * 4],
       g: imageData.data[(y * imageData.width + x) * 4 + 1],
       b: imageData.data[(y * imageData.width + x) * 4 + 2]
-    };
+    }
 
-    this.floodFill(imageData, { x, y }, colorToReplace, color);
+    this.floodFill(imageData, { x, y }, colorToReplace, color)
 
-    console.log('fill puts image data');
-    console.log(JSON.stringify(imageData));
-    this.appCanvas.putImageData(imageData);
+    this.appCanvas.putImageData(imageData)
   }
 
   // optimized the shit out of it (as I can judge)
@@ -49,14 +45,14 @@ export class Fill {
     colorToReplace: Color,
     colorToFillWith: Color
   ) {
-    const replaceR = colorToReplace.r;
-    const replaceG = colorToReplace.g;
-    const replaceB = colorToReplace.b;
-    const fillR = colorToFillWith.r;
-    const fillG = colorToFillWith.g;
-    const fillB = colorToFillWith.b;
+    const replaceR = colorToReplace.r
+    const replaceG = colorToReplace.g
+    const replaceB = colorToReplace.b
+    const fillR = colorToFillWith.r
+    const fillG = colorToFillWith.g
+    const fillB = colorToFillWith.b
 
-    const i = (y * data.width + x) * 4;
+    const i = (y * data.width + x) * 4
 
     if (
       !(
@@ -66,30 +62,30 @@ export class Fill {
       ) ||
       (replaceR === fillR && replaceG === fillG && replaceB === fillB)
     ) {
-      return;
+      return
     }
 
-    const q: Point[] = [];
+    const q: Point[] = []
 
-    data.data[i] = fillR;
-    data.data[i + 1] = fillG;
-    data.data[i + 2] = fillB;
+    data.data[i] = fillR
+    data.data[i + 1] = fillG
+    data.data[i + 2] = fillB
 
-    q.push({ x, y });
+    q.push({ x, y })
 
     while (q.length !== 0) {
-      const { x, y } = q.shift()!;
-      const i = (y * data.width + x) * 4;
+      const { x, y } = q.shift()!
+      const i = (y * data.width + x) * 4
       if (
         x > 0 &&
         replaceR === data.data[i - 4] &&
         replaceG === data.data[i - 3] &&
         replaceB === data.data[i - 2]
       ) {
-        data.data[i - 4] = fillR;
-        data.data[i - 3] = fillG;
-        data.data[i - 2] = fillB;
-        q.push({ x: x - 1, y });
+        data.data[i - 4] = fillR
+        data.data[i - 3] = fillG
+        data.data[i - 2] = fillB
+        q.push({ x: x - 1, y })
       }
       if (
         x < data.width - 1 &&
@@ -97,10 +93,10 @@ export class Fill {
         replaceG === data.data[i + 5] &&
         replaceB === data.data[i + 6]
       ) {
-        data.data[i + 4] = fillR;
-        data.data[i + 5] = fillG;
-        data.data[i + 6] = fillB;
-        q.push({ x: x + 1, y });
+        data.data[i + 4] = fillR
+        data.data[i + 5] = fillG
+        data.data[i + 6] = fillB
+        q.push({ x: x + 1, y })
       }
       if (
         y > 0 &&
@@ -108,10 +104,10 @@ export class Fill {
         replaceG === data.data[i - data.width * 4 + 1] &&
         replaceB === data.data[i - data.width * 4 + 2]
       ) {
-        data.data[i - data.width * 4] = fillR;
-        data.data[i - data.width * 4 + 1] = fillG;
-        data.data[i - data.width * 4 + 2] = fillB;
-        q.push({ x, y: y - 1 });
+        data.data[i - data.width * 4] = fillR
+        data.data[i - data.width * 4 + 1] = fillG
+        data.data[i - data.width * 4 + 2] = fillB
+        q.push({ x, y: y - 1 })
       }
       if (
         y < data.height - 1 &&
@@ -119,10 +115,10 @@ export class Fill {
         replaceG === data.data[i + data.width * 4 + 1] &&
         replaceB === data.data[i + data.width * 4 + 2]
       ) {
-        data.data[i + data.width * 4] = fillR;
-        data.data[i + data.width * 4 + 1] = fillG;
-        data.data[i + data.width * 4 + 2] = fillB;
-        q.push({ x, y: y + 1 });
+        data.data[i + data.width * 4] = fillR
+        data.data[i + data.width * 4 + 1] = fillG
+        data.data[i + data.width * 4 + 2] = fillB
+        q.push({ x, y: y + 1 })
       }
     }
   }

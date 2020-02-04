@@ -1,19 +1,20 @@
-import { createCanvas } from './utils';
-import { throws } from 'assert';
+import { createCanvas } from './utils'
+import { throws } from 'assert'
 
 export class Canvas {
-  private _canvas: HTMLCanvasElement;
+  private _canvas: HTMLCanvasElement
   get canvas() {
-    return this._canvas;
+    return this._canvas
   }
-  private context: CanvasRenderingContext2D;
+
+  private context: CanvasRenderingContext2D
   constructor(width: number = 800, height: number = 450) {
-    const { canvas, context } = createCanvas(width, height);
-    context.imageSmoothingEnabled = false;
-    context.fillStyle = `rgba(255, 255, 255, 255)`;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    this._canvas = canvas;
-    this.context = context;
+    const { canvas, context } = createCanvas(width, height)
+    context.imageSmoothingEnabled = false
+    context.fillStyle = `rgba(255, 255, 255, 255)`
+    context.fillRect(0, 0, canvas.width, canvas.height)
+    this._canvas = canvas
+    this.context = context
   }
 
   putImageData(imageData: ImageData): void {
@@ -24,11 +25,11 @@ export class Canvas {
       const { canvas, context } = createCanvas(
         imageData.width,
         imageData.height
-      );
-      this._canvas = canvas;
-      this.context = context;
+      )
+      this._canvas = canvas
+      this.context = context
     }
-    this.context.putImageData(imageData, 0, 0);
+    this.context.putImageData(imageData, 0, 0)
   }
 
   getImageData() {
@@ -37,6 +38,6 @@ export class Canvas {
       0,
       this._canvas.width,
       this._canvas.height
-    );
+    )
   }
 }

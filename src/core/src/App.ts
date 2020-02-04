@@ -1,14 +1,14 @@
-import { ImageClipboard } from './ImageClipboard';
-import { ImageFile } from './ImageFile';
+import { ImageClipboard } from './ImageClipboard'
+import { ImageFile } from './ImageFile'
 
 export class App {
-  private clipboard: ImageClipboard;
+  private clipboard: ImageClipboard
 
   constructor() {
-    this.clipboard = new ImageClipboard();
+    this.clipboard = new ImageClipboard()
   }
 
   async init() {
-    await this.clipboard.init();
+    await this.clipboard.init()
   }
 }

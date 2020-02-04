@@ -1,9 +1,9 @@
 export interface Subscriber {
-  update(publisher: Publisher): void;
+  update(publisher: Publisher): void
 }
 
 export interface Publisher {
-  attach(subscriber: Subscriber): void;
-  detach(subscriber: Subscriber): void;
-  notify(): void;
+  attach(subscriber: Subscriber): void
+  detach(subscriber: Subscriber): void
+  notify(): void
 }
