@@ -14,7 +14,6 @@ export class Pen {
     );
     this.canvas = canvas;
     this.context = context;
-    console.log('pen copies image');
     context.drawImage(appCanvas.canvas, 0, 0);
     this.drawPoint(start);
 
@@ -50,7 +49,7 @@ export class Pen {
   }
 
   private drawPoint(point: Point) {
-    this.context.fillStyle = `rgb(${this.color.r},${this.color.g},${this.color.b})`;
+    this.context.fillStyle = `rgba(${this.color.r},${this.color.g},${this.color.b},255)`;
     this.context.fillRect(point.x, point.y, 1, 1);
   }
 

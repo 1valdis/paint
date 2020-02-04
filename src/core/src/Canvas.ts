@@ -10,12 +10,13 @@ export class Canvas {
   constructor(width: number = 800, height: number = 450) {
     const { canvas, context } = createCanvas(width, height);
     context.imageSmoothingEnabled = false;
+    context.fillStyle = `rgba(255, 255, 255, 255)`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
     this._canvas = canvas;
     this.context = context;
   }
 
   putImageData(imageData: ImageData): void {
-    console.log('attempt to put imagedata', JSON.stringify(imageData));
     if (
       this._canvas.width !== imageData.width ||
       this._canvas.height !== imageData.height
@@ -28,12 +29,6 @@ export class Canvas {
       this.context = context;
     }
     this.context.putImageData(imageData, 0, 0);
-    console.log(
-      'after putting',
-      JSON.stringify(
-        this.context.getImageData(0, 0, imageData.width, imageData.height)
-      )
-    );
   }
 
   getImageData() {

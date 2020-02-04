@@ -23,14 +23,14 @@ describe('Pen', () => {
     const canvas = new Canvas(5, 5);
     const pen = new Pen(canvas, { x: 2, y: 3 }, { r: 14, g: 88, b: 228 });
     const newImageData = canvas.getImageData();
-    assert.strictEqual(newImageData.data[(newImageData.width * 3 + 2) * 4], 0);
+    assert.strictEqual(newImageData.data[(newImageData.width * 3 + 2) * 4], 255);
     assert.strictEqual(
       newImageData.data[(newImageData.width * 3 + 2) * 4 + 1],
-      0
+      255
     );
     assert.strictEqual(
       newImageData.data[(newImageData.width * 3 + 2) * 4 + 2],
-      0
+      255
     );
   });
 
@@ -88,14 +88,14 @@ describe('Pen', () => {
     );
 
     // other random point
-    assert.strictEqual(newImageData.data[(newImageData.width * 2 + 3) * 4], 0);
+    assert.strictEqual(newImageData.data[(newImageData.width * 2 + 3) * 4], 255);
     assert.strictEqual(
       newImageData.data[(newImageData.width * 2 + 3) * 4 + 1],
-      0
+      255
     );
     assert.strictEqual(
       newImageData.data[(newImageData.width * 2 + 3) * 4 + 2],
-      0
+      255
     );
   });
 });

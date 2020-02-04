@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import { assert } from 'chai';
 import { Canvas } from '../src/Canvas';
 
 describe('Canvas', () => {

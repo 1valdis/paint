@@ -9,45 +9,41 @@ describe('Fill', () => {
     const fill = new Fill(canvas);
     fill.fill({ x: 1, y: 1 }, { r: 0, g: 1, b: 2 });
     const imageData = canvas.getImageData();
-    assert.ok(
-      imageData.data.every((value, index) =>
-        (index + 1) % 4 ? true : value === value % 4
-      )
-    );
+    assert.ok(imageData.data.every((value, index) => index % 4 || 255));
   });
   it('should fill correct place of canvas', () => {
     const canvas = new Canvas(10, 10);
-    const fill = new Fill(canvas);
-    const pen = new Pen(canvas, { x: 5, y: 0 }, { r: 255, g: 255, b: 255 });
+    const pen = new Pen(canvas, { x: 5, y: 0 }, { r: 0, g: 0, b: 0 });
     pen.continueLine({ x: 5, y: 4 });
     pen.continueLine({ x: 6, y: 5 });
     pen.continueLine({ x: 10, y: 5 });
     pen.finishLine();
+    const fill = new Fill(canvas);
     fill.fill({ x: 2, y: 8 }, { r: 100, g: 100, b: 100 });
     const newImageData = canvas.getImageData();
 
     // separated zone
-    assert.strictEqual(newImageData.data[(newImageData.width * 1 + 8) * 4], 0);
+    assert.strictEqual(newImageData.data[(newImageData.width * 1 + 8) * 4], 255);
     assert.strictEqual(
       newImageData.data[(newImageData.width * 1 + 8) * 4 + 1],
-      0
+      255
     );
     assert.strictEqual(
       newImageData.data[(newImageData.width * 1 + 8) * 4 + 2],
-      0
+      255
     );
     // line
     assert.strictEqual(
       newImageData.data[(newImageData.width * 5 + 6) * 4],
-      255
+      0
     );
     assert.strictEqual(
       newImageData.data[(newImageData.width * 5 + 6) * 4 + 1],
-      255
+      0
     );
     assert.strictEqual(
       newImageData.data[(newImageData.width * 5 + 6) * 4 + 2],
-      255
+      0
     );
     // filled zone
     assert.strictEqual(

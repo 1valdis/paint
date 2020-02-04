@@ -20,7 +20,6 @@ export class Selection {
     coords: SelectionCoords,
     imageData?: ImageData
   ) {
-    this.updateInternalCanvas();
   }
 
   public static fromCoords(appCanvas: Canvas, coords: SelectionCoords) {
@@ -28,15 +27,6 @@ export class Selection {
   }
 
   public static fromImageData(appCanvas: Canvas, imageData: ImageData) {}
-
-  private updateInternalCanvas() {
-    const { canvas, context } = createCanvas(
-      this.appCanvas.canvas.width,
-      this.appCanvas.canvas.height
-    );
-    this.canvas = canvas;
-    this.context = context;
-  }
 
   createSelectionFromImageData(imageData: ImageData) {}
 
