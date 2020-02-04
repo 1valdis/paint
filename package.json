@@ -16,9 +16,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "deploy": "gh-pages -d build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "react-scripts start",
     "eject": "react-scripts eject",
-    "lint": "eslint ./ --ext .ts,.tsx"
+    "lint": "eslint './src' --ext js,jsx,ts,tsx"
   },
   "browserslist": [
     ">0.2%",
