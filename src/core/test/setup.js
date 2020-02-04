@@ -1,16 +1,16 @@
-import canvas from 'canvas';
+import canvas from 'canvas'
 
 // -----------------
 // Node assert
 // -----------------
-import { strict as assert } from 'assert';
-global.assert = assert;
+import { strict as assert } from 'assert'
 
 // -----------------
 // JSDom
 // -----------------
-import jsdom from 'jsdom';
-const { JSDOM } = jsdom;
+import jsdom from 'jsdom'
+global.assert = assert
+const { JSDOM } = jsdom
 const { document } = new JSDOM(`
 <!DOCTYPE html>
 <html>
@@ -18,16 +18,16 @@ const { document } = new JSDOM(`
     <canvas id="gameCanvas" width="650" height="650"></canvas>
   </body>
 </html>
-`).window;
-global.document = document;
-global.window = document.defaultView;
+`).window
+global.document = document
+global.window = document.defaultView
 
 // -----------------
 // Mocks
 // -----------------
-global.Audio = class {};
-global.Image = class {};
+global.Audio = class {}
+global.Image = class {}
 window.requestAnimationFrame = callback => {
-  setTimeout(callback, 0);
-};
-window.HTMLCanvasElement = canvas.Canvas;
+  setTimeout(callback, 0)
+}
+window.HTMLCanvasElement = canvas.Canvas

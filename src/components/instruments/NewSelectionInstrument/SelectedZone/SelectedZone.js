@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import MovableSelection from '../../../MovableSelection/MovableSelection'
 
 class ImageDataSelection extends PureComponent {
-  constructor (...args) {
+  constructor(...args) {
     super(...args)
 
     this.canvasRef = createRef()
@@ -23,13 +23,14 @@ class ImageDataSelection extends PureComponent {
     }
   }
 
-  render () {
+  render() {
     return (
       <Fragment>
         <canvas
           ref={this.canvasRef}
           onPointerDown={e =>
-            e.target === e.currentTarget && this.props.onClickOutside(e)}
+            e.target === e.currentTarget && this.props.onClickOutside(e)
+          }
         />
         <MovableSelection
           {...this.props.coords}
@@ -43,7 +44,7 @@ class ImageDataSelection extends PureComponent {
     )
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.updateOldCanvas()
     this.updateSelectionCanvas()
     this.updateNewCanvas()
@@ -57,7 +58,7 @@ class ImageDataSelection extends PureComponent {
     )
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.updateOld) {
       this.updateOldCanvas()
     }
@@ -164,6 +165,7 @@ class ImageDataSelection extends PureComponent {
       )
     )
   }
+
   handleMoving = ({ top, left, width, height }) => {
     if (!this.backgroundColor) {
       this.backgroundColor = this.props.secondaryColor
@@ -175,6 +177,7 @@ class ImageDataSelection extends PureComponent {
       imageData: this.props.selectionImageData
     })
   }
+
   handleMoveEnd = ({ top, left, width, height }) => {
     this.updateOld = false
     this.props.onImageChanged(
@@ -228,4 +231,4 @@ ImageDataSelection.propTypes = {
   onClickOutside: PropTypes.func.isRequired
 }
 
-//export default ImageDataSelection
+// export default ImageDataSelection

@@ -1,7 +1,7 @@
 import { types } from '../actions'
 
-export function createSelectionFromCoords (originCoords) {
-  return function (dispatch, getState) {
+export function createSelectionFromCoords(originCoords) {
+  return function(dispatch, getState) {
     const imageData = getState().image.data
     return {
       type: types.CHANGE_INSTRUMENT,
@@ -13,7 +13,7 @@ export function createSelectionFromCoords (originCoords) {
   }
 }
 
-export function disableSelection () {
+export function disableSelection() {
   return {
     type: types.CHANGE_INSTRUMENT,
     selection: {
