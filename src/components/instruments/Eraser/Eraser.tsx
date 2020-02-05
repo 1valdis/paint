@@ -240,7 +240,4 @@ const mapDispatchToProps = (
   changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
 })
 
-export const Eraser = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(_Eraser)
+export const Eraser = connect(mapStateToProps, mapDispatchToProps)(_Eraser)

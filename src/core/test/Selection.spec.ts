@@ -1,4 +1,4 @@
-import * as assert from 'assert'
+import { assert } from 'chai'
 import { Selection } from '../src/Selection'
 import { Canvas } from '../src/Canvas'
 

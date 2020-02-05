@@ -1,4 +1,12 @@
-/// <reference path="ImageClipboard.d.ts" />
+declare interface ModernClipboard {
+  write(data: ClipboardItem[]): Promise<void>
+  read(): Promise<Array<ClipboardItem>>
+}
+declare class ClipboardItem {
+  constructor(data: { [mimeType: string]: Blob })
+  types: Array<string>
+  getType(type: string): Promise<Blob>
+}
 
 export class ImageClipboard {
   private clipboardWritePermission?: PermissionStatus
@@ -27,11 +35,15 @@ export class ImageClipboard {
   }
 
   async copy(blob: Blob) {
-    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+    await (<ModernClipboard>(<unknown>navigator.clipboard)).write([
+      new ClipboardItem({ 'image/png': blob })
+    ])
   }
 
   async paste(): Promise<Blob | null> {
-    const clipboardItems = await navigator.clipboard.read()
+    const clipboardItems = await (<ModernClipboard>(
+      (<unknown>navigator.clipboard)
+    )).read()
     for (const clipboardItem of clipboardItems) {
       for (const type of clipboardItem.types) {
         if (!type.startsWith('image/')) continue

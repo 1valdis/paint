@@ -103,9 +103,9 @@ class _Fill extends PureComponent<FillProps> {
       const i = (n[1] * data.width + n[0]) * 4
       if (
         n[0] > 0 &&
-        (replaceR === data.data[i - 4] &&
-          replaceG === data.data[i - 3] &&
-          replaceB === data.data[i - 2])
+        replaceR === data.data[i - 4] &&
+        replaceG === data.data[i - 3] &&
+        replaceB === data.data[i - 2]
       ) {
         data.data[i - 4] = fillR
         data.data[i - 3] = fillG
@@ -114,9 +114,9 @@ class _Fill extends PureComponent<FillProps> {
       }
       if (
         n[0] < data.width - 1 &&
-        (replaceR === data.data[i + 4] &&
-          replaceG === data.data[i + 5] &&
-          replaceB === data.data[i + 6])
+        replaceR === data.data[i + 4] &&
+        replaceG === data.data[i + 5] &&
+        replaceB === data.data[i + 6]
       ) {
         data.data[i + 4] = fillR
         data.data[i + 5] = fillG
@@ -125,9 +125,9 @@ class _Fill extends PureComponent<FillProps> {
       }
       if (
         n[1] > 0 &&
-        (replaceR === data.data[i - data.width * 4] &&
-          replaceG === data.data[i - data.width * 4 + 1] &&
-          replaceB === data.data[i - data.width * 4 + 2])
+        replaceR === data.data[i - data.width * 4] &&
+        replaceG === data.data[i - data.width * 4 + 1] &&
+        replaceB === data.data[i - data.width * 4 + 2]
       ) {
         data.data[i - data.width * 4] = fillR
         data.data[i - data.width * 4 + 1] = fillG
@@ -136,9 +136,9 @@ class _Fill extends PureComponent<FillProps> {
       }
       if (
         n[1] < data.height - 1 &&
-        (replaceR === data.data[i + data.width * 4] &&
-          replaceG === data.data[i + data.width * 4 + 1] &&
-          replaceB === data.data[i + data.width * 4 + 2])
+        replaceR === data.data[i + data.width * 4] &&
+        replaceG === data.data[i + data.width * 4 + 1] &&
+        replaceB === data.data[i + data.width * 4 + 2]
       ) {
         data.data[i + data.width * 4] = fillR
         data.data[i + data.width * 4 + 1] = fillG
@@ -174,7 +174,4 @@ const mapDispatchToProps = (
   changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
 })
 
-export const Fill = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(_Fill)
+export const Fill = connect(mapStateToProps, mapDispatchToProps)(_Fill)

@@ -72,7 +72,4 @@ const mapDispatchToProps = (
   onPaste: (e: ClipboardEvent) => dispatch(paste(e))
 })
 
-export const App = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(_App)
+export const App = connect(mapStateToProps, mapDispatchToProps)(_App)

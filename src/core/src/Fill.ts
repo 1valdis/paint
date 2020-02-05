@@ -4,22 +4,20 @@ import { Color } from './interfaces/Color'
 import { createCanvas } from './utils'
 
 export class Fill {
-  constructor(private appCanvas: Canvas) {}
-
-  fill({ x, y }: Point, color: Color) {
+  static fill(canvas: Canvas, { x, y }: Point, color: Color) {
     if (
       x < 0 ||
       y < 0 ||
-      x >= this.appCanvas.canvas.width ||
-      y >= this.appCanvas.canvas.height
+      x >= canvas.canvas.width ||
+      y >= canvas.canvas.height
     ) {
       return
     }
     const { canvas: canvasToBeFilled, context } = createCanvas(
-      this.appCanvas.canvas.width,
-      this.appCanvas.canvas.height
+      canvas.canvas.width,
+      canvas.canvas.height
     )
-    context.drawImage(this.appCanvas.canvas, 0, 0)
+    context.drawImage(canvas.canvas, 0, 0)
     const imageData = context.getImageData(
       0,
       0,
@@ -35,11 +33,11 @@ export class Fill {
 
     this.floodFill(imageData, { x, y }, colorToReplace, color)
 
-    this.appCanvas.putImageData(imageData)
+    canvas.putImageData(imageData)
   }
 
   // optimized the shit out of it (as I can judge)
-  private floodFill(
+  private static floodFill(
     data: ImageData,
     { x, y }: Point,
     colorToReplace: Color,

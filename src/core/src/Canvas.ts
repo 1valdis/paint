@@ -1,5 +1,4 @@
 import { createCanvas } from './utils'
-import { throws } from 'assert'
 
 export class Canvas {
   private _canvas: HTMLCanvasElement

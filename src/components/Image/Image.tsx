@@ -9,7 +9,7 @@ import {
   changeInstrument,
   Action,
   Instruments,
-  changeImage,
+  changeImage
 } from '../../actions'
 
 import { ThunkDispatch } from 'redux-thunk'
@@ -18,7 +18,7 @@ import { SelectionCoords } from '../../reducers/instruments'
 
 interface ImageProps {
   image: ImageData
-  instrument: Instruments,
+  instrument: Instruments
   selectionCoords?: SelectionCoords
   selectInstrument: (instrument: Instruments) => void
   changeImage: (imageData: ImageData) => void
@@ -92,17 +92,17 @@ class _Image extends Component<ImageProps> {
 const mapStateToProps = (state: StoreState) => ({
   image: state.image.data,
   instrument: state.instruments.instrument,
-  selectionCoords: state.instruments.instrument === Instruments.selection ? state.instruments.coords : undefined
+  selectionCoords:
+    state.instruments.instrument === Instruments.selection
+      ? state.instruments.coords
+      : undefined
 })
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   selectInstrument: (instrument: Instruments) =>
-    dispatch(changeInstrument({instrument})),
+    dispatch(changeInstrument({ instrument })),
   changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
 })
 
-export const Image = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(_Image)
+export const Image = connect(mapStateToProps, mapDispatchToProps)(_Image)

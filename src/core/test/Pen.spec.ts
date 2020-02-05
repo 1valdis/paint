@@ -1,4 +1,4 @@
-import * as assert from 'assert'
+import { assert } from 'chai'
 import { Pen } from '../src/Pen'
 import { Canvas } from '../src/Canvas'
 
@@ -22,6 +22,7 @@ describe('Pen', () => {
   it('should not draw anything until line is finished', () => {
     const canvas = new Canvas(5, 5)
     const pen = new Pen(canvas, { x: 2, y: 3 }, { r: 14, g: 88, b: 228 })
+    pen.continueLine({ x: 5, y: 5 })
     const newImageData = canvas.getImageData()
     assert.strictEqual(newImageData.data[(newImageData.width * 3 + 2) * 4], 255)
     assert.strictEqual(

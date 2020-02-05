@@ -44,7 +44,7 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   selectInstrument: (instrument: InstrumentsList) =>
-    dispatch(changeInstrument({instrument}))
+    dispatch(changeInstrument({ instrument }))
 })
 
 export const Instruments = connect(

@@ -19,7 +19,10 @@ import {
 } from '../../../actions'
 import { StoreState } from '../../../reducers'
 import { ThunkDispatch } from 'redux-thunk'
-import { SelectionCoords, InstrumentStoreState } from '../../../reducers/instruments'
+import {
+  SelectionCoords,
+  InstrumentStoreState
+} from '../../../reducers/instruments'
 
 // the selection is not working quite right:
 // there's no way a person can select the full width
@@ -37,31 +40,44 @@ export interface SelectionInstrumentProps {
 }
 
 export interface SelectionInstrumentState {
-  secondaryColor: Color,
-  selecting: boolean,
-  selectingStart?: { x: number, y: number }
+  secondaryColor: Color
+  selecting: boolean
+  selectingStart?: { x: number; y: number }
 }
 
-class _SelectionInstrument extends PureComponent<SelectionInstrumentProps, SelectionInstrumentState> {
+class _SelectionInstrument extends PureComponent<
+  SelectionInstrumentProps,
+  SelectionInstrumentState
+> {
   constructor(props: SelectionInstrumentProps) {
     super(props)
     this.state = {
       secondaryColor: this.props.secondaryColor,
-      selecting: false,
+      selecting: false
     }
   }
 }
 
 const mapStateToProps = (state: StoreState) => ({
-  originalImageData: state.instruments.instrument === Instruments.selection ? state.instruments.originalImageData : undefined,
-  selectionImageData: state.instruments.instrument === Instruments.selection ? state.instruments.selectionImageData : undefined,
+  originalImageData:
+    state.instruments.instrument === Instruments.selection
+      ? state.instruments.originalImageData
+      : undefined,
+  selectionImageData:
+    state.instruments.instrument === Instruments.selection
+      ? state.instruments.selectionImageData
+      : undefined,
   secondaryColor: state.colors.list[state.colors.secondary]
 })
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
-  changeInstrument: (instrumentData: InstrumentStoreState) => dispatch(changeInstrument(instrumentData)),
+  changeInstrument: (instrumentData: InstrumentStoreState) =>
+    dispatch(changeInstrument(instrumentData)),
   changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
 })
 
-export const SelectionInstrument = connect(mapStateToProps, mapDispatchToProps)(_SelectionInstrument)
+export const SelectionInstrument = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(_SelectionInstrument)

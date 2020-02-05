@@ -75,7 +75,4 @@ const mapDispatchToProps = (
     dispatch(changeInstrument({ instrument }))
 })
 
-export const Dropper = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(_Dropper)
+export const Dropper = connect(mapStateToProps, mapDispatchToProps)(_Dropper)

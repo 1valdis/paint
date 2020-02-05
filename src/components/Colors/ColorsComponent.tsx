@@ -20,9 +20,7 @@ export interface ColorsComponentProps {
   secondary: number
 }
 
-export const ColorsComponent: FunctionComponent<
-  ColorsComponentProps
-> = props => (
+export const ColorsComponent: FunctionComponent<ColorsComponentProps> = props => (
   <div className="colors">
     <ColorSelection
       header="Color 1"

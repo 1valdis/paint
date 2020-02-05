@@ -189,7 +189,4 @@ const mapDispatchToProps = (
   changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
 })
 
-export const Pen = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(_Pen)
+export const Pen = connect(mapStateToProps, mapDispatchToProps)(_Pen)

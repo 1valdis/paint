@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 
 import { colorsReducer, ColorsStoreState } from './colors'
 import { instrumentsReducer, InstrumentStoreState } from './instruments'
-import { imageReducer, ImageStoreState } from './image';
+import { imageReducer, ImageStoreState } from './image'
 
 export interface StoreState {
   image: ImageStoreState

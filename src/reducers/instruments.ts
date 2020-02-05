@@ -2,12 +2,13 @@ import { ActionTypes, Instruments } from '../actions'
 import { AnyAction } from 'redux'
 
 export interface OtherInstrumentStoreState {
-  instrument: Instruments.pen |
-    Instruments.dropper |
-    Instruments.eraser |
-    Instruments.fill |
-    Instruments.text |
-    Instruments.zoom
+  instrument:
+    | Instruments.pen
+    | Instruments.dropper
+    | Instruments.eraser
+    | Instruments.fill
+    | Instruments.text
+    | Instruments.zoom
 }
 
 export interface SelectionCoords {
@@ -18,13 +19,15 @@ export interface SelectionCoords {
 }
 
 export interface SelectionStoreState {
-  instrument: Instruments.selection,
-  originalImageData?: ImageData,
-  selectionImageData?: ImageData,
+  instrument: Instruments.selection
+  originalImageData?: ImageData
+  selectionImageData?: ImageData
   coords?: SelectionCoords
 }
 
-export type InstrumentStoreState = OtherInstrumentStoreState | SelectionStoreState
+export type InstrumentStoreState =
+  | OtherInstrumentStoreState
+  | SelectionStoreState
 
 export const instrumentsReducer = (
   state: InstrumentStoreState = { instrument: Instruments.pen },

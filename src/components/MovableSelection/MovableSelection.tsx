@@ -55,7 +55,14 @@ export class MovableSelection extends PureComponent<
         style={this.props}
         onPointerDown={this.handlePointerDown}
         className="movable-selection">
-        <Resizer mode={ResizerMode.selection} {...withoutOnChange} onResizing={this.onResizing} onResizeEnd={this.onResizeEnd} top={0} left={0} />
+        <Resizer
+          mode={ResizerMode.selection}
+          {...withoutOnChange}
+          onResizing={this.onResizing}
+          onResizeEnd={this.onResizeEnd}
+          top={0}
+          left={0}
+        />
       </div>
     )
   }
@@ -156,7 +163,10 @@ export class MovableSelection extends PureComponent<
     })
   }
 
-  static getDerivedStateFromProps = (props: MovableSelectionProps, state: MovableSelectionState) => {
+  static getDerivedStateFromProps = (
+    props: MovableSelectionProps,
+    state: MovableSelectionState
+  ) => {
     if (!state.moving) {
       return {
         top: props.top,

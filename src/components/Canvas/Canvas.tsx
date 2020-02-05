@@ -2,7 +2,13 @@ import React, { PureComponent, createRef, RefObject } from 'react'
 
 import { connect } from 'react-redux'
 
-import { changeImage, Color, Action, changeInstrument, Instruments } from '../../actions'
+import {
+  changeImage,
+  Color,
+  Action,
+  changeInstrument,
+  Instruments
+} from '../../actions'
 
 import { Resizer, ResizerMode } from '../Resizer/Resizer'
 import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
@@ -41,7 +47,9 @@ class _Canvas extends PureComponent<CanvasProps> {
           <Resizer
             mode={ResizerMode.canvas}
             onResizeEnd={this.onResize}
-            onResizing={() => changeInstrument({ instrument: this.props.selectedInstrument })}
+            onResizing={() =>
+              changeInstrument({ instrument: this.props.selectedInstrument })
+            }
             width={this.props.data ? this.props.data.width : 0}
             height={this.props.data ? this.props.data.height : 0}
             top={0}
@@ -102,10 +110,8 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   changeImage: (data: ImageData) => dispatch(changeImage(data)),
-  changeInstrument: (instrumentData: InstrumentStoreState) => dispatch(changeInstrument(instrumentData))
+  changeInstrument: (instrumentData: InstrumentStoreState) =>
+    dispatch(changeInstrument(instrumentData))
 })
 
-export const Canvas = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(_Canvas)
+export const Canvas = connect(mapStateToProps, mapDispatchToProps)(_Canvas)
