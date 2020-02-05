@@ -1,5 +1,5 @@
 export class ImageFile {
-  static create() {
+  static create(): ImageData {
     const canvas = document.createElement('canvas')
     canvas.width = 800
     canvas.height = 450
@@ -29,13 +29,13 @@ export class ImageFile {
     })
   }
 
-  static async save(canvas: HTMLCanvasElement) {
+  static async save(canvas: HTMLCanvasElement, filename: string) {
     const blob = await new Promise<Blob | null>(resolve =>
       canvas.toBlob(resolve)
     )
     const href = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
-    a.download = name
+    a.download = filename
     a.href = href
     document.body.appendChild(a)
     a.click()
