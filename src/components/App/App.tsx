@@ -10,7 +10,7 @@ import { NavBar } from '../NavBar/NavBar'
 import { NavBarItem } from '../NavBar/NavBarItem'
 import { Clipboard } from '../Clipboard/Clipboard'
 // import { Image } from '../Image/Image'
-// import { Instruments } from '../instruments/Instruments'
+import { Instruments } from '../instruments/Instruments'
 import { ColorsContainer } from '../Colors/ColorsContainer'
 
 import {
@@ -45,10 +45,10 @@ class _App extends PureComponent<AppProps> {
           </NavBarItem>
           {/* <NavBarItem footer="Image">
             <Image />
-          </NavBarItem>
+          </NavBarItem> */}
           <NavBarItem footer="Instruments">
             <Instruments />
-          </NavBarItem> */}
+          </NavBarItem>
           <NavBarItem footer="Colors">
             <ColorsContainer />
           </NavBarItem>

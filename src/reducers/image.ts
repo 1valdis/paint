@@ -9,7 +9,6 @@ export const imageReducer = (
   state: ImageStoreState | undefined = getInitialState().image,
   action: Action
 ): ImageStoreState => {
-  console.log('reducer called')
   switch (action.type) {
     case 'changeImage':
       return {

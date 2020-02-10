@@ -2,9 +2,7 @@ import { InstrumentStoreState } from '../reducers/instruments'
 
 export interface ChangeInstrumentAction {
   type: 'changeInstrument'
-  payload: {
-    instrumentData: Partial<InstrumentStoreState>
-  }
+  payload: Partial<InstrumentStoreState>
 }
 
 export type Instruments = InstrumentStoreState['selected']
@@ -14,8 +12,6 @@ export const changeInstrument = (
 ): ChangeInstrumentAction => {
   return {
     type: 'changeInstrument',
-    payload: {
-      instrumentData
-    }
+    payload: instrumentData
   }
 }
