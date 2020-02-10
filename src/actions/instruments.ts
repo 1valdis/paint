@@ -1,26 +1,21 @@
-import { ActionTypes } from './types'
 import { InstrumentStoreState } from '../reducers/instruments'
 
-export enum Instruments {
-  pen = 'pen',
-  fill = 'fill',
-  text = 'text',
-  eraser = 'eraser',
-  dropper = 'dropper',
-  zoom = 'zoom',
-  selection = 'selection'
+export interface ChangeInstrumentAction {
+  type: 'changeInstrument'
+  payload: {
+    instrumentData: Partial<InstrumentStoreState>
+  }
 }
 
-export interface ChangeInstrumentAction {
-  type: ActionTypes.changeInstrument
-  instrumentData: InstrumentStoreState
-}
+export type Instruments = InstrumentStoreState['selected']
 
 export const changeInstrument = (
-  instrumentData: InstrumentStoreState
+  instrumentData: Partial<InstrumentStoreState>
 ): ChangeInstrumentAction => {
   return {
-    type: ActionTypes.changeInstrument,
-    instrumentData
+    type: 'changeInstrument',
+    payload: {
+      instrumentData
+    }
   }
 }

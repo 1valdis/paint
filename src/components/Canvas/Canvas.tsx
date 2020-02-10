@@ -4,10 +4,9 @@ import { connect } from 'react-redux'
 
 import { StoreState } from '../../reducers'
 import { CanvasResizer } from '../CanvasResizer/CanvasResizer'
-// import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
+import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
 
 import './Canvas.css'
-// import { InstrumentStoreState } from '../../reducers/instruments'
 
 export interface CanvasProps {
   imageData: ImageData
@@ -32,7 +31,7 @@ class _Canvas extends PureComponent<CanvasProps> {
             height: this.props.imageData.height
           }}>
           <CanvasResizer />
-          {/* <CanvasEditor /> */}
+          <CanvasEditor />
         </div>
       </div>
     )

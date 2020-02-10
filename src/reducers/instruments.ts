@@ -1,5 +1,4 @@
-import { ActionTypes, Instruments } from '../actions'
-import { AnyAction } from 'redux'
+import { Action, getInitialState } from '../actions'
 
 export interface InstrumentStoreState {
   selected:
@@ -48,14 +47,15 @@ export interface InstrumentStoreState {
 }
 
 export const instrumentsReducer = (
-  state: InstrumentStoreState = { 
-    
-  },
-  action: AnyAction
+  state: InstrumentStoreState = getInitialState().instruments,
+  action: Action
 ): InstrumentStoreState => {
   switch (action.type) {
-    case ActionTypes.changeInstrument:
-      return action.instrumentData
+    case 'changeInstrument':
+      return {
+        ...state,
+        ...action.payload
+      }
     default:
       return state
   }

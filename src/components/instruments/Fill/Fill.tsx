@@ -165,7 +165,7 @@ class _Fill extends PureComponent<FillProps> {
 
 const mapStateToProps = (state: StoreState) => ({
   color: state.colors.list[state.colors.primary],
-  imageData: state.image.data
+  imageData: state.image.imageData
 })
 
 const mapDispatchToProps = (

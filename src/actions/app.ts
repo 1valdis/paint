@@ -54,37 +54,37 @@ export const getInitialState = (): StoreState => {
       primary: 0,
       secondary: 10
     },
-    // instruments: {
-    //   selected: 'pen',
-    //   text: {},
-    //   eraser: {
-    //     thickness: 4
-    //   },
-    //   zoom: {
-    //     current: 1
-    //   },
-    //   brushes: {
-    //     current: 0,
-    //     list: [
-    //       {
-    //         type: 'kek',
-    //         thickness: 228
-    //       }
-    //     ]
-    //   },
-    //   shapes: {
-    //     current: 0,
-    //     list: [
-    //       {
-    //         type: 'line',
-    //         thickness: 4
-    //       }
-    //     ]
-    //   },
-    //   selection: {
-    //     coords: null
-    //   }
-    // }
+    instruments: {
+      selected: 'pen',
+      text: {},
+      eraser: {
+        thickness: 4
+      },
+      zoom: {
+        current: 1
+      },
+      brushes: {
+        current: 0,
+        list: [
+          {
+            type: 'kek',
+            thickness: 228
+          }
+        ]
+      },
+      shapes: {
+        current: 0,
+        list: [
+          {
+            type: 'line',
+            thickness: 4
+          }
+        ]
+      },
+      selection: {
+        coords: null
+      }
+    }
   }
 }
 
