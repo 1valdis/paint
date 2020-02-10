@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 
 export interface CanvasResizerProps {
   imageData: ImageData
+  secondaryColor: { r: number; g: number; b: number }
   changeImage(imageData: ImageData): void
 }
 
@@ -37,7 +38,7 @@ class _CanvasResizer extends PureComponent<CanvasResizerProps> {
       newCanvas.height = toHeight
       const newCtx = newCanvas.getContext('2d')
       if (!newCtx) throw new Error("Coudn't acquire context")
-      // newCtx.fillStyle = `rgb(${this.props.secondaryColor.r},${this.props.secondaryColor.g},${this.props.secondaryColor.b})`
+      newCtx.fillStyle = `rgb(${this.props.secondaryColor.r},${this.props.secondaryColor.g},${this.props.secondaryColor.b})`
       newCtx.fillRect(0, 0, toWidth, toHeight)
       newCtx.putImageData(this.props.imageData, 0, 0)
       this.props.changeImage(newCtx.getImageData(0, 0, toWidth, toHeight))
@@ -46,8 +47,8 @@ class _CanvasResizer extends PureComponent<CanvasResizerProps> {
 }
 
 const mapStateToProps = (state: StoreState) => ({
-  imageData: state.image.imageData
-  // secondaryColor: state.colors.list[state.colors.secondary],
+  imageData: state.image.imageData,
+  secondaryColor: state.colors.list[state.colors.secondary]
   // selectedInstrument: state.instruments.instrument
 })
 

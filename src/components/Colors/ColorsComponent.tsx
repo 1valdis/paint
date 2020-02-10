@@ -8,13 +8,13 @@ import { ColorInput } from '../ColorInput/ColorInput'
 import { Color } from '../Color/Color'
 
 import { rgbToHex } from '../helpers'
-import { Color as ColorObject, SelectedColor } from '../../actions'
+import { Color as ColorObject } from '../../actions'
 
 export interface ColorsComponentProps {
   colors: ColorObject[]
-  activeColor: SelectedColor
+  activeColor: 'primary' | 'secondary'
   onColorClick: (colorIndex: number) => void
-  onActiveColorClick: (activeColorType: SelectedColor) => void
+  onActiveColorClick: (activeColorType: 'primary' | 'secondary') => void
   onColorInputChange: ChangeEventHandler
   primary: number
   secondary: number
@@ -25,14 +25,14 @@ export const ColorsComponent: FunctionComponent<ColorsComponentProps> = props =>
     <ColorSelection
       header="Color 1"
       color={props.colors[props.primary]}
-      active={props.activeColor === SelectedColor.primary}
-      onClick={() => props.onActiveColorClick(SelectedColor.primary)}
+      active={props.activeColor === 'primary'}
+      onClick={() => props.onActiveColorClick('primary')}
     />
     <ColorSelection
       header="Color 2"
       color={props.colors[props.secondary]}
-      active={props.activeColor === SelectedColor.secondary}
-      onClick={() => props.onActiveColorClick(SelectedColor.secondary)}
+      active={props.activeColor === 'secondary'}
+      onClick={() => props.onActiveColorClick('secondary')}
     />
     <ColorPalette>
       {[

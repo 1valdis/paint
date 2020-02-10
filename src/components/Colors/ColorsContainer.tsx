@@ -7,7 +7,6 @@ import {
   changeActiveColor,
   selectColor,
   addColorFromInput,
-  SelectedColor,
   Color
 } from '../../actions/colors'
 import { StoreState } from '../../reducers'
@@ -16,11 +15,11 @@ import { Action } from '../../actions'
 
 export interface ColorsContainerProps {
   colors: Color[]
-  activeColor: SelectedColor
+  activeColor: 'primary' | 'secondary'
   primary: number
   secondary: number
   onColorClick: (colorIndex: number) => void
-  onActiveColorClick: (activeColorType: SelectedColor) => void
+  onActiveColorClick: (activeColorType: 'primary' | 'secondary') => void
   onColorInputChange: ChangeEventHandler<HTMLInputElement>
 }
 
@@ -40,7 +39,7 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   onColorClick: (index: number) => dispatch(selectColor(index)),
-  onActiveColorClick: (activeColor: SelectedColor) =>
+  onActiveColorClick: (activeColor: 'primary' | 'secondary') =>
     dispatch(changeActiveColor(activeColor)),
   onColorInputChange: (e: ChangeEvent<HTMLInputElement>) =>
     dispatch(addColorFromInput(e))

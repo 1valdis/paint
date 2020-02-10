@@ -6,12 +6,12 @@ import { connect } from 'react-redux'
 
 import { FileMenu } from '../FileMenu/FileMenu'
 import { Canvas } from '../Canvas/Canvas'
-// import { NavBar } from '../NavBar/NavBar'
-// import { NavBarItem } from '../NavBar/NavBarItem'
-// import { Clipboard } from '../Clipboard/Clipboard'
+import { NavBar } from '../NavBar/NavBar'
+import { NavBarItem } from '../NavBar/NavBarItem'
+import { Clipboard } from '../Clipboard/Clipboard'
 // import { Image } from '../Image/Image'
 // import { Instruments } from '../instruments/Instruments'
-// import { ColorsContainer } from '../Colors/ColorsContainer'
+import { ColorsContainer } from '../Colors/ColorsContainer'
 
 import {
   openFile,
@@ -39,20 +39,20 @@ class _App extends PureComponent<AppProps> {
           onFileCreate={this.props.onFileCreate}
           onFileOpen={this.props.onFileOpen}
         />
-        {/* <NavBar>
+        <NavBar>
           <NavBarItem footer="Clipboard">
             <Clipboard />
           </NavBarItem>
-          <NavBarItem footer="Image">
+          {/* <NavBarItem footer="Image">
             <Image />
           </NavBarItem>
           <NavBarItem footer="Instruments">
             <Instruments />
-          </NavBarItem>
+          </NavBarItem> */}
           <NavBarItem footer="Colors">
             <ColorsContainer />
           </NavBarItem>
-        </NavBar> */}
+        </NavBar>
         <Canvas />
       </React.Fragment>
     )
