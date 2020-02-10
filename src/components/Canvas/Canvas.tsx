@@ -46,7 +46,7 @@ class _Canvas extends PureComponent<CanvasProps> {
         this.props.imageData.height
       ]
       const ctx = canvas.getContext('2d')
-      if (!ctx) throw new Error("Coudn't acquire context")
+      if (!ctx) throw new Error("Couldn't acquire context")
       ctx.putImageData(this.props.imageData, 0, 0)
     }
   }
