@@ -1,36 +1,56 @@
 import { ActionTypes, Instruments } from '../actions'
 import { AnyAction } from 'redux'
 
-export interface OtherInstrumentStoreState {
-  instrument:
-    | Instruments.pen
-    | Instruments.dropper
-    | Instruments.eraser
-    | Instruments.fill
-    | Instruments.text
-    | Instruments.zoom
+export interface InstrumentStoreState {
+  selected:
+    | 'pen'
+    | 'fill'
+    | 'text'
+    | 'eraser'
+    | 'dropper'
+    | 'zoom'
+    | 'brushes'
+    | 'shapes'
+    | 'selection'
+  text: {
+    // some other text settings or currently filled text
+  }
+  eraser: {
+    thickness: number
+  }
+  zoom: {
+    current: number
+  }
+  brushes: {
+    list: {
+      type: string
+      thickness: number
+    }[]
+    current: number
+  }
+  shapes: {
+    list: {
+      type: string
+      thickness: number
+    }[]
+    current: number
+    // there should be some other settings of fill etc
+  }
+  selection: {
+    coords: {
+      top: number
+      left: number
+      width: number
+      height: number
+    } | null
+    // some other data, still need to figure out how that will work
+  }
 }
-
-export interface SelectionCoords {
-  left: number
-  top: number
-  width: number
-  height: number
-}
-
-export interface SelectionStoreState {
-  instrument: Instruments.selection
-  originalImageData?: ImageData
-  selectionImageData?: ImageData
-  coords?: SelectionCoords
-}
-
-export type InstrumentStoreState =
-  | OtherInstrumentStoreState
-  | SelectionStoreState
 
 export const instrumentsReducer = (
-  state: InstrumentStoreState = { instrument: Instruments.pen },
+  state: InstrumentStoreState = { 
+    
+  },
   action: AnyAction
 ): InstrumentStoreState => {
   switch (action.type) {

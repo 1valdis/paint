@@ -1,144 +1,109 @@
-import { ActionTypes } from './types'
 import { ThunkAction } from 'redux-thunk'
-import { StoreState } from '../reducers'
+import { ImageFile } from '../core/src/ImageFile'
 import { ChangeEvent } from 'react'
-import { ChangeInstrumentAction, Instruments } from './instruments'
+import { StoreState } from '../reducers'
+import { ChangeImageAction } from '../actions'
+import { Canvas } from '../core/src/Canvas'
 
-export interface ChangeImageAction {
-  type: ActionTypes.changeImage
-  data: ImageData
-  name?: string
+const canvas = new Canvas()
+
+export const changeImage = (imageData: ImageData): ChangeImageAction => {
+  canvas.putImageData(imageData)
+  return {
+    type: 'changeImage',
+    payload: { imageData }
+  }
 }
 
-const canvas = document.createElement('canvas')
+export const createFile = (): ChangeImageAction => {
+  const imageData = ImageFile.create()
+  return changeImage(imageData)
+}
 
-const ctx = canvas.getContext('2d', { alpha: false })
-if (!ctx) throw new Error("Coudn't acquire context")
+export const getInitialState = (): StoreState => {
+  const imageData = ImageFile.create()
+  return {
+    image: {
+      fileName: 'Picture.png',
+      imageData
+    }
+    // colors: {
+    //   list: [
+    //     { r: 0, g: 0, b: 0 },
+    //     { r: 127, g: 127, b: 127 },
+    //     { r: 136, g: 0, b: 21 },
+    //     { r: 237, g: 28, b: 36 },
+    //     { r: 255, g: 127, b: 39 },
+    //     { r: 255, g: 242, b: 0 },
+    //     { r: 34, g: 177, b: 76 },
+    //     { r: 0, g: 162, b: 232 },
+    //     { r: 63, g: 72, b: 204 },
+    //     { r: 163, g: 73, b: 164 },
+    //     { r: 255, g: 255, b: 255 },
+    //     { r: 195, g: 195, b: 195 },
+    //     { r: 185, g: 122, b: 87 },
+    //     { r: 255, g: 174, b: 201 },
+    //     { r: 255, g: 201, b: 14 },
+    //     { r: 239, g: 228, b: 176 },
+    //     { r: 181, g: 230, b: 29 },
+    //     { r: 153, g: 217, b: 234 },
+    //     { r: 112, g: 176, b: 190 },
+    //     { r: 200, g: 191, b: 231 }
+    //   ],
+    //   activeColor: 'primary',
+    //   primary: 0,
+    //   secondary: 10
+    // },
+    // instruments: {
+    //   selected: 'pen',
+    //   text: {},
+    //   eraser: {
+    //     thickness: 4
+    //   },
+    //   zoom: {
+    //     current: 1
+    //   },
+    //   brushes: {
+    //     current: 0,
+    //     list: [
+    //       {
+    //         type: 'kek',
+    //         thickness: 228
+    //       }
+    //     ]
+    //   },
+    //   shapes: {
+    //     current: 0,
+    //     list: [
+    //       {
+    //         type: 'line',
+    //         thickness: 4
+    //       }
+    //     ]
+    //   },
+    //   selection: {
+    //     coords: null
+    //   }
+    // }
+  }
+}
 
-let href: string
-
-export const createFile = (): ThunkAction<
+export const download = (name: string) => {
+  ImageFile.save(canvas.canvas, name)
+}
+export const openFile = (
+  e: ChangeEvent<HTMLInputElement>
+): ThunkAction<
   void,
   StoreState,
   undefined,
   ChangeImageAction
-> => {
-  return function(dispatch) {
-    ;[canvas.width, canvas.height] = [800, 450]
-    clearCanvas()
-    dispatch({
-      type: ActionTypes.changeImage,
-      data: ctx.getImageData(0, 0, canvas.width, canvas.height),
-      name: 'Ваша пикча.png'
-    })
-  }
+> => async dispatch => {
+  const files = (e.nativeEvent.target as HTMLInputElement).files
+  const file = files && files[0]
+  if (!file) return
+  const imageData = await ImageFile.open(file)
+  dispatch(changeImage(imageData))
 }
-
-export const openFile = (
-  e: ChangeEvent<HTMLInputElement>
-): ThunkAction<void, StoreState, undefined, ChangeImageAction> => {
-  return function(dispatch) {
-    const input = e.nativeEvent.currentTarget as HTMLInputElement
-    const file = input.files && input.files[0]
-    if (file == null) return
-    const reader = new FileReader()
-    reader.onload = e => {
-      const img = new Image()
-      img.onload = () => {
-        canvas.width = img.width
-        canvas.height = img.height
-        ctx.drawImage(img, 0, 0)
-        dispatch({
-          type: ActionTypes.changeImage,
-          data: ctx.getImageData(0, 0, img.width, img.height),
-          name: file.name
-        })
-      }
-      img.src = (e.currentTarget as FileReader).result as string
-    }
-    reader.readAsDataURL(file)
-  }
-}
-
-export function paste(
-  e: ClipboardEvent
-): ThunkAction<void, StoreState, undefined, ChangeInstrumentAction> {
-  return function(dispatch) {
-    if (e.clipboardData) {
-      const items = e.clipboardData.items
-      if (!items) return
-
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].type.indexOf('image') !== -1) {
-          const blob = items[i].getAsFile()
-          const source = window.URL.createObjectURL(blob)
-          const pastedImage = new Image()
-          pastedImage.onload = () => {
-            const pastedImageCanvas = document.createElement('canvas')
-            pastedImageCanvas.width = pastedImage.width
-            pastedImageCanvas.height = pastedImage.height
-            const pastedImageCtx = pastedImageCanvas.getContext('2d')
-            if (!pastedImageCtx) throw new Error("Coudn't acquire context")
-            pastedImageCtx.drawImage(pastedImage, 0, 0)
-
-            dispatch({
-              type: ActionTypes.changeInstrument,
-              instrumentData: {
-                instrument: Instruments.selection,
-                selectionImageData: pastedImageCtx.getImageData(
-                  0,
-                  0,
-                  pastedImageCanvas.width,
-                  pastedImageCanvas.height
-                ),
-                coords: {
-                  top: 0,
-                  left: 0,
-                  width: pastedImage.width,
-                  height: pastedImage.height
-                }
-              }
-            })
-          }
-          pastedImage.src = source
-          break
-        }
-      }
-      e.preventDefault()
-    }
-  }
-}
-
-export const changeImage = (
-  imageData: ImageData
-): ThunkAction<void, StoreState, undefined, ChangeImageAction> => {
-  return function(dispatch, getState) {
-    canvas.width = imageData.width
-    canvas.height = imageData.height
-    ctx.putImageData(imageData, 0, 0)
-    dispatch({
-      type: ActionTypes.changeImage,
-      data: imageData
-    })
-  }
-}
-
-export const clearCanvas = () => {
-  ctx.fillStyle = '#FFFFFF'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
-}
-
-export const download = (name: string) => {
-  canvas.toBlob(blob => {
-    if (href !== null) {
-      window.URL.revokeObjectURL(href)
-    }
-    href = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.download = name
-    a.href = href
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-  })
-}
+export const pasteFromEvent = (event: ClipboardEvent) => () => {}
+export const pasteManually = () => {}

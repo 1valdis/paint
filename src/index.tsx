@@ -6,7 +6,8 @@ import thunk from 'redux-thunk'
 
 import { App } from './components/App/App'
 import reducer from './reducers'
-import './core/test'
+import { getInitialState } from './actions'
+// import './core/test'
 
 declare global {
   interface Window {
@@ -15,7 +16,11 @@ declare global {
 }
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const store = createStore(reducer, composeEnhancers(applyMiddleware(thunk)))
+const store = createStore(
+  reducer,
+  getInitialState(),
+  composeEnhancers(applyMiddleware(thunk))
+)
 
 render(
   <StrictMode>

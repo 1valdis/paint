@@ -6,19 +6,25 @@ import { connect } from 'react-redux'
 
 import { FileMenu } from '../FileMenu/FileMenu'
 import { Canvas } from '../Canvas/Canvas'
-import { NavBar } from '../NavBar/NavBar'
-import { NavBarItem } from '../NavBar/NavBarItem'
+// import { NavBar } from '../NavBar/NavBar'
+// import { NavBarItem } from '../NavBar/NavBarItem'
 // import { Clipboard } from '../Clipboard/Clipboard'
-import { Image } from '../Image/Image'
-import { Instruments } from '../instruments/Instruments'
-import { ColorsContainer } from '../Colors/ColorsContainer'
+// import { Image } from '../Image/Image'
+// import { Instruments } from '../instruments/Instruments'
+// import { ColorsContainer } from '../Colors/ColorsContainer'
 
-import { openFile, createFile, paste, download, Action } from '../../actions'
+import {
+  openFile,
+  createFile,
+  pasteFromEvent,
+  download,
+  Action
+} from '../../actions'
 import { StoreState } from '../../reducers'
 import { ThunkDispatch } from 'redux-thunk'
 
 export interface AppProps {
-  downloadName: string
+  fileName: string
   onFileCreate: () => void
   onFileOpen: (e: ChangeEvent<HTMLInputElement>) => void
   onPaste: (e: ClipboardEvent) => void
@@ -29,14 +35,14 @@ class _App extends PureComponent<AppProps> {
     return (
       <React.Fragment>
         <FileMenu
-          onDownload={() => download(this.props.downloadName)}
+          onDownload={() => download(this.props.fileName)}
           onFileCreate={this.props.onFileCreate}
           onFileOpen={this.props.onFileOpen}
         />
-        <NavBar>
-          {/* <NavBarItem footer="Clipboard">
+        {/* <NavBar>
+          <NavBarItem footer="Clipboard">
             <Clipboard />
-          </NavBarItem> */}
+          </NavBarItem>
           <NavBarItem footer="Image">
             <Image />
           </NavBarItem>
@@ -46,7 +52,7 @@ class _App extends PureComponent<AppProps> {
           <NavBarItem footer="Colors">
             <ColorsContainer />
           </NavBarItem>
-        </NavBar>
+        </NavBar> */}
         <Canvas />
       </React.Fragment>
     )
@@ -62,14 +68,14 @@ class _App extends PureComponent<AppProps> {
 }
 
 const mapStateToProps = (state: StoreState) => ({
-  downloadName: state.image.name
+  fileName: state.image.fileName
 })
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   onFileCreate: () => dispatch(createFile()),
   onFileOpen: (e: ChangeEvent<HTMLInputElement>) => dispatch(openFile(e)),
-  onPaste: (e: ClipboardEvent) => dispatch(paste(e))
+  onPaste: (e: ClipboardEvent) => dispatch(pasteFromEvent(e))
 })
 
 export const App = connect(mapStateToProps, mapDispatchToProps)(_App)

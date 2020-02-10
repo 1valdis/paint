@@ -1,32 +1,20 @@
-import { ActionTypes } from '../actions'
-import { AnyAction } from 'redux'
+import { Action, getInitialState } from '../actions'
 
 export interface ImageStoreState {
-  data: ImageData
-  name: string
+  fileName: string
+  imageData: ImageData
 }
 
 export const imageReducer = (
-  state: ImageStoreState | undefined,
-  action: AnyAction
-) => {
-  if (state === undefined) {
-    const canvasEl = document.createElement('canvas')
-    ;[canvasEl.width, canvasEl.height] = [800, 450]
-    const ctx = canvasEl.getContext('2d')
-    if (!ctx) throw new Error("Coudn't acquire context")
-    ctx.fillStyle = '#FFFFFF'
-    ctx.fillRect(0, 0, canvasEl.width, canvasEl.height)
-    return {
-      data: ctx.getImageData(0, 0, canvasEl.width, canvasEl.height),
-      name: 'Ваша пикча.png'
-    }
-  }
+  state: ImageStoreState | undefined = getInitialState().image,
+  action: Action
+): ImageStoreState => {
+  console.log('reducer called')
   switch (action.type) {
-    case ActionTypes.changeImage:
+    case 'changeImage':
       return {
-        data: action.data,
-        name: action.name || state.name
+        imageData: action.payload.imageData || state.imageData,
+        fileName: action.payload.fileName || state.fileName
       }
     default:
       return state

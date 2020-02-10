@@ -4,26 +4,23 @@ import { connect } from 'react-redux'
 
 import {
   changeImage,
-  Color,
-  Action,
-  changeInstrument,
-  Instruments
+  // Color,
+  Action
+  // changeInstrument,
+  // Instruments
 } from '../../actions'
 
 import { Resizer, ResizerMode } from '../Resizer/Resizer'
-import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
+// import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
 
 import './Canvas.css'
 import { StoreState } from '../../reducers'
 import { ThunkDispatch } from 'redux-thunk'
-import { InstrumentStoreState } from '../../reducers/instruments'
+// import { InstrumentStoreState } from '../../reducers/instruments'
 
 export interface CanvasProps {
-  data: ImageData
-  secondaryColor: Color
-  selectedInstrument: Instruments
+  imageData: ImageData
   changeImage: (imageData: ImageData) => void
-  changeInstrument: (intstrumentData: InstrumentStoreState) => void
 }
 
 class _Canvas extends PureComponent<CanvasProps> {
@@ -35,27 +32,27 @@ class _Canvas extends PureComponent<CanvasProps> {
         <canvas
           ref={this.canvas}
           className="canvas"
-          width={this.props.data ? this.props.data.width : 0}
-          height={this.props.data ? this.props.data.height : 0}
+          width={this.props.imageData ? this.props.imageData.width : 0}
+          height={this.props.imageData ? this.props.imageData.height : 0}
         />
         <div
           className="canvas-upper-layer"
           style={{
-            width: this.props.data ? this.props.data.width : 0,
-            height: this.props.data ? this.props.data.height : 0
+            width: this.props.imageData ? this.props.imageData.width : 0,
+            height: this.props.imageData ? this.props.imageData.height : 0
           }}>
           <Resizer
             mode={ResizerMode.canvas}
             onResizeEnd={this.onResize}
-            onResizing={() =>
-              changeInstrument({ instrument: this.props.selectedInstrument })
-            }
-            width={this.props.data ? this.props.data.width : 0}
-            height={this.props.data ? this.props.data.height : 0}
+            // onResizing={() =>
+            //   changeInstrument({ instrument: this.props.selectedInstrument })
+            // }
+            width={this.props.imageData ? this.props.imageData.width : 0}
+            height={this.props.imageData ? this.props.imageData.height : 0}
             top={0}
             left={0}
           />
-          <CanvasEditor />
+          {/* <CanvasEditor /> */}
         </div>
       </div>
     )
@@ -63,30 +60,30 @@ class _Canvas extends PureComponent<CanvasProps> {
 
   updateCanvas = () => {
     const canvas = this.canvas.current
-    if (canvas != null && this.props.data != null) {
+    if (canvas != null && this.props.imageData != null) {
       ;[canvas.width, canvas.height] = [
-        this.props.data.width,
-        this.props.data.height
+        this.props.imageData.width,
+        this.props.imageData.height
       ]
       const ctx = canvas.getContext('2d')
       if (!ctx) throw new Error("Coudn't acquire context")
-      ctx.putImageData(this.props.data, 0, 0)
+      ctx.putImageData(this.props.imageData, 0, 0)
     }
   }
 
   onResize = (top: number, left: number, toWidth: number, toHeight: number) => {
     if (
-      this.props.data.width !== toWidth ||
-      this.props.data.height !== toHeight
+      this.props.imageData.width !== toWidth ||
+      this.props.imageData.height !== toHeight
     ) {
       const newCanvas = document.createElement('canvas')
       newCanvas.width = toWidth
       newCanvas.height = toHeight
       const newCtx = newCanvas.getContext('2d')
       if (!newCtx) throw new Error("Coudn't acquire context")
-      newCtx.fillStyle = `rgb(${this.props.secondaryColor.r},${this.props.secondaryColor.g},${this.props.secondaryColor.b})`
+      // newCtx.fillStyle = `rgb(${this.props.secondaryColor.r},${this.props.secondaryColor.g},${this.props.secondaryColor.b})`
       newCtx.fillRect(0, 0, toWidth, toHeight)
-      newCtx.putImageData(this.props.data, 0, 0)
+      newCtx.putImageData(this.props.imageData, 0, 0)
       this.props.changeImage(newCtx.getImageData(0, 0, toWidth, toHeight))
     }
   }
@@ -101,17 +98,17 @@ class _Canvas extends PureComponent<CanvasProps> {
 }
 
 const mapStateToProps = (state: StoreState) => ({
-  data: state.image.data,
-  secondaryColor: state.colors.list[state.colors.secondary],
-  selectedInstrument: state.instruments.instrument
+  imageData: state.image.imageData
+  // secondaryColor: state.colors.list[state.colors.secondary],
+  // selectedInstrument: state.instruments.instrument
 })
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
-  changeImage: (data: ImageData) => dispatch(changeImage(data)),
-  changeInstrument: (instrumentData: InstrumentStoreState) =>
-    dispatch(changeInstrument(instrumentData))
+  changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
+  // changeInstrument: (instrumentData: InstrumentStoreState) =>
+  //   dispatch(changeInstrument(instrumentData))
 })
 
 export const Canvas = connect(mapStateToProps, mapDispatchToProps)(_Canvas)
