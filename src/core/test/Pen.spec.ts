@@ -5,9 +5,17 @@ import { Canvas } from '../src/Canvas'
 describe('Pen', () => {
   it('should draw a point on given coordinates', () => {
     const canvas = new Canvas(5, 5)
-    const pen = new Pen(canvas, { x: 2, y: 3 }, { r: 14, g: 88, b: 228 })
+    const pen = new Pen(
+      canvas.getImageData({
+        top: 0,
+        left: 0,
+        width: 5,
+        height: 5
+      })
+    )
+    pen.continueLine({ x: 2, y: 3 }, { r: 14, g: 88, b: 228 })
     pen.finishLine()
-    const newImageData = canvas.getImageData()
+    const newImageData = pen.context.getImageData(0, 0, 5, 5)
     assert.strictEqual(newImageData.data[(newImageData.width * 3 + 2) * 4], 14)
     assert.strictEqual(
       newImageData.data[(newImageData.width * 3 + 2) * 4 + 1],
@@ -19,30 +27,15 @@ describe('Pen', () => {
     )
   })
 
-  it('should not draw anything until line is finished', () => {
-    const canvas = new Canvas(5, 5)
-    const pen = new Pen(canvas, { x: 2, y: 3 }, { r: 14, g: 88, b: 228 })
-    pen.continueLine({ x: 5, y: 5 })
-    const newImageData = canvas.getImageData()
-    assert.strictEqual(newImageData.data[(newImageData.width * 3 + 2) * 4], 255)
-    assert.strictEqual(
-      newImageData.data[(newImageData.width * 3 + 2) * 4 + 1],
-      255
-    )
-    assert.strictEqual(
-      newImageData.data[(newImageData.width * 3 + 2) * 4 + 2],
-      255
-    )
-  })
-
   it('should draw lines correctly', () => {
     const canvas = new Canvas(10, 10)
-    const pen = new Pen(canvas, { x: 1, y: 1 }, { r: 14, g: 88, b: 228 })
-    pen.continueLine({ x: 5, y: 5 })
-    pen.continueLine({ x: -10, y: 5 })
-    pen.continueLine({ x: 9, y: 9 })
+    const pen = new Pen(canvas.getImageData())
+    pen.continueLine({ x: 1, y: 1 }, { r: 14, g: 88, b: 228 })
+    pen.continueLine({ x: 5, y: 5 }, { r: 14, g: 88, b: 228 })
+    pen.continueLine({ x: -10, y: 5 }, { r: 14, g: 88, b: 228 })
+    pen.continueLine({ x: 9, y: 9 }, { r: 14, g: 88, b: 228 })
     pen.finishLine()
-    const newImageData = canvas.getImageData()
+    const newImageData = pen.context.getImageData(0, 0, 10, 10)
 
     // starting point
     assert.strictEqual(newImageData.data[(newImageData.width * 1 + 1) * 4], 14)

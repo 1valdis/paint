@@ -7,7 +7,7 @@ import thunk from 'redux-thunk'
 import { App } from './components/App/App'
 import reducer from './reducers'
 import { getInitialState } from './actions'
-// import './core/test'
+import './core/test'
 
 declare global {
   interface Window {

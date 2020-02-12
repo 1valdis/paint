@@ -1,4 +1,5 @@
 import { createCanvas } from './utils'
+import { Rectangle } from './interfaces/Rectangle'
 
 export class Canvas {
   private _canvas: HTMLCanvasElement
@@ -31,12 +32,12 @@ export class Canvas {
     this.context.putImageData(imageData, 0, 0)
   }
 
-  getImageData() {
+  getImageData(coords?: Partial<Rectangle>) {
     return this.context.getImageData(
-      0,
-      0,
-      this._canvas.width,
-      this._canvas.height
+      coords?.left || 0,
+      coords?.top || 0,
+      coords?.width || this._canvas.width,
+      coords?.height || this._canvas.height
     )
   }
 }

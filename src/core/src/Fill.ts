@@ -1,29 +1,11 @@
-import { Canvas } from './Canvas'
 import { Point } from './interfaces/Point'
 import { Color } from './interfaces/Color'
-import { createCanvas } from './utils'
 
 export class Fill {
-  static fill(canvas: Canvas, { x, y }: Point, color: Color) {
-    if (
-      x < 0 ||
-      y < 0 ||
-      x >= canvas.canvas.width ||
-      y >= canvas.canvas.height
-    ) {
+  static fill(imageData: ImageData, { x, y }: Point, color: Color) {
+    if (x < 0 || y < 0 || x >= imageData.width || y >= imageData.height) {
       return
     }
-    const { canvas: canvasToBeFilled, context } = createCanvas(
-      canvas.canvas.width,
-      canvas.canvas.height
-    )
-    context.drawImage(canvas.canvas, 0, 0)
-    const imageData = context.getImageData(
-      0,
-      0,
-      canvasToBeFilled.width,
-      canvasToBeFilled.height
-    )
 
     const colorToReplace = {
       r: imageData.data[(y * imageData.width + x) * 4],
@@ -31,9 +13,7 @@ export class Fill {
       b: imageData.data[(y * imageData.width + x) * 4 + 2]
     }
 
-    this.floodFill(imageData, { x, y }, colorToReplace, color)
-
-    canvas.putImageData(imageData)
+    return this.floodFill(imageData, { x, y }, colorToReplace, color)
   }
 
   // optimized the shit out of it (as I can judge)
@@ -42,7 +22,7 @@ export class Fill {
     { x, y }: Point,
     colorToReplace: Color,
     colorToFillWith: Color
-  ) {
+  ): ImageData {
     const replaceR = colorToReplace.r
     const replaceG = colorToReplace.g
     const replaceB = colorToReplace.b
@@ -60,7 +40,7 @@ export class Fill {
       ) ||
       (replaceR === fillR && replaceG === fillG && replaceB === fillB)
     ) {
-      return
+      return data
     }
 
     const q: Point[] = []
@@ -119,5 +99,7 @@ export class Fill {
         q.push({ x, y: y + 1 })
       }
     }
+
+    return data
   }
 }
