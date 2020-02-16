@@ -1,4 +1,3 @@
-import { Canvas } from './Canvas'
 import { createCanvas } from './utils'
 import { Rectangle } from './interfaces/Rectangle'
 import { Color } from '../../actions'
@@ -98,8 +97,6 @@ export class Selection {
   }
 
   // moveToRectangle (takes rectangle and backgroundColor)
-  moveToRectangle(rectangle: Rectangle, backgroundColor: Color) {
-    
-  }
+  moveToRectangle(rectangle: Rectangle, backgroundColor: Color) {}
   // get selection imagedata
 }
