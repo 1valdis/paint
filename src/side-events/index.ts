@@ -1,6 +1,7 @@
 import { addPermissionChangeListeners } from './clipboard'
-import { Action } from '../actions'
+import { Middleware } from 'redux'
 
-export const applySideEventListeners = (dispatch: (action: Action) => void) => {
-  addPermissionChangeListeners(dispatch)
+export const sideEvents: Middleware = api => {
+  addPermissionChangeListeners(api.dispatch)
+  return next => action => next(action)
 }
