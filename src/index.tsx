@@ -6,7 +6,8 @@ import thunk from 'redux-thunk'
 
 import { App } from './components/App/App'
 import reducer from './reducers'
-import { getInitialState, addPermissionChangeListeners } from './actions'
+import { getInitialState } from './actions'
+import { applySideEventListeners } from './side-events'
 import './core/test'
 
 declare global {
@@ -21,7 +22,7 @@ const store = createStore(
   getInitialState(),
   composeEnhancers(applyMiddleware(thunk))
 )
-addPermissionChangeListeners(store.dispatch)
+applySideEventListeners(store.dispatch)
 
 render(
   <StrictMode>

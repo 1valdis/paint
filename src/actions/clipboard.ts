@@ -21,26 +21,7 @@ export interface ClipboardPermissionChangeAction {
   }
 }
 
-const clipboard = new ImageClipboard()
-
-export const addPermissionChangeListeners = (
-  dispatch: (action: ClipboardPermissionChangeAction) => void
-) => {
-  clipboard.onReadPermissionChange = permissionState =>
-    dispatch({
-      type: 'clipboardPermissionChange',
-      payload: {
-        read: permissionState
-      }
-    })
-  clipboard.onWritePermissionChange = permissionState =>
-    dispatch({
-      type: 'clipboardPermissionChange',
-      payload: {
-        write: permissionState
-      }
-    })
-}
+export const clipboard = new ImageClipboard()
 
 let clipboardIsReady = false
 ;(async () => {
