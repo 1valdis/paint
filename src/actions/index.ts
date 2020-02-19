@@ -1,4 +1,3 @@
-// export * from './types'
 import { ChangeImageAction } from './image'
 import {
   AddColorAction,
@@ -6,10 +5,12 @@ import {
   ChangeSelectedColorAction
 } from './colors'
 import { ChangeInstrumentAction } from './instruments'
+import { ClipboardPermissionChangeAction } from './clipboard'
 export * from './colors'
 export * from './app'
 export * from './image'
 export * from './instruments'
+export * from './clipboard'
 
 export type Action =
   | ChangeImageAction
@@ -17,3 +18,4 @@ export type Action =
   | SelectColorAction
   | ChangeSelectedColorAction
   | ChangeInstrumentAction
+  | ClipboardPermissionChangeAction

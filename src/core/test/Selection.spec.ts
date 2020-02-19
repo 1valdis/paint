@@ -1,6 +1,6 @@
-import { assert } from 'chai'
-import { Canvas } from '../src/Canvas'
-import { Selection } from '../src/Selection'
+// import { assert } from 'chai'
+// import { Canvas } from '../src/Canvas'
+// import { Selection } from '../src/Selection'
 
 export {}
 

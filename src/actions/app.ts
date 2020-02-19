@@ -84,6 +84,10 @@ export const getInitialState = (): StoreState => {
       selection: {
         coords: null
       }
+    },
+    clipboard: {
+      read: 'prompt',
+      write: 'prompt'
     }
   }
 }
@@ -105,5 +109,3 @@ export const openFile = (
   const imageData = await ImageFile.open(file)
   dispatch(changeImage(imageData))
 }
-export const pasteFromEvent = (event: ClipboardEvent) => () => {}
-export const pasteManually = () => {}
