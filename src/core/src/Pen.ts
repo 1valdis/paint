@@ -1,5 +1,4 @@
-import { Point } from './interfaces/Point'
-import { Color } from './interfaces/Color'
+import { Point, Color } from './interfaces'
 import { createCanvas } from './utils'
 
 export class Pen {

@@ -1,6 +1,5 @@
 import { createCanvas } from './utils'
-import { Rectangle } from './interfaces/Rectangle'
-import { Color } from '../../actions'
+import { Rectangle, Color, Point } from './interfaces'
 
 export class Selection {
   private _originalCoordinates: Rectangle | null = null
@@ -99,4 +98,48 @@ export class Selection {
   // moveToRectangle (takes rectangle and backgroundColor)
   moveToRectangle(rectangle: Rectangle, backgroundColor: Color) {}
   // get selection imagedata
+
+  static createSelectionFromPolygon(
+    polygon: Point[],
+    originalCanvas: HTMLCanvasElement
+  ): SelectionData {
+    if (polygon.length < 3)
+      throw new Error('Polygon should have at least 3 points')
+    const path = new Path2D()
+    polygon.forEach(({ x, y }) => {
+      path.lineTo(x, y)
+    })
+    path.closePath()
+    const { canvas, context } = createCanvas(
+      originalCanvas.width,
+      originalCanvas.height
+    )
+    const pattern = context.createPattern(originalCanvas, 'no-repeat')
+    if (!pattern) throw new Error("Couldn't create pattern from canvas")
+    context.fillStyle = pattern
+    context.fill(path, 'evenodd')
+
+    const topLeft: Point = {
+      x: Math.min(...polygon.map(({ x }) => x)),
+      y: Math.min(...polygon.map(({ y }) => y))
+    }
+    const boundingBox: Rectangle = {
+      top: topLeft.y,
+      left: topLeft.x,
+      width: Math.max(...polygon.map(({ x }) => x)) - topLeft.x,
+      height: Math.max(...polygon.map(({ y }) => y)) - topLeft.y
+    }
+    const { resultingCanvas, resultingContext } = createCanvas(boundingBox.width, boundingBox.height)
+  }
 }
+
+interface SelectionData {
+  selectionImageData: ImageData
+  baseImageData: ImageData
+  path: Path2D
+}
+
+// create selection from poly
+// create selection from imageData
+// switch/create selection with transparent background
+// reverse selection

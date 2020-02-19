@@ -1,5 +1,5 @@
 import { createCanvas } from './utils'
-import { Rectangle } from './interfaces/Rectangle'
+import { Rectangle } from './interfaces'
 
 export class Canvas {
   private _canvas: HTMLCanvasElement

@@ -1,5 +1,4 @@
-import { Point } from './interfaces/Point'
-import { Color } from './interfaces/Color'
+import { Point, Color } from './interfaces'
 
 export class Fill {
   static fill(imageData: ImageData, { x, y }: Point, color: Color) {
