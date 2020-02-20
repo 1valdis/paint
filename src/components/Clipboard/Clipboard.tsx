@@ -14,19 +14,30 @@ export interface ClipboardProps {
   onPaste: () => void
 }
 
-const _Clipboard: React.FC<ClipboardProps> = (props): JSX.Element => (
-  <nav className="clipboard">
-    <button disabled={!props.copyEnabled} onClick={props.onCut}>
-      Cut
-    </button>
-    <button disabled={!props.copyEnabled} onClick={props.onCopy}>
-      Copy
-    </button>
-    <button disabled={!props.pasteEnabled} onClick={props.onPaste}>
-      Paste
-    </button>
-  </nav>
-)
+const _Clipboard: React.FC<ClipboardProps> = (props): JSX.Element => {
+  const pasteDisabledMessage = props.pasteEnabled
+    ? {}
+    : {
+        title:
+          'Unable to read from clipboard. Check that you have a newer browser version and access to clipboard is allowed on this page'
+      }
+  return (
+    <nav className="clipboard">
+      <button disabled={!props.copyEnabled} onClick={props.onCut}>
+        Cut
+      </button>
+      <button disabled={!props.copyEnabled} onClick={props.onCopy}>
+        Copy
+      </button>
+      <button
+        disabled={!props.pasteEnabled}
+        onClick={props.onPaste}
+        {...pasteDisabledMessage}>
+        Paste
+      </button>
+    </nav>
+  )
+}
 
 const mapStateToProps = (state: StoreState) => ({
   copyEnabled: state.clipboard.write !== 'denied',
