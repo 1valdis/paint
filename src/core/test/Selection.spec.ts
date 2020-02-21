@@ -9,15 +9,15 @@ describe('Selection', () => {
   it('should create selection from path with background color opacity')
   it('should create selection from image data')
   it('should create selection from image data with background color opacity')
-  it('should switch between opaque/transparent mode with background color')
+  it('should switch between opaque/transparent mode with background color') // must store original data somewhere while in transparent mode
   it('should move selection according to transparency')
-  it('should change selection image when changing background color on moving')
+  it('should change selection image when changing background color')
   it('should change background color before first move')
   it('should not change background color after first move')
   it('should remove selection')
   it('should correctly remove transparent selection')
-  it('should invert selection back and forth, clipping on the edges')
+  it('should invert selection back and forth, clipping on the edges') // pure function taking
   it('should output correct bounding box from image data and path selections')
-  it('should rotate selection to -90, +90, 180')
-  it('should mirror selection horizontally and vertically')
+  it('should rotate selection to -90, +90, 180') // pure functions drawing provided imagedata on canvas and returning new data
+  it('should mirror selection horizontally and vertically') // same
 })

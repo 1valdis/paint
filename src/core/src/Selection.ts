@@ -1,7 +1,44 @@
 import { createCanvas } from './utils'
 import { Rectangle, Color, Point } from './interfaces'
 
-export class Selection {
+export interface Selection {
+  selectionImageData: ImageData
+  boundingBox: Rectangle
+}
+
+export const createSelectionFromImageData = (
+  imageData: ImageData
+): Selection => {
+  return {
+    selectionImageData: imageData,
+    boundingBox: {
+      left: 0,
+      top: 0,
+      width: imageData.width,
+      height: imageData.height
+    }
+  }
+}
+
+export const applySelection = (
+  selection: Selection,
+  targetContext: CanvasRenderingContext2D
+) => {
+  const { canvas: imageDataCanvas, context: imageDataContext } = createCanvas(
+    selection.selectionImageData.width,
+    selection.selectionImageData.height
+  )
+  imageDataContext.putImageData(selection.selectionImageData, 0, 0)
+  targetContext.drawImage(
+    imageDataCanvas,
+    selection.boundingBox.left,
+    selection.boundingBox.top,
+    selection.boundingBox.width,
+    selection.boundingBox.height
+  )
+}
+
+class SelectionOld {
   private _originalCoordinates: Rectangle | null = null
   private _currentSelection: Rectangle | null = null
   private selectionWasUpdatedSinceCreation: boolean = false
@@ -52,52 +89,52 @@ export class Selection {
   // }
 
   // constructor (takes original imagedata)
-  constructor(imageData: ImageData) {
-    const { canvas: originalCanvas, context: originalContext } = createCanvas(
-      imageData.width,
-      imageData.height
-    )
-    this.originalCanvas = originalCanvas
-    this.originalContext = originalContext
+  // constructor(imageData: ImageData) {
+  //   const { canvas: originalCanvas, context: originalContext } = createCanvas(
+  //     imageData.width,
+  //     imageData.height
+  //   )
+  //   this.originalCanvas = originalCanvas
+  //   this.originalContext = originalContext
 
-    const { canvas: modifiedCanvas, context: modifiedContext } = createCanvas(
-      imageData.width,
-      imageData.height
-    )
-    this.modifiedCanvas = modifiedCanvas
-    this.modifiedContext = modifiedContext
-  }
+  //   const { canvas: modifiedCanvas, context: modifiedContext } = createCanvas(
+  //     imageData.width,
+  //     imageData.height
+  //   )
+  //   this.modifiedCanvas = modifiedCanvas
+  //   this.modifiedContext = modifiedContext
+  // }
 
-  // createFromRectangle (takes rectangle, isTransparent)
-  createFromRectangle(rectangle: Rectangle, colorForTransparency?: Color) {
-    this._originalCoordinates = rectangle
-    const { canvas, context } = createCanvas(rectangle.width, rectangle.height)
-    this.selectionCanvas = canvas
-    this.selectionContext = context
-    this.selectionContext.putImageData(
-      this.originalContext.getImageData(
-        rectangle.left,
-        rectangle.top,
-        rectangle.width,
-        rectangle.height
-      ),
-      0,
-      0
-    )
-  }
+  // // createFromRectangle (takes rectangle, isTransparent)
+  // createFromRectangle(rectangle: Rectangle, colorForTransparency?: Color) {
+  //   this._originalCoordinates = rectangle
+  //   const { canvas, context } = createCanvas(rectangle.width, rectangle.height)
+  //   this.selectionCanvas = canvas
+  //   this.selectionContext = context
+  //   this.selectionContext.putImageData(
+  //     this.originalContext.getImageData(
+  //       rectangle.left,
+  //       rectangle.top,
+  //       rectangle.width,
+  //       rectangle.height
+  //     ),
+  //     0,
+  //     0
+  //   )
+  // }
 
-  // createFromPolygon?
-  // createFromImageData (takes imagedata)
-  createFromImageData(imageData: ImageData) {
-    const { canvas, context } = createCanvas(imageData.width, imageData.height)
-    this.selectionCanvas = canvas
-    this.selectionContext = context
-    this.selectionContext.putImageData(imageData, 0, 0)
-  }
+  // // createFromPolygon?
+  // // createFromImageData (takes imagedata)
+  // createFromImageData(imageData: ImageData) {
+  //   const { canvas, context } = createCanvas(imageData.width, imageData.height)
+  //   this.selectionCanvas = canvas
+  //   this.selectionContext = context
+  //   this.selectionContext.putImageData(imageData, 0, 0)
+  // }
 
-  // moveToRectangle (takes rectangle and backgroundColor)
-  moveToRectangle(rectangle: Rectangle, backgroundColor: Color) {}
-  // get selection imagedata
+  // // moveToRectangle (takes rectangle and backgroundColor)
+  // moveToRectangle(rectangle: Rectangle, backgroundColor: Color) {}
+  // // get selection imagedata
 
   // static createSelectionFromPolygon(
   //   polygon: Point[],
@@ -129,14 +166,22 @@ export class Selection {
   //     width: Math.max(...polygon.map(({ x }) => x)) - topLeft.x,
   //     height: Math.max(...polygon.map(({ y }) => y)) - topLeft.y
   //   }
-  //   const { resultingCanvas, resultingContext } = createCanvas(boundingBox.width, boundingBox.height)
+  //   const { canvas: resultingCanvas, context: resultingContext } = createCanvas(
+  //     boundingBox.width,
+  //     boundingBox.height
+  //   )
+  //   resultingContext.drawImage(
+  //     canvas,
+  //     0,
+  //     0,
+  //     boundingBox.width,
+  //     boundingBox.height,
+  //     boundingBox.left,
+  //     boundingBox.top,
+  //     boundingBox.width,
+  //     boundingBox.height
+  //   )
   // }
-}
-
-interface SelectionData {
-  selectionImageData: ImageData
-  baseImageData: ImageData
-  path: Path2D
 }
 
 // create selection from poly
