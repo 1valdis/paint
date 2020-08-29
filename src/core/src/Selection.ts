@@ -1,20 +1,20 @@
-import { createCanvas } from './utils'
-import { Rectangle } from './interfaces/Rectangle'
-import { Color } from '../../actions'
+import { createCanvas } from "./utils";
+import { Rectangle } from "./interfaces/Rectangle";
+import { Color } from "../../actions";
 
 export class Selection {
-  private _originalCoordinates: Rectangle | null = null
-  private _currentSelection: Rectangle | null = null
-  private selectionWasUpdatedSinceCreation: boolean = false
-  private originalCanvas: HTMLCanvasElement
-  private originalContext: CanvasRenderingContext2D
-  private modifiedCanvas: HTMLCanvasElement
-  private modifiedContext: CanvasRenderingContext2D
-  private selectionCanvas: HTMLCanvasElement | null = null
-  private selectionContext: CanvasRenderingContext2D | null = null
+  private _originalCoordinates: Rectangle | null = null;
+  private _currentSelection: Rectangle | null = null;
+  private selectionWasUpdatedSinceCreation: boolean = false;
+  private originalCanvas: HTMLCanvasElement;
+  private originalContext: CanvasRenderingContext2D;
+  private modifiedCanvas: HTMLCanvasElement;
+  private modifiedContext: CanvasRenderingContext2D;
+  private selectionCanvas: HTMLCanvasElement | null = null;
+  private selectionContext: CanvasRenderingContext2D | null = null;
 
   get currentSelection() {
-    return this._currentSelection
+    return this._currentSelection;
   }
 
   // private constructor(
@@ -57,24 +57,24 @@ export class Selection {
     const { canvas: originalCanvas, context: originalContext } = createCanvas(
       imageData.width,
       imageData.height
-    )
-    this.originalCanvas = originalCanvas
-    this.originalContext = originalContext
+    );
+    this.originalCanvas = originalCanvas;
+    this.originalContext = originalContext;
 
     const { canvas: modifiedCanvas, context: modifiedContext } = createCanvas(
       imageData.width,
       imageData.height
-    )
-    this.modifiedCanvas = modifiedCanvas
-    this.modifiedContext = modifiedContext
+    );
+    this.modifiedCanvas = modifiedCanvas;
+    this.modifiedContext = modifiedContext;
   }
 
   // createFromRectangle (takes rectangle, isTransparent)
   createFromRectangle(rectangle: Rectangle, colorForTransparency?: Color) {
-    this._originalCoordinates = rectangle
-    const { canvas, context } = createCanvas(rectangle.width, rectangle.height)
-    this.selectionCanvas = canvas
-    this.selectionContext = context
+    this._originalCoordinates = rectangle;
+    const { canvas, context } = createCanvas(rectangle.width, rectangle.height);
+    this.selectionCanvas = canvas;
+    this.selectionContext = context;
     this.selectionContext.putImageData(
       this.originalContext.getImageData(
         rectangle.left,
@@ -84,16 +84,16 @@ export class Selection {
       ),
       0,
       0
-    )
+    );
   }
 
   // createFromPolygon?
   // createFromImageData (takes imagedata)
   createFromImageData(imageData: ImageData) {
-    const { canvas, context } = createCanvas(imageData.width, imageData.height)
-    this.selectionCanvas = canvas
-    this.selectionContext = context
-    this.selectionContext.putImageData(imageData, 0, 0)
+    const { canvas, context } = createCanvas(imageData.width, imageData.height);
+    this.selectionCanvas = canvas;
+    this.selectionContext = context;
+    this.selectionContext.putImageData(imageData, 0, 0);
   }
 
   // moveToRectangle (takes rectangle and backgroundColor)
