@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ComponentType } from 'react'
+import React, { FunctionComponent } from 'react'
 import { connect } from 'react-redux'
 
 // import { SelectionInstrument } from '../instruments/SelectionInstrument/SelectionInstrument';
@@ -10,12 +10,17 @@ import { Eraser } from '../instruments/Eraser/Eraser'
 import { StoreState } from '../../reducers'
 import { Instruments } from '../../actions'
 
-const instruments: { [key in Instruments]?: ComponentType } = {
+const instruments = {
   pen: Pen,
   fill: Fill,
   // selection: SelectionInstrument,
   dropper: Dropper,
-  eraser: Eraser
+  eraser: Eraser,
+  text: null,
+  zoom: null,
+  brushes: null,
+  shapes: null,
+  selection: null
 }
 
 interface CanvasEditorProps {
