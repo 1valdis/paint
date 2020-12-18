@@ -1,0 +1,33 @@
+.about {
+  width: 30em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 0.4em solid rgb(200, 210, 230);
+  border-top: 2em solid rgb(200, 210, 230);
+  padding: 1em;
+  outline: 1px solid gray;
+  background: rgb(245, 245, 245)
+}
+
+.about-close-button {
+  position: absolute;
+  top: -2.4em;
+  right: -0.4em;
+  background: rgb(200, 80, 80);
+  color: white;
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
+  border: none;
+}
+
+.about-close-button:hover {
+  background: rgb(255, 70, 70)
+}
+
+.about-close-button::after {
+  font-size: 150%;
+  content: '×';
+}

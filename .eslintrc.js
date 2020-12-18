@@ -25,7 +25,9 @@ module.exports = {
   ],
   rules: {
     'no-unused-vars': 0,
-    '@typescript-eslint/no-unused-vars-experimental': 1,
+    '@typescript-eslint/no-unused-vars-experimental': [1, {
+      ignoreArgsIfArgsAfterAreUsed: true
+    }],
     'react/prop-types': 0
-  }
+  },
 }

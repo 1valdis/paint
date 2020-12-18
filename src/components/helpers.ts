@@ -7,7 +7,7 @@ export interface ClickOutsideListener {
   (event: MouseEvent): void
 }
 
-export function addClickOutsideListener(
+export function addClickOutsideListener (
   element: HTMLElement,
   callback: ClickOutsideListener
 ) {
@@ -20,27 +20,25 @@ export function addClickOutsideListener(
   }
 
   document.addEventListener('click', outsideClickListener)
-  return outsideClickListener
-}
-
-export function removeClickOutsideListener(listener: ClickOutsideListener) {
-  document.removeEventListener('click', listener)
+  return () => {
+    document.removeEventListener('click', outsideClickListener)
+  }
 }
 
 const isVisible = (elem: HTMLElement) =>
   !!elem &&
   !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
 
-function componentToHex(c: number) {
+function componentToHex (c: number) {
   const hex = c.toString(16)
   return hex.length === 1 ? '0' + hex : hex
 }
 
-export function rgbToHex({ r, g, b }: { r: number; g: number; b: number }) {
+export function rgbToHex ({ r, g, b }: { r: number; g: number; b: number }) {
   return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b)
 }
 
-export function bresenhamLine(
+export function bresenhamLine (
   x0: number,
   y0: number,
   x1: number,
@@ -69,7 +67,7 @@ export function bresenhamLine(
   }
 }
 
-export function getCanvasCoordsFromEvent(
+export function getCanvasCoordsFromEvent (
   canvas: HTMLCanvasElement,
   e: ReactPointerEvent<HTMLCanvasElement> | PointerEvent | ReactMouseEvent
 ) {

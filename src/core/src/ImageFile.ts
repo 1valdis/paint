@@ -1,16 +1,16 @@
 export class ImageFile {
-  static create(): ImageData {
+  static create (): ImageData {
     const canvas = document.createElement('canvas')
     canvas.width = 800
     canvas.height = 450
     const ctx = canvas.getContext('2d')
     if (!ctx) throw new Error("Coulnd't create context")
-    ctx.fillStyle = 'rgba(255, 255, 255, 255'
+    ctx.fillStyle = 'rgba(255, 255, 255, 255)'
     ctx.fillRect(0, 0, 800, 450)
     return ctx.getImageData(0, 0, 800, 450)
   }
 
-  static async open(file: File): Promise<ImageData> {
+  static async open (file: File): Promise<ImageData> {
     const reader = new FileReader()
     return new Promise(resolve => {
       reader.readAsDataURL(file as Blob)
@@ -31,7 +31,7 @@ export class ImageFile {
     })
   }
 
-  static async save(canvas: HTMLCanvasElement, filename: string) {
+  static async save (canvas: HTMLCanvasElement, filename: string) {
     const blob = await new Promise<Blob | null>(resolve =>
       canvas.toBlob(resolve)
     )
