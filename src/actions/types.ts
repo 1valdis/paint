@@ -6,14 +6,6 @@ import {
 import { ChangeInstrumentAction } from './instruments'
 import { ChangeImageAction } from './app'
 
-export enum ActionTypes {
-  addColor,
-  selectColor,
-  changeActiveColor,
-  changeInstrument,
-  changeImage
-}
-
 export type Action =
   | AddColorAction
   | SelectColorAction

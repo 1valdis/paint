@@ -230,7 +230,7 @@ class _Eraser extends PureComponent<EraserProps> {
 
 const mapStateToProps = (state: StoreState) => ({
   color: state.colors.list[state.colors.secondary],
-  imageData: state.image.data,
+  imageData: state.image.imageData,
   thickness: 8 // insert true one after thickness is made
 })
 

@@ -181,7 +181,7 @@ class _Pen extends PureComponent<PenProps> {
 
 const mapStateToProps = (state: StoreState) => ({
   color: state.colors.list[state.colors.primary],
-  imageData: state.image.data
+  imageData: state.image.imageData
 })
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>

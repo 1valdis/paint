@@ -1,4 +1,3 @@
-import { ActionTypes } from './types'
 import { ChangeEvent } from 'react'
 import { ThunkAction } from 'redux-thunk'
 import { StoreState } from '../reducers'
@@ -9,32 +8,35 @@ export interface Color {
   b: number
 }
 
-export enum SelectedColor {
-  primary = 'primary',
-  secondary = 'secondary'
-}
-
 export interface AddColorAction {
-  type: ActionTypes.addColor
-  value: Color
+  type: 'addColor'
+  payload: {
+    value: Color
+  }
 }
 
 export interface SelectColorAction {
-  type: ActionTypes.selectColor
-  index: number
+  type: 'selectColor'
+  payload: {
+    index: number
+  }
 }
 
 export interface ChangeSelectedColorAction {
-  type: ActionTypes.changeActiveColor
-  activeColor: SelectedColor
+  type: 'changeActiveColor'
+  payload: {
+    activeColor: 'primary' | 'secondary'
+  }
 }
 
 export const changeActiveColor = (
-  activeColor: SelectedColor
+  activeColor: 'primary' | 'secondary'
 ): ChangeSelectedColorAction => {
   return {
-    type: ActionTypes.changeActiveColor,
-    activeColor
+    type: 'changeActiveColor',
+    payload: {
+      activeColor
+    }
   }
 }
 
@@ -56,8 +58,10 @@ export const addColorFromInput = (
       )
     ) {
       dispatch<AddColorAction>({
-        type: ActionTypes.addColor,
-        value: newColor
+        type: 'addColor',
+        payload: {
+          value: newColor
+        }
       })
     }
   }
@@ -81,8 +85,10 @@ export const addColor = (
     )
     if (index === -1) {
       dispatch<AddColorAction>({
-        type: ActionTypes.addColor,
-        value: newColor
+        type: 'addColor',
+        payload: {
+          value: newColor
+        }
       })
     } else {
       dispatch<SelectColorAction>(selectColor(index))
@@ -92,7 +98,9 @@ export const addColor = (
 
 export const selectColor = (index: number): SelectColorAction => {
   return {
-    type: ActionTypes.selectColor,
-    index
+    type: 'selectColor',
+    payload: {
+      index
+    }
   }
 }

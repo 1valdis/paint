@@ -5,6 +5,8 @@ export class ImageFile {
     canvas.height = 450
     const ctx = canvas.getContext('2d')
     if (!ctx) throw new Error("Coulnd't create context")
+    ctx.fillStyle = 'rgba(255, 255, 255, 255'
+    ctx.fillRect(0, 0, 800, 450)
     return ctx.getImageData(0, 0, 800, 450)
   }
 

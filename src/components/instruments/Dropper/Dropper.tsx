@@ -15,7 +15,7 @@ import { StoreState } from '../../../reducers'
 interface DropperProps {
   imageData: ImageData
   addColor: (color: Color) => void
-  selectInstrument: (instrument: Instruments) => void
+  selectInstrument: (instrument: StoreState['instruments']['selected']) => void
 }
 
 class _Dropper extends PureComponent<DropperProps> {
@@ -60,19 +60,19 @@ class _Dropper extends PureComponent<DropperProps> {
       g: this.props.imageData.data[i + 1],
       b: this.props.imageData.data[i + 2]
     })
-    this.props.selectInstrument(Instruments.pen)
+    this.props.selectInstrument('pen')
   }
 }
 
 const mapStateToProps = (state: StoreState) => ({
-  imageData: state.image.data
+  imageData: state.image.imageData
 })
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   addColor: (color: Color) => dispatch(addColor(color)),
   selectInstrument: (instrument: Instruments) =>
-    dispatch(changeInstrument({ instrument }))
+    dispatch(changeInstrument({ selected: instrument }))
 })
 
 export const Dropper = connect(mapStateToProps, mapDispatchToProps)(_Dropper)

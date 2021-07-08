@@ -17,18 +17,9 @@ export enum ResizerDirections {
   nw = 'nw'
 }
 
-export enum ResizerMode {
-  canvas,
-  selection
-}
-
 const directions = {
-  [ResizerMode.canvas]: [
-    ResizerDirections.e,
-    ResizerDirections.se,
-    ResizerDirections.s
-  ],
-  [ResizerMode.selection]: [
+  canvas: [ResizerDirections.e, ResizerDirections.se, ResizerDirections.s],
+  selection: [
     ResizerDirections.n,
     ResizerDirections.ne,
     ResizerDirections.e,
@@ -46,7 +37,7 @@ export interface ResizerProps {
   width: number
   height: number
   hideBorderOnResizing?: boolean
-  mode: ResizerMode
+  mode: 'canvas' | 'selection'
   onResizing?: (
     top: number,
     left: number,

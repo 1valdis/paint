@@ -18,33 +18,37 @@ export interface InstrumentsProps {
   selectInstrument: (instrument: InstrumentsList) => void
 }
 
+const instrumentsList: InstrumentsList[] = [
+  'pen',
+  'fill',
+  'text',
+  'eraser',
+  'dropper',
+  'zoom'
+]
+
 const _Instruments: FunctionComponent<InstrumentsProps> = props => (
   <div className="instruments">
-    {Object.values(InstrumentsList)
-      .filter(
-        (instrument: InstrumentsList) =>
-          instrument !== InstrumentsList.selection
-      )
-      .map((i: InstrumentsList) => (
-        <button
-          className={classNames(`instrument_${i}`, {
-            instrument_active: i === props.instrument
-          })}
-          key={`instrument_${i}`}
-          onClick={() => props.selectInstrument(i)}
-        />
-      ))}
+    {instrumentsList.map((i: InstrumentsList) => (
+      <button
+        className={classNames(`instrument_${i}`, {
+          instrument_active: i === props.instrument
+        })}
+        key={`instrument_${i}`}
+        onClick={() => props.selectInstrument(i)}
+      />
+    ))}
   </div>
 )
 
 const mapStateToProps = (state: StoreState) => ({
-  instrument: state.instruments.instrument
+  instrument: state.instruments.selected
 })
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<StoreState, undefined, Action>
 ) => ({
   selectInstrument: (instrument: InstrumentsList) =>
-    dispatch(changeInstrument({ instrument }))
+    dispatch(changeInstrument({ selected: instrument }))
 })
 
 export const Instruments = connect(

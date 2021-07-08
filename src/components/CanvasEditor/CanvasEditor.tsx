@@ -28,7 +28,7 @@ const _CanvasEditor: FunctionComponent<CanvasEditorProps> = props => {
 }
 
 const mapStateToProps = (state: StoreState) => ({
-  instrument: state.instruments.instrument
+  instrument: state.instruments.selected
 })
 
 export const CanvasEditor = connect(mapStateToProps)(_CanvasEditor)
