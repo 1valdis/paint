@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import { forwardRef } from 'react'
 
 // import { CanvasResizer } from '../CanvasResizer/CanvasResizer'
 // import { CanvasEditor } from '../CanvasEditor/CanvasEditor'

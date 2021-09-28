@@ -55,7 +55,7 @@ export function bresenhamLine (
     callback(x0, y0)
 
     if (x0 === x1 && y0 === y1) break
-    var e2 = 2 * err
+    const e2 = 2 * err
     if (e2 > -dy) {
       err -= dy
       x0 += sx
