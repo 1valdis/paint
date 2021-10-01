@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import './App.css'
 
@@ -28,9 +28,9 @@ const save = async (canvas: HTMLCanvasElement, filename: string) => {
   window.URL.revokeObjectURL(href)
 }
 
-const open = async (file: File) => {
+const open = async (file: File): Promise<{ canvas: HTMLCanvasElement, context: CanvasRenderingContext2D }> => {
   const reader = new FileReader()
-  const something = await new Promise<ProgressEvent<FileReader>>(resolve => {
+  await new Promise<ProgressEvent<FileReader>>(resolve => {
     reader.readAsDataURL(file)
     reader.onload = resolve
   })
@@ -47,7 +47,7 @@ const open = async (file: File) => {
         const ctx = canvas.getContext('2d')
         if (!ctx) throw new Error("Coulnd't create context")
         ctx.drawImage(img, 0, 0)
-        resolve(ctx.getImageData(0, 0, img.width, img.height))
+        resolve({ canvas, context: ctx })
       }
     }
   })
@@ -71,7 +71,7 @@ export const App = () => {
   return <>
     <FileMenu
       onFileCreate={() => setMainCanvas(createCanvas())}
-      onFileOpen={() => {}}
+      onFileOpen={async (event) => { event.target.files?.[0] && setMainCanvas(await open(event.target.files[0])) }}
       onDownload={() => save(mainCanvas, filename)}
     ></FileMenu>
     <Canvas ref={canvasOnDisplayRef} />

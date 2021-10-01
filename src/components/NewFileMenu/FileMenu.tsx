@@ -16,7 +16,7 @@ import { About } from '../NewAbout/About'
 export interface FileMenuProps {
   onDownload: MouseEventHandler
   onFileCreate: MouseEventHandler
-  onFileOpen: ChangeEventHandler
+  onFileOpen: ChangeEventHandler<HTMLInputElement>
 }
 
 export const FileMenu = (props: FileMenuProps) => {
