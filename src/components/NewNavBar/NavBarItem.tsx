@@ -1,10 +1,10 @@
-import React, { FunctionComponent } from 'react'
+import { FunctionComponent, ReactElement } from 'react'
 
 import './NavBarItem.css'
 
 export interface NavBarItemProps {
   footer: string
-  children: JSX.Element
+  children: ReactElement
 }
 
 export const NavBarItem: FunctionComponent<NavBarItemProps> = props => (

@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, FunctionComponent } from 'react'
+import { ChangeEventHandler, FunctionComponent } from 'react'
 
 import './ColorInput.css'
 
@@ -9,7 +9,7 @@ export interface ColorInputProps {
 
 export const ColorInput: FunctionComponent<ColorInputProps> = (
   props
-): JSX.Element => (
+) => (
   <div className="color-input">
     <label className="color-input-wrapper">
       <input type="color" onChange={props.onChange} value={props.value} />

@@ -1,5 +1,5 @@
 import {
-  MouseEventHandler, ChangeEventHandler, useState, useRef, useEffect
+  MouseEventHandler, ChangeEventHandler, useState, useRef, useEffect, FunctionComponent
 } from 'react'
 
 import './FileMenu.css'
@@ -19,7 +19,7 @@ export interface FileMenuProps {
   onFileOpen: ChangeEventHandler<HTMLInputElement>
 }
 
-export const FileMenu = (props: FileMenuProps) => {
+export const FileMenu: FunctionComponent<FileMenuProps> = (props) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [aboutOpen, setAboutOpen] = useState(false)
 

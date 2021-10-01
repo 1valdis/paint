@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, FunctionComponent } from 'react'
+import { MouseEventHandler, FunctionComponent } from 'react'
 import classNames from 'classnames'
 
 import './Color.css'
