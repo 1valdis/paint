@@ -1,4 +1,4 @@
-export function createCanvas(width?: number, height?: number) {
+export function createCanvas (width?: number, height?: number) {
   const canvas = document.createElement('canvas')
   if (width) canvas.width = width
   if (height) canvas.height = height

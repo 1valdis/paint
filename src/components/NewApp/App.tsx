@@ -7,54 +7,10 @@ import { Canvas } from '../NewCanvas/Canvas'
 import { NavBar } from '../NewNavBar/NavBar'
 import { NavBarItem } from '../NewNavBar/NavBarItem'
 import { Colors } from '../NewColors/Colors'
-
-const createCanvas = () => {
-  const canvas = document.createElement('canvas')
-  ;[canvas.width, canvas.height] = [800, 450]
-  const context = canvas.getContext('2d')!
-  context.fillStyle = 'white'
-  context.fillRect(0, 0, 800, 450)
-  return { canvas, context }
-}
-
-const save = async (canvas: HTMLCanvasElement, filename: string) => {
-  const blob = await new Promise<Blob | null>(resolve =>
-    canvas.toBlob(resolve)
-  )
-  const href = window.URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.download = filename
-  a.href = href
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  window.URL.revokeObjectURL(href)
-}
-
-const open = async (file: File): Promise<{ canvas: HTMLCanvasElement, context: CanvasRenderingContext2D }> => {
-  const reader = new FileReader()
-  await new Promise<ProgressEvent<FileReader>>(resolve => {
-    reader.readAsDataURL(file)
-    reader.onload = resolve
-  })
-  return new Promise(resolve => {
-    reader.readAsDataURL(file as Blob)
-    reader.onload = e => {
-      if (!e.target) throw new Error("Couldn't access FileReader from event")
-      const img = new Image()
-      img.src = e.target.result as string
-      img.onload = () => {
-        const canvas = document.createElement('canvas')
-        canvas.width = img.width
-        canvas.height = img.height
-        const ctx = canvas.getContext('2d')
-        if (!ctx) throw new Error("Coulnd't create context")
-        ctx.drawImage(img, 0, 0)
-        resolve({ canvas, context: ctx })
-      }
-    }
-  })
-}
+import { Image, Instruments } from '../NewImage/Image'
+import { createCanvas } from './create-canvas'
+import { open } from './open'
+import { save } from './save'
 
 export const App = () => {
   const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(createCanvas())
@@ -96,6 +52,7 @@ export const App = () => {
   const [primaryColor, setPrimaryColor] = useState(0)
   const [secondaryColor, setSecondaryColor] = useState(10)
   const [activeColor, setActiveColor] = useState<'primary' | 'secondary'>('primary')
+  const [instrument, setInstrument] = useState<Instruments>('pen')
 
   return <>
     <FileMenu
@@ -107,9 +64,15 @@ export const App = () => {
       {/* <NavBarItem footer="Clipboard">
         <Clipboard />
       </NavBarItem> */}
-      {/* <NavBarItem footer="Image">
-        <Image />
-      </NavBarItem> */}
+      <NavBarItem footer="Image">
+        <Image
+          selectionCoords={undefined}
+          instrument={instrument}
+          selectInstrument={setInstrument}
+          image={mainCanvas}
+          changeImage={(canvas, context) => setMainCanvas({ canvas, context })}
+        />
+      </NavBarItem>
       {/* <NavBarItem footer="Instruments">
         <Instruments />
       </NavBarItem> */}

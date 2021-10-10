@@ -44,8 +44,10 @@ export const Colors: FunctionComponent<ColorsContainerProps> = (props) => {
               key={'color' + i}
             />
           )),
-          ...new Array(30 - props.colors.length)
-            .map((item, i) => <Color key={'undefinedcolor' + i} />)
+          ...Array.from(
+            { length: 30 - props.colors.length },
+            (item, i) => <Color key={'undefinedcolor' + i} />
+          )
         ]}
       </ColorPalette>
       <ColorInput

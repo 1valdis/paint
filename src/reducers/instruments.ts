@@ -1,16 +1,7 @@
 import { Action, getInitialState } from '../actions'
 
 export interface InstrumentStoreState {
-  selected:
-    | 'pen'
-    | 'fill'
-    | 'text'
-    | 'eraser'
-    | 'dropper'
-    | 'zoom'
-    | 'brushes'
-    | 'shapes'
-    | 'selection'
+  selected: ''
   text: {
     // some other text settings or currently filled text
   }
