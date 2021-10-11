@@ -1,0 +1,60 @@
+.instruments {
+  display: grid;
+  justify-content: stretch;
+  align-content: stretch;
+  grid-template-columns: 1.4em 1.4em 1.4em;
+  grid-template-rows: 1.4em 1.4em;
+  row-gap: 0.5em;
+  position: relative;
+  margin: auto;
+}
+.instruments > * {
+  display: block;
+  border: 1px solid transparent;
+  padding: 0.2em;
+  outline: none;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  position: relative;
+  background: none
+}
+.instruments > *:hover{
+  background-color: var(--hover-background-color);
+  border: 1px solid var(--hover-border-color);
+}
+.instrument_active, .instruments > *:active{
+  background-color: var(--active-background-color);
+  border: 1px solid var(--active-border-color);
+}
+.instruments > *:before {
+  display: block;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  content: '';
+  background-size: 100% 100%;
+}
+.instrument_pen:before {
+  background-image: url('./pen_colorful.svg');
+}
+.instrument_fill:before {
+  background-image: url('./fill_colorful.svg')
+}
+.instrument_text:before {
+  content: 'A';
+  font-weight: 700;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 1.2em;
+  position: absolute;
+  top: 0.1em;
+}
+.instrument_eraser:before {
+  background-image: url('./eraser_colorful.svg')
+}
+.instrument_dropper:before {
+  background-image: url('./dropper_colorful.svg')
+}
+.instrument_zoom:before {
+  background-image: url('./zoom_colorful.svg')
+}

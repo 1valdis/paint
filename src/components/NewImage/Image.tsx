@@ -4,7 +4,7 @@ import classNames from 'classnames'
 
 import { FunctionComponent } from 'react'
 
-export type Instruments =
+export type Instrument =
 | 'pen'
 | 'fill'
 | 'text'
@@ -24,9 +24,9 @@ interface SelectionCoords {
 
 interface ImageProps {
   image: HTMLCanvasElement
-  instrument: Instruments
+  instrument: Instrument
   selectionCoords?: SelectionCoords
-  selectInstrument: (instrument: Instruments) => void
+  selectInstrument: (instrument: Instrument) => void
   changeImage: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void
 }
 

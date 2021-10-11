@@ -7,8 +7,9 @@ import { Canvas } from '../NewCanvas/Canvas'
 import { NavBar } from '../NewNavBar/NavBar'
 import { NavBarItem } from '../NewNavBar/NavBarItem'
 import { Colors } from '../NewColors/Colors'
-import { Image, Instruments } from '../NewImage/Image'
+import { Image, Instrument } from '../NewImage/Image'
 import { Clipboard } from '../NewClipboard/Clipboard'
+import { Instruments } from '../new-instruments/Instruments'
 import { createCanvas } from './create-canvas'
 import { open } from './open'
 import { save } from './save'
@@ -45,7 +46,7 @@ export const App = () => {
   const [primaryColor, setPrimaryColor] = useState(0)
   const [secondaryColor, setSecondaryColor] = useState(10)
   const [activeColor, setActiveColor] = useState<'primary' | 'secondary'>('primary')
-  const [instrument, setInstrument] = useState<Instruments>('pen')
+  const [instrument, setInstrument] = useState<Instrument>('pen')
 
   useEffect(() => {
     const canvasOnDiplay = canvasOnDisplayRef.current
@@ -82,9 +83,11 @@ export const App = () => {
           changeImage={(canvas, context) => setMainCanvas({ canvas, context })}
         />
       </NavBarItem>
-      {/* <NavBarItem footer="Instruments">
-        <Instruments />
-      </NavBarItem> */}
+      <NavBarItem footer="Instruments">
+        <Instruments
+          instrument={instrument}
+          selectInstrument={setInstrument}/>
+      </NavBarItem>
       <NavBarItem footer="Colors">
         <Colors
           colors={colors}
