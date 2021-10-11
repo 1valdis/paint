@@ -1,4 +1,4 @@
-import React, { Component, createRef, RefObject, CSSProperties } from 'react'
+import { Component, createRef, RefObject, CSSProperties } from 'react'
 import './ResizerPoint.css'
 
 export interface ResizerPointProps {
@@ -18,7 +18,7 @@ export class ResizerPoint extends Component<ResizerPointProps> {
 
   resizerElement: RefObject<HTMLDivElement> = createRef()
 
-  render() {
+  render () {
     return (
       <div
         className={'resizer-outer ' + (this.props.className || '')}
@@ -29,7 +29,7 @@ export class ResizerPoint extends Component<ResizerPointProps> {
     )
   }
 
-  componentDidMount() {
+  componentDidMount () {
     document.addEventListener('pointerdown', this.handlePointerDown, {
       passive: true
     })
@@ -47,7 +47,7 @@ export class ResizerPoint extends Component<ResizerPointProps> {
     document.addEventListener('dragstart', this.handleDragStart)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     document.removeEventListener('pointerdown', this.handlePointerDown)
     document.removeEventListener('pointermove', this.handlePointerMove)
     document.removeEventListener('pointerup', this.handlePointerUp)
@@ -58,8 +58,7 @@ export class ResizerPoint extends Component<ResizerPointProps> {
   }
 
   handlePointerDown = (e: PointerEvent) => {
-    if (!this.resizerElement.current)
-      throw new Error('The ref contains no resizer element')
+    if (!this.resizerElement.current) { throw new Error('The ref contains no resizer element') }
     switch (e.button) {
       case 0:
         if (this.resizerElement.current.contains(e.target as Node | null)) {

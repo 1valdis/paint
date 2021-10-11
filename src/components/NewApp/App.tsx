@@ -14,6 +14,8 @@ import { createCanvas } from './create-canvas'
 import { open } from './open'
 import { save } from './save'
 import { pasteFromEvent } from './paste-from-event'
+import { CanvasResizer } from '../NewCanvasResizer/CanvasResizer'
+import { CanvasEditor } from '../NewCanvasEditor/CanvasEditor'
 
 export const App = () => {
   const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(createCanvas())
@@ -132,6 +134,18 @@ export const App = () => {
         />
       </NavBarItem>
     </NavBar>
-    <Canvas ref={canvasOnDisplayRef} />
+    <Canvas
+      ref={canvasOnDisplayRef}
+      canvas={mainCanvas}
+      changeImage={(canvas, context) => setMainCanvas({ canvas, context })}>
+      <CanvasResizer
+          backgroundColor={colors[secondaryColor]}
+          canvas={mainCanvas}
+          changeImage={(canvas, context) => setMainCanvas({ canvas, context })}
+        />
+      <CanvasEditor
+        instrument={instrument}
+      />
+    </Canvas>
   </>
 }

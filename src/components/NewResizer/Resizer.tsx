@@ -1,10 +1,10 @@
-import React, { PureComponent, createRef, RefObject } from 'react'
+import { PureComponent, createRef, RefObject } from 'react'
 
 import './Resizer.css'
 
 import classNames from 'classnames'
 
-import { ResizerPoint } from '../ResizerPoint/ResizerPoint'
+import { ResizerPoint } from '../NewResizerPoint/ResizerPoint'
 
 export enum ResizerDirections {
   n = 'n',
@@ -63,7 +63,7 @@ export interface ResizerState {
 export class Resizer extends PureComponent<ResizerProps, ResizerState> {
   resizeRect: RefObject<HTMLDivElement> = createRef()
 
-  constructor(props: ResizerProps) {
+  constructor (props: ResizerProps) {
     super(props)
     this.state = {
       resizing: false,
@@ -74,7 +74,7 @@ export class Resizer extends PureComponent<ResizerProps, ResizerState> {
     }
   }
 
-  render() {
+  render () {
     return (
       <div
         className={classNames('resizer', {
@@ -110,11 +110,10 @@ export class Resizer extends PureComponent<ResizerProps, ResizerState> {
     )
   }
 
-  onResizeStart() {}
+  onResizeStart () {}
 
-  onResizeMove(direction: ResizerDirections, e: PointerEvent) {
-    if (!this.resizeRect.current)
-      throw new Error('The ref contains no rect element')
+  onResizeMove (direction: ResizerDirections, e: PointerEvent) {
+    if (!this.resizeRect.current) { throw new Error('The ref contains no rect element') }
     let {
       top,
       left,
@@ -208,7 +207,7 @@ export class Resizer extends PureComponent<ResizerProps, ResizerState> {
     this.setState(state)
   }
 
-  onResizeEnd() {
+  onResizeEnd () {
     if (this.props.onResizeEnd) {
       this.props.onResizeEnd(
         this.state.resizeTop,
@@ -220,7 +219,7 @@ export class Resizer extends PureComponent<ResizerProps, ResizerState> {
     this.setState({ resizing: false })
   }
 
-  onResizeCancel() {
+  onResizeCancel () {
     this.setState({
       resizing: false,
       resizeWidth: this.props.width,
@@ -228,7 +227,7 @@ export class Resizer extends PureComponent<ResizerProps, ResizerState> {
     })
   }
 
-  static getDerivedStateFromProps(
+  static getDerivedStateFromProps (
     nextProps: ResizerProps,
     prevState = { resizing: false }
   ) {
