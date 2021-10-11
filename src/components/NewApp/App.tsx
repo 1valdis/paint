@@ -12,19 +12,11 @@ import { Clipboard } from '../NewClipboard/Clipboard'
 import { createCanvas } from './create-canvas'
 import { open } from './open'
 import { save } from './save'
+import { pasteFromEvent } from './paste-from-event'
 
 export const App = () => {
   const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(createCanvas())
   const canvasOnDisplayRef = useRef<HTMLCanvasElement | null>(null)
-
-  useEffect(() => {
-    const canvasOnDiplay = canvasOnDisplayRef.current
-    if (!canvasOnDiplay) return
-    const ctx = canvasOnDiplay.getContext('2d')!
-    canvasOnDiplay.width = mainCanvas.width
-    canvasOnDiplay.height = mainCanvas.height
-    ctx.drawImage(mainCanvas, 0, 0)
-  }, [mainCanvas])
 
   const [filename, setFilename] = useState('pic.png')
 
@@ -54,6 +46,19 @@ export const App = () => {
   const [secondaryColor, setSecondaryColor] = useState(10)
   const [activeColor, setActiveColor] = useState<'primary' | 'secondary'>('primary')
   const [instrument, setInstrument] = useState<Instruments>('pen')
+
+  useEffect(() => {
+    const canvasOnDiplay = canvasOnDisplayRef.current
+    if (!canvasOnDiplay) return
+    const ctx = canvasOnDiplay.getContext('2d')!
+    canvasOnDiplay.width = mainCanvas.width
+    canvasOnDiplay.height = mainCanvas.height
+    ctx.drawImage(mainCanvas, 0, 0)
+  }, [mainCanvas])
+
+  useEffect(() => {
+    document.addEventListener('paste', pasteFromEvent(mainCanvas, mainCanvasCtx, setMainCanvas))
+  })
 
   return <>
     <FileMenu
