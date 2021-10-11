@@ -1,14 +1,9 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import { App } from './components/NewApp/App'
-
-// import './core/test'
+import { App } from './components/App/App'
 
 render(
   <StrictMode>
-    {/* <Provider store={store}>
-      <App />
-    </Provider> */}
     <App/>
   </StrictMode>,
   document.getElementById('root')

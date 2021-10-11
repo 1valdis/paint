@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react'
-import { Resizer } from '../NewResizer/Resizer'
+import { Resizer } from '../Resizer/Resizer'
 
 export interface CanvasResizerProps {
   canvas: HTMLCanvasElement

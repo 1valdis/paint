@@ -4,7 +4,7 @@ import './Resizer.css'
 
 import classNames from 'classnames'
 
-import { ResizerPoint } from '../NewResizerPoint/ResizerPoint'
+import { ResizerPoint } from '../ResizerPoint/ResizerPoint'
 
 export enum ResizerDirections {
   n = 'n',

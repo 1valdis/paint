@@ -10,8 +10,8 @@ import {
   addClickOutsideListener
 } from '../helpers'
 
-import { Modal } from '../NewModal/Modal'
-import { About } from '../NewAbout/About'
+import { Modal } from '../Modal/Modal'
+import { About } from '../About/About'
 
 export interface FileMenuProps {
   onDownload: MouseEventHandler

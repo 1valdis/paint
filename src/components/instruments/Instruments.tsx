@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
 
 import classNames from 'classnames'
-import { Instrument } from '../NewImage/Image'
+import { Instrument } from '../Image/Image'
 
 import './Instruments.css'
 

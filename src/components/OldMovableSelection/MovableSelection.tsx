@@ -1,4 +1,4 @@
-import React, { PureComponent, PointerEvent as ReactPointerEvent } from 'react'
+import { PureComponent, PointerEvent as ReactPointerEvent } from 'react'
 
 import './MovableSelection.css'
 

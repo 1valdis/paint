@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react'
-import { Instrument } from '../NewImage/Image'
+import { Instrument } from '../Image/Image'
 
 // import { SelectionInstrument } from '../instruments/SelectionInstrument/SelectionInstrument';
 // import { Pen } from '../instruments/Pen/Pen'
