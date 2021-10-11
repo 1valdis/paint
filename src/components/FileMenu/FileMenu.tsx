@@ -8,7 +8,7 @@ import classNames from 'classnames'
 
 import {
   addClickOutsideListener
-} from '../helpers'
+} from '../../common/helpers'
 
 import { Modal } from '../Modal/Modal'
 import { About } from '../About/About'

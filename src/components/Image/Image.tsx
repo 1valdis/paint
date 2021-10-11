@@ -26,8 +26,8 @@ interface ImageProps {
   image: HTMLCanvasElement
   instrument: Instrument
   selectionCoords?: SelectionCoords
-  selectInstrument: (instrument: Instrument) => void
-  changeImage: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void
+  onInstrumentSelect: (instrument: Instrument) => void
+  onImageChange: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void
 }
 
 export const Image: FunctionComponent<ImageProps> = (props) => {
@@ -44,8 +44,8 @@ export const Image: FunctionComponent<ImageProps> = (props) => {
 
     if (!newCtx) throw new Error("Couldn't acquire canvas context")
     newCtx.drawImage(props.image, -props.selectionCoords.top, -props.selectionCoords.left)
-    props.changeImage(newCanvas, newCtx)
-    props.selectInstrument('selection')
+    props.onImageChange(newCanvas, newCtx)
+    props.onInstrumentSelect('selection')
   }
 
   return (
@@ -54,7 +54,7 @@ export const Image: FunctionComponent<ImageProps> = (props) => {
         className={classNames('select', {
           select_active: props.instrument === 'selection'
         })}
-        onClick={() => props.selectInstrument('selection')}>
+        onClick={() => props.onInstrumentSelect('selection')}>
         <svg viewBox="0 0 15 10">
           <rect
             width="15"
@@ -81,19 +81,3 @@ export const Image: FunctionComponent<ImageProps> = (props) => {
     </nav>
   )
 }
-
-// const mapStateToProps = (state: StoreState) => ({
-//   image: state.image.data,
-//   instrument: state.instruments.instrument,
-//   selectionCoords:
-//     state.instruments.instrument === Instruments.selection
-//       ? state.instruments.coords
-//       : undefined
-// })
-// const mapDispatchToProps = (
-//   dispatch: ThunkDispatch<StoreState, undefined, Action>
-// ) => ({
-//   selectInstrument: (instrument: Instruments) =>
-//     dispatch(changeInstrument({ instrument })),
-//   changeImage: (imageData: ImageData) => dispatch(changeImage(imageData))
-// })

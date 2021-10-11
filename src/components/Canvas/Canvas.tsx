@@ -5,7 +5,7 @@ import './Canvas.css'
 export interface CanvasProps {
   ref: RefObject<HTMLCanvasElement>
   canvas: HTMLCanvasElement
-  changeImage: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void
+  onImageChange: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void
   children: ReactElement[]
 }
 

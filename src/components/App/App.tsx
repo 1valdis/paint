@@ -10,15 +10,16 @@ import { Colors } from '../Colors/Colors'
 import { Image, Instrument } from '../Image/Image'
 import { Clipboard } from '../Clipboard/Clipboard'
 import { Instruments } from '../instruments/Instruments'
-import { createCanvas } from './create-canvas'
+import { create } from './create'
 import { open } from './open'
 import { save } from './save'
 import { pasteFromEvent } from './paste-from-event'
 import { CanvasResizer } from '../CanvasResizer/CanvasResizer'
 import { CanvasEditor } from '../CanvasEditor/CanvasEditor'
+import { Color } from '../../common/Color'
 
 export const App = () => {
-  const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(createCanvas())
+  const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(create())
   const canvasOnDisplayRef = useRef<HTMLCanvasElement | null>(null)
 
   const [filename, setFilename] = useState('pic.png')
@@ -63,9 +64,38 @@ export const App = () => {
     document.addEventListener('paste', pasteFromEvent(mainCanvas, mainCanvasCtx, setMainCanvas))
   })
 
+  // #region functions
+  const addNewColor = (newColor: Color) => {
+    if (colors.find(
+      color =>
+        color.r === newColor.r &&
+        color.g === newColor.g &&
+        color.b === newColor.b)) return
+    if (colors.length !== 30) {
+      setColors([...colors, newColor])
+      if (activeColor === 'primary') {
+        setPrimaryColor(colors.length)
+      } else {
+        setSecondaryColor(colors.length)
+      }
+    } else {
+      setColors([
+        ...colors.slice(0, 20),
+        ...colors.slice(21),
+        newColor
+      ])
+      if (activeColor === 'primary') {
+        setPrimaryColor(colors.length - 1)
+      } else {
+        setSecondaryColor(colors.length - 1)
+      }
+    }
+  }
+  // #endregion
+
   return <>
     <FileMenu
-      onFileCreate={() => setMainCanvas(createCanvas())}
+      onFileCreate={() => setMainCanvas(create())}
       onFileOpen={async (event) => { event.target.files?.[0] && setMainCanvas(await open(event.target.files[0])) }}
       onDownload={() => save(mainCanvas, filename)}
     ></FileMenu>
@@ -80,15 +110,15 @@ export const App = () => {
         <Image
           selectionCoords={undefined}
           instrument={instrument}
-          selectInstrument={setInstrument}
+          onInstrumentSelect={setInstrument}
           image={mainCanvas}
-          changeImage={(canvas, context) => setMainCanvas({ canvas, context })}
+          onImageChange={(canvas, context) => setMainCanvas({ canvas, context })}
         />
       </NavBarItem>
       <NavBarItem footer="Instruments">
         <Instruments
           instrument={instrument}
-          selectInstrument={setInstrument}/>
+          onInstrumentSelect={setInstrument}/>
       </NavBarItem>
       <NavBarItem footer="Colors">
         <Colors
@@ -101,47 +131,18 @@ export const App = () => {
             ? setPrimaryColor(index)
             : setSecondaryColor(index)
           }
-          onColorInputChange={(event) => {
-            const hexRgb = event.target.value.match(/[A-Za-z0-9]{2}/g)
-            if (!hexRgb) return
-            const rgb = hexRgb.map(v => parseInt(v, 16))
-            const newColor = { r: rgb[0], g: rgb[1], b: rgb[2] }
-            if (colors.find(
-              color =>
-                color.r === newColor.r &&
-                color.g === newColor.g &&
-                color.b === newColor.b)) return
-            if (colors.length !== 30) {
-              setColors([...colors, newColor])
-              if (activeColor === 'primary') {
-                setPrimaryColor(colors.length)
-              } else {
-                setSecondaryColor(colors.length)
-              }
-            } else {
-              setColors([
-                ...colors.slice(0, 20),
-                ...colors.slice(21),
-                newColor
-              ])
-              if (activeColor === 'primary') {
-                setPrimaryColor(colors.length - 1)
-              } else {
-                setSecondaryColor(colors.length - 1)
-              }
-            }
-          }}
+          onNewColorAdded={addNewColor}
         />
       </NavBarItem>
     </NavBar>
     <Canvas
       ref={canvasOnDisplayRef}
       canvas={mainCanvas}
-      changeImage={(canvas, context) => setMainCanvas({ canvas, context })}>
+      onImageChange={(canvas, context) => setMainCanvas({ canvas, context })}>
       <CanvasResizer
           backgroundColor={colors[secondaryColor]}
           canvas={mainCanvas}
-          changeImage={(canvas, context) => setMainCanvas({ canvas, context })}
+          onImageChange={(canvas, context) => setMainCanvas({ canvas, context })}
         />
       <CanvasEditor
         instrument={instrument}

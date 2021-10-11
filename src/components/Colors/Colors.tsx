@@ -1,11 +1,12 @@
-import { ChangeEventHandler, FunctionComponent } from 'react'
+import { FunctionComponent } from 'react'
 
 import { ColorPalette } from './ColorPalette'
 import { ColorSelection } from './ColorSelection'
 import { ColorInput } from './ColorInput'
 import { Color } from './Color'
 
-import { rgbToHex } from '../helpers'
+import { rgbToHex } from '../../common/helpers'
+import { Color as IColor } from '../../common/Color'
 
 import './Colors.css'
 
@@ -16,7 +17,7 @@ export interface ColorsContainerProps {
   secondary: number
   onColorClick: (colorIndex: number) => void
   onActiveColorClick: (activeColorType: 'primary' | 'secondary') => void
-  onColorInputChange: ChangeEventHandler<HTMLInputElement>
+  onNewColorAdded: (color: IColor) => void
 }
 
 export const Colors: FunctionComponent<ColorsContainerProps> = (props) => {
@@ -51,7 +52,7 @@ export const Colors: FunctionComponent<ColorsContainerProps> = (props) => {
         ]}
       </ColorPalette>
       <ColorInput
-        onChange={props.onColorInputChange}
+        onNewColorSelected={props.onNewColorAdded}
         value={rgbToHex(props.colors[props[props.activeColor]])}
       />
     </div>

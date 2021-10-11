@@ -7,7 +7,7 @@ import './Instruments.css'
 
 export interface InstrumentsProps {
   instrument: Instrument
-  selectInstrument: (instrument: Instrument) => void
+  onInstrumentSelect: (instrument: Instrument) => void
 }
 
 const instrumentsList: Instrument[] = [
@@ -27,7 +27,7 @@ export const Instruments: FunctionComponent<InstrumentsProps> = props => (
           instrument_active: i === props.instrument
         })}
         key={`instrument_${i}`}
-        onClick={() => props.selectInstrument(i)}
+        onClick={() => props.onInstrumentSelect(i)}
       />
     ))}
   </div>
