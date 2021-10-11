@@ -8,6 +8,7 @@ import { NavBar } from '../NewNavBar/NavBar'
 import { NavBarItem } from '../NewNavBar/NavBarItem'
 import { Colors } from '../NewColors/Colors'
 import { Image, Instruments } from '../NewImage/Image'
+import { Clipboard } from '../NewClipboard/Clipboard'
 import { createCanvas } from './create-canvas'
 import { open } from './open'
 import { save } from './save'
@@ -61,9 +62,12 @@ export const App = () => {
       onDownload={() => save(mainCanvas, filename)}
     ></FileMenu>
     <NavBar>
-      {/* <NavBarItem footer="Clipboard">
-        <Clipboard />
-      </NavBarItem> */}
+      <NavBarItem footer="Clipboard">
+        <Clipboard
+          canvas={mainCanvas}
+          onPaste={(canvas, context) => setMainCanvas({ canvas, context })}
+        />
+      </NavBarItem>
       <NavBarItem footer="Image">
         <Image
           selectionCoords={undefined}
