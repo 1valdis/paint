@@ -7,10 +7,7 @@
     "classnames": "^2.3.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-redux": "^7.2.5",
-    "react-scripts": "^4.0.3",
-    "redux": "^4.1.1",
-    "redux-thunk": "^2.3.0"
+    "react-scripts": "^4.0.3"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -30,7 +27,6 @@
     "@types/node": "^14.17.19",
     "@types/react": "^17.0.24",
     "@types/react-dom": "^17.0.9",
-    "@types/react-redux": "^7.1.18",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "babel-eslint": "^10.1.0",
