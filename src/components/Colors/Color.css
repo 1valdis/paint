@@ -8,6 +8,3 @@
 .color:hover:not(.color_undefined) {
   border: 1px solid var(--hover-border-color);
 }
-.color_active {
-  border: 1px solid var(--active-border-color);
-}

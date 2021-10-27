@@ -10,7 +10,6 @@ export interface ColorProps {
     g: number
     b: number
   }
-  active?: boolean
 }
 
 export const Color: FunctionComponent<ColorProps> = props => {
@@ -23,7 +22,6 @@ export const Color: FunctionComponent<ColorProps> = props => {
         }
       }
       className={classNames('color', {
-        color_active: props.active,
         color_undefined: !props.value
       })}
     />

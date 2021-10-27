@@ -5,13 +5,10 @@ import './Canvas.css'
 export interface CanvasProps {
   ref: RefObject<HTMLCanvasElement>
   canvas: HTMLCanvasElement
-  onImageChange: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void
   children: ReactElement[]
 }
 
-export type Ref = HTMLCanvasElement
-
-export const Canvas = forwardRef<Ref, CanvasProps>(function Canvas (props, ref) {
+export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(function Canvas (props, ref) {
   return <div className="canvas-wrapper">
     <canvas
       ref={ref}

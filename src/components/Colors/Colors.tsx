@@ -11,10 +11,10 @@ import { Color as IColor } from '../../common/Color'
 import './Colors.css'
 
 export interface ColorsContainerProps {
-  colors: { r: number, g: number, b: number }[]
+  colors: IColor[]
   activeColor: 'primary' | 'secondary'
-  primary: number
-  secondary: number
+  primary: IColor
+  secondary: IColor
   onColorClick: (colorIndex: number) => void
   onActiveColorClick: (activeColorType: 'primary' | 'secondary') => void
   onNewColorAdded: (color: IColor) => void
@@ -25,13 +25,13 @@ export const Colors: FunctionComponent<ColorsContainerProps> = (props) => {
     <div className="colors">
       <ColorSelection
         header="Color 1"
-        color={props.colors[props.primary]}
+        color={props.primary}
         active={props.activeColor === 'primary'}
         onClick={() => props.onActiveColorClick('primary')}
       />
       <ColorSelection
         header="Color 2"
-        color={props.colors[props.secondary]}
+        color={props.secondary}
         active={props.activeColor === 'secondary'}
         onClick={() => props.onActiveColorClick('secondary')}
       />
@@ -40,7 +40,6 @@ export const Colors: FunctionComponent<ColorsContainerProps> = (props) => {
           ...props.colors.map((c, i) => (
             <Color
               value={c}
-              active={i === props[props.activeColor]}
               onClick={() => props.onColorClick(i)}
               key={'color' + i}
             />
@@ -53,7 +52,7 @@ export const Colors: FunctionComponent<ColorsContainerProps> = (props) => {
       </ColorPalette>
       <ColorInput
         onNewColorSelected={props.onNewColorAdded}
-        value={rgbToHex(props.colors[props[props.activeColor]])}
+        value={rgbToHex(props[props.activeColor])}
       />
     </div>
   )
