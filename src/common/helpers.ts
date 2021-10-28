@@ -7,6 +7,10 @@ export interface ClickOutsideListener {
   (event: MouseEvent): void
 }
 
+const isVisible = (elem: HTMLElement) =>
+  !!elem &&
+  !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
+
 export function addClickOutsideListener (
   element: HTMLElement,
   callback: ClickOutsideListener
@@ -24,10 +28,6 @@ export function addClickOutsideListener (
     document.removeEventListener('click', outsideClickListener)
   }
 }
-
-const isVisible = (elem: HTMLElement) =>
-  !!elem &&
-  !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length)
 
 function componentToHex (c: number) {
   const hex = c.toString(16)
@@ -69,11 +69,12 @@ export function bresenhamLine (
 
 export function getCanvasCoordsFromEvent (
   canvas: HTMLCanvasElement,
-  e: ReactPointerEvent<HTMLCanvasElement> | PointerEvent | ReactMouseEvent
+  event: ReactPointerEvent<HTMLCanvasElement> | PointerEvent | ReactMouseEvent
 ) {
   const { top, left } = canvas.getBoundingClientRect()
-  const [mouseX, mouseY] = [e.clientX, e.clientY]
+  const [mouseX, mouseY] = [event.clientX, event.clientY]
   return [Math.floor(mouseX - left), Math.floor(mouseY - top)]
+  // return [Math.floor(event.pageX - canvas.offsetLeft), event.pageY - canvas.offsetTop]
 }
 
 export function createCanvas (width?: number, height?: number) {
