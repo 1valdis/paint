@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import './App.css'
 
@@ -52,7 +52,7 @@ export const App = () => {
   const [activeColor, setActiveColor] = useState<'primary' | 'secondary'>('primary')
   const [instrument, setInstrument] = useState<Instrument>('pen')
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const canvasOnDiplay = canvasOnDisplayRef.current
     if (!canvasOnDiplay) return
     const ctx = canvasOnDiplay.getContext('2d')!
