@@ -59,7 +59,16 @@ export const App = () => {
     canvasOnDiplay.width = mainCanvas.width
     canvasOnDiplay.height = mainCanvas.height
     ctx.drawImage(mainCanvas, 0, 0)
-  })
+  }, [mainCanvas])
+
+  const updateCanvas = (newCanvas: HTMLCanvasElement) => {
+    const canvas = document.createElement('canvas')
+    canvas.width = newCanvas.width
+    canvas.height = newCanvas.height
+    const context = canvas.getContext('2d')!
+    context.drawImage(newCanvas, 0, 0)
+    setMainCanvas({ canvas, context })
+  }
 
   useEffect(() => {
     document.addEventListener('paste', pasteFromEvent(mainCanvas, mainCanvasCtx, setMainCanvas))
@@ -100,7 +109,7 @@ export const App = () => {
       instrumentComponent = <Pen
         color={primaryColor}
         image={mainCanvas}
-        onImageChange={(canvas, context) => setMainCanvas({ canvas, context })} />
+        onImageChange={updateCanvas} />
       break
     case 'dropper':
       instrumentComponent = <Dropper
@@ -122,7 +131,7 @@ export const App = () => {
       <NavBarItem footer="Clipboard">
         <Clipboard
           canvas={mainCanvas}
-          onPaste={(canvas, context) => setMainCanvas({ canvas, context })}
+          onPaste={updateCanvas}
         />
       </NavBarItem>
       <NavBarItem footer="Image">
@@ -131,7 +140,7 @@ export const App = () => {
           instrument={instrument}
           onInstrumentSelect={setInstrument}
           image={mainCanvas}
-          onImageChange={(canvas, context) => setMainCanvas({ canvas, context })}
+          onImageChange={updateCanvas}
         />
       </NavBarItem>
       <NavBarItem footer="Instruments">
@@ -160,7 +169,7 @@ export const App = () => {
       <CanvasResizer
           backgroundColor={secondaryColor}
           canvas={mainCanvas}
-          onImageChange={(canvas, context) => setMainCanvas({ canvas, context })}
+          onImageChange={updateCanvas}
         />
       {instrumentComponent}
     </Canvas>

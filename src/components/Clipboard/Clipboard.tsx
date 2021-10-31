@@ -22,7 +22,7 @@ declare class ClipboardItem {
 
 export interface ClipboardProps {
   canvas: HTMLCanvasElement
-  onPaste: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void
+  onPaste: (canvas: HTMLCanvasElement) => void
 }
 
 export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
@@ -53,7 +53,7 @@ export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
         const { canvas, context } = createCanvas(img.width, img.height)
         context.drawImage(img, 0, 0)
         URL.revokeObjectURL(img.src)
-        props.onPaste(canvas, context)
+        props.onPaste(canvas)
       }
     }
     return null

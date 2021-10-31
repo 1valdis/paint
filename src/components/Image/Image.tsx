@@ -27,7 +27,7 @@ interface ImageProps {
   instrument: Instrument
   selectionCoords?: SelectionCoords
   onInstrumentSelect: (instrument: Instrument) => void
-  onImageChange: (canvas: HTMLCanvasElement, context: CanvasRenderingContext2D) => void
+  onImageChange: (canvas: HTMLCanvasElement) => void
 }
 
 export const Image: FunctionComponent<ImageProps> = (props) => {
@@ -44,7 +44,7 @@ export const Image: FunctionComponent<ImageProps> = (props) => {
 
     if (!newCtx) throw new Error("Couldn't acquire canvas context")
     newCtx.drawImage(props.image, -props.selectionCoords.top, -props.selectionCoords.left)
-    props.onImageChange(newCanvas, newCtx)
+    props.onImageChange(newCanvas)
     props.onInstrumentSelect('selection')
   }
 
