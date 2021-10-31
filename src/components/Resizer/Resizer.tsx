@@ -98,10 +98,10 @@ export class Resizer extends PureComponent<ResizerProps, ResizerState> {
         }}>
         {directions[this.props.mode].map(d => (
           <ResizerPoint
-            onResizeStart={e => this.onResizeStart()}
+            onResizeStart={() => this.onResizeStart()}
             onResizeMove={e => this.onResizeMove(d, e)}
-            onResizeEnd={e => this.onResizeEnd()}
-            onResizeCancel={e => this.onResizeCancel()}
+            onResizeEnd={() => this.onResizeEnd()}
+            onResizeCancel={() => this.onResizeCancel()}
             key={`${d}-resizer-point`}
             className={d}
           />

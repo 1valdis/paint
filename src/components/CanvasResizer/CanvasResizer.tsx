@@ -4,7 +4,7 @@ import { Resizer } from '../Resizer/Resizer'
 export interface CanvasResizerProps {
   canvas: HTMLCanvasElement
   backgroundColor: { r: number; g: number; b: number }
-  onImageChange(canvas: HTMLCanvasElement, context: CanvasRenderingContext2D): void
+  onImageChange(canvas: HTMLCanvasElement): void
 }
 
 export const CanvasResizer: FunctionComponent<CanvasResizerProps> = (props) => {
@@ -21,7 +21,7 @@ export const CanvasResizer: FunctionComponent<CanvasResizerProps> = (props) => {
       newCtx.fillStyle = `rgb(${props.backgroundColor.r},${props.backgroundColor.g},${props.backgroundColor.b})`
       newCtx.fillRect(0, 0, toWidth, toHeight)
       newCtx.drawImage(props.canvas, 0, 0)
-      props.onImageChange(newCanvas, newCtx)
+      props.onImageChange(newCanvas)
     }
   }
 
