@@ -18,6 +18,7 @@ import { CanvasResizer } from '../CanvasResizer/CanvasResizer'
 import { Color } from '../../common/Color'
 import { Pen } from '../instruments/Pen/Pen'
 import { Dropper } from '../instruments/Dropper/Dropper'
+import { Fill } from '../instruments/Fill/Fill'
 
 export const App = () => {
   const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(create())
@@ -119,6 +120,14 @@ export const App = () => {
         }}
         context={mainCanvasCtx}
       />
+      break
+    case 'fill':
+      instrumentComponent = <Fill
+        color={primaryColor}
+        image={mainCanvas}
+        onImageChange={updateCanvas}
+      />
+      break
   }
 
   return <>
