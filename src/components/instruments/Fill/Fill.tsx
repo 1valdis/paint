@@ -123,9 +123,9 @@ export const Fill: FunctionComponent<FillProps> = (props) => {
       x,
       y,
       {
-        r: data.data[(y * data.width + x) * 4],
-        g: data.data[(y * data.width + x) * 4 + 1],
-        b: data.data[(y * data.width + x) * 4 + 2]
+        r: data.data[(y * data.width + x) * 4]!,
+        g: data.data[(y * data.width + x) * 4 + 1]!,
+        b: data.data[(y * data.width + x) * 4 + 2]!
       },
       props.color
     )

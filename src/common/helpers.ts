@@ -70,7 +70,7 @@ export function bresenhamLine (
 export function getCanvasCoordsFromEvent (
   canvas: HTMLCanvasElement,
   event: ReactPointerEvent<HTMLCanvasElement> | PointerEvent | ReactMouseEvent
-) {
+): [number, number] {
   const { top, left } = canvas.getBoundingClientRect()
   const [mouseX, mouseY] = [event.clientX, event.clientY]
   return [Math.floor(mouseX - left), Math.floor(mouseY - top)]

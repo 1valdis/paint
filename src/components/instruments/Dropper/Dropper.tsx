@@ -34,9 +34,9 @@ export const Dropper: FunctionComponent<DropperProps> = (props) => {
     const imageData = props.context.getImageData(left, top, 1, 1)
 
     props.onColorSelected({
-      r: imageData.data[0],
-      g: imageData.data[1],
-      b: imageData.data[2]
+      r: imageData.data[0]!,
+      g: imageData.data[1]!,
+      b: imageData.data[2]!
     })
   }
 

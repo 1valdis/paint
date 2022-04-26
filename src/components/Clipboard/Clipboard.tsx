@@ -10,16 +10,6 @@ function createCanvas (width?: number, height?: number) {
   return { canvas, context }
 }
 
-declare interface ModernClipboard {
-  write(data: ClipboardItem[]): Promise<void>
-  read(): Promise<Array<ClipboardItem>>
-}
-declare class ClipboardItem {
-  constructor(data: { [mimeType: string]: Blob })
-  types: Array<string>
-  getType(type: string): Promise<Blob>
-}
-
 export interface ClipboardProps {
   canvas: HTMLCanvasElement
   onPaste: (canvas: HTMLCanvasElement) => void
@@ -34,13 +24,13 @@ export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
       props.canvas.toBlob(resolve, 'image/png', 1)
     )
     if (!blob) throw new Error("Couldn't acquire blob from canvas")
-    await ((navigator.clipboard as unknown) as ModernClipboard).write([
+    await navigator.clipboard.write([
       new ClipboardItem({ 'image/png': blob })
     ])
   }
 
   const paste = async (): Promise<HTMLCanvasElement | null> => {
-    const clipboardItems = await ((navigator.clipboard as unknown) as ModernClipboard).read()
+    const clipboardItems = await navigator.clipboard.read()
     for (const clipboardItem of clipboardItems) {
       for (const type of clipboardItem.types) {
         if (!type.startsWith('image/')) continue
@@ -66,7 +56,7 @@ export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
     const writeStateListener = function (this: PermissionStatus) {
       setClipboardWriteState(this.state)
     }
-    async function init () {
+    async function init (): Promise<[PermissionStatus, PermissionStatus]> {
       const [
         clipboardWritePermission,
         clipboardReadPermission

@@ -24,16 +24,21 @@
     "react",
     "@typescript-eslint"
   ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "rules": {
-    "no-unused-vars": 0,
     "no-use-before-define": 0,
-    "@typescript-eslint/no-use-before-define": 1,
-    "@typescript-eslint/no-unused-vars-experimental": [
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
       1,
       {
         "ignoreArgsIfArgsAfterAreUsed": true
       }
     ],
+    "@typescript-eslint/no-use-before-define": 1,
     "react/prop-types": 0,
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off"

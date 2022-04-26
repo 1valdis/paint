@@ -2,6 +2,7 @@ export const save = async (canvas: HTMLCanvasElement, filename: string) => {
   const blob = await new Promise<Blob | null>(resolve =>
     canvas.toBlob(resolve)
   )
+  if (!blob) return
   const href = window.URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.download = filename

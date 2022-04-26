@@ -24,7 +24,7 @@ export const App = () => {
   const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(create())
   const canvasOnDisplayRef = useRef<HTMLCanvasElement | null>(null)
 
-  const [filename, setFilename] = useState('pic.png')
+  const [filename] = useState('pic.png')
 
   const [colors, setColors] = useState([
     { r: 0, g: 0, b: 0 },
@@ -48,8 +48,8 @@ export const App = () => {
     { r: 112, g: 176, b: 190 },
     { r: 200, g: 191, b: 231 }
   ])
-  const [primaryColor, setPrimaryColor] = useState<Color>(colors[0])
-  const [secondaryColor, setSecondaryColor] = useState<Color>(colors[10])
+  const [primaryColor, setPrimaryColor] = useState<Color>(colors[0]!)
+  const [secondaryColor, setSecondaryColor] = useState<Color>(colors[10]!)
   const [activeColor, setActiveColor] = useState<'primary' | 'secondary'>('primary')
   const [instrument, setInstrument] = useState<Instrument>('pen')
 
@@ -85,9 +85,9 @@ export const App = () => {
     if (colors.length !== 30) {
       setColors([...colors, newColor])
       if (activeColor === 'primary') {
-        setPrimaryColor(colors[colors.length])
+        setPrimaryColor(colors[colors.length]!)
       } else {
-        setSecondaryColor(colors[colors.length])
+        setSecondaryColor(colors[colors.length]!)
       }
     } else {
       setColors([
@@ -96,9 +96,9 @@ export const App = () => {
         newColor
       ])
       if (activeColor === 'primary') {
-        setPrimaryColor(colors[colors.length - 1])
+        setPrimaryColor(colors[colors.length - 1]!)
       } else {
-        setSecondaryColor(colors[colors.length - 1])
+        setSecondaryColor(colors[colors.length - 1]!)
       }
     }
   }
@@ -165,8 +165,8 @@ export const App = () => {
           secondary={secondaryColor}
           onActiveColorClick={setActiveColor}
           onColorClick={(index) => activeColor === 'primary'
-            ? setPrimaryColor(colors[index])
-            : setSecondaryColor(colors[index])
+            ? setPrimaryColor(colors[index]!)
+            : setSecondaryColor(colors[index]!)
           }
           onNewColorAdded={addNewColor}
         />

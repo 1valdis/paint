@@ -17,7 +17,7 @@ export const ColorInput: FunctionComponent<ColorInputProps> = (
       <input type="color" onChange={(event) => {
         const hexRgb = event.target.value.match(/[A-Za-z0-9]{2}/g)
         if (!hexRgb) return
-        const rgb = hexRgb.map(v => parseInt(v, 16))
+        const rgb = hexRgb.map(v => parseInt(v, 16)) as [number, number, number]
         const newColor = { r: rgb[0], g: rgb[1], b: rgb[2] }
         props.onNewColorSelected(newColor)
       }} value={props.value} />
