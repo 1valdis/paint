@@ -86,9 +86,9 @@ export const App = () => {
     if (colors.length !== 30) {
       setColors([...colors, newColor])
       if (activeColor === 'primary') {
-        setPrimaryColor(colors[colors.length]!)
+        setPrimaryColor(newColor)
       } else {
-        setSecondaryColor(colors[colors.length]!)
+        setSecondaryColor(newColor)
       }
     } else {
       setColors([
@@ -97,9 +97,9 @@ export const App = () => {
         newColor
       ])
       if (activeColor === 'primary') {
-        setPrimaryColor(colors[colors.length - 1]!)
+        setPrimaryColor(newColor)
       } else {
-        setSecondaryColor(colors[colors.length - 1]!)
+        setSecondaryColor(newColor)
       }
     }
   }
