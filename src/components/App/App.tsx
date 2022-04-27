@@ -19,6 +19,7 @@ import { Color } from '../../common/Color'
 import { Pen } from '../instruments/Pen/Pen'
 import { Dropper } from '../instruments/Dropper/Dropper'
 import { Fill } from '../instruments/Fill/Fill'
+import { Eraser } from '../instruments/Eraser/Eraser'
 
 export const App = () => {
   const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(create())
@@ -128,6 +129,13 @@ export const App = () => {
         onImageChange={updateCanvas}
       />
       break
+    case 'eraser':
+      instrumentComponent = <Eraser
+        color={secondaryColor}
+        image={mainCanvas}
+        onImageChange={updateCanvas}
+        thickness={8}
+      />
   }
 
   return <>

@@ -32,6 +32,7 @@ export const Pen: FunctionComponent<PenProps> = (props) => {
   const contextMenuShouldBePrevented = useRef(false)
 
   const startDrawing = useCallback((event: PointerEvent) => {
+    if (event.button === 2) return
     const [x, y] = getCanvasCoordsFromEvent(canvasRef.current!, event)
     const context = canvasRef.current!.getContext('2d')
     const { r, g, b } = props.color
