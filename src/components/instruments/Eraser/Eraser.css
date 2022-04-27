@@ -1,3 +1,6 @@
 .eraser-canvas {
   cursor: none;
 }
+.eraser-canvas-cursor {
+  pointer-events: none;
+}
