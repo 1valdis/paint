@@ -11,6 +11,7 @@ import './Eraser.css'
 import { Color } from '../../../common/Color'
 import { Point } from '../../../common/Point'
 import { bresenhamLine, getCanvasCoordsFromEvent } from '../../../common/helpers'
+import { flushSync } from 'react-dom'
 
 export interface EraserProps {
   color: Color
@@ -74,7 +75,7 @@ export const Eraser: FunctionComponent<EraserProps> = ({
             thickness,
             thickness
           ))
-          setMousePosition({ x, y })
+          flushSync(() => setMousePosition({ x, y }))
         } else if (event.button === 2) {
           context.drawImage(image, 0, 0)
           setIsDrawing(false)

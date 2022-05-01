@@ -11,6 +11,7 @@ import './Pen.css'
 import { bresenhamLine, getCanvasCoordsFromEvent } from '../../../common/helpers'
 import { Color } from '../../../common/Color'
 import { Point } from '../../../common/Point'
+import { flushSync } from 'react-dom'
 
 export interface PenProps {
   color: Color
@@ -61,7 +62,7 @@ export const Pen: FunctionComponent<PenProps> = ({
         if (event.buttons === 1) {
           const [x, y] = getCanvasCoordsFromEvent(canvasRef.current!, event)
           bresenhamLine(mousePosition.x, mousePosition.y, x, y, (fillX, fillY) => context.fillRect(fillX, fillY, 1, 1))
-          setMousePosition({ x, y })
+          flushSync(() => setMousePosition({ x, y }))
         } else if (event.button === 2) {
           context.drawImage(image, 0, 0)
           setIsDrawing(false)
