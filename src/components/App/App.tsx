@@ -73,8 +73,12 @@ export const App = () => {
   }
 
   useEffect(() => {
-    document.addEventListener('paste', pasteFromEvent(mainCanvas, mainCanvasCtx, setMainCanvas))
-  })
+    const listener = pasteFromEvent(mainCanvas, mainCanvasCtx, setMainCanvas)
+    document.addEventListener('paste', listener)
+    return () => {
+      document.removeEventListener('paste', listener)
+    }
+  }, [mainCanvas, mainCanvasCtx, setMainCanvas])
 
   // #region functions
   const addNewColor = (newColor: Color) => {

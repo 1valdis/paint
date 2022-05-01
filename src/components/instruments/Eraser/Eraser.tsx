@@ -19,15 +19,20 @@ export interface EraserProps {
   thickness: number // insert true one after thickness is made (4/6/8/10)
 }
 
-export const Eraser: FunctionComponent<EraserProps> = (props) => {
+export const Eraser: FunctionComponent<EraserProps> = ({
+  color,
+  image,
+  onImageChange,
+  thickness
+}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const pointerCanvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
     if (!canvasRef.current) return
     const context = canvasRef.current!.getContext('2d')!
-    context.drawImage(props.image, 0, 0)
-  }, [props.image])
+    context.drawImage(image, 0, 0)
+  }, [image])
 
   const [isDrawing, setIsDrawing] = useState(false)
   const [mousePosition, setMousePosition] = useState<Point>({ x: 0, y: 0 })
@@ -37,22 +42,23 @@ export const Eraser: FunctionComponent<EraserProps> = (props) => {
     if (event.button === 2) return
     const [x, y] = getCanvasCoordsFromEvent(canvasRef.current!, event)
     const context = canvasRef.current!.getContext('2d')!
-    const { r, g, b } = props.color
+    const { r, g, b } = color
     context.fillStyle = `rgb(${r},${g},${b})`
     context.fillRect(
-      x - props.thickness / 2,
-      y - props.thickness / 2,
-      props.thickness,
-      props.thickness
+      x - thickness / 2,
+      y - thickness / 2,
+      thickness,
+      thickness
     )
     setMousePosition({ x, y })
     setIsDrawing(true)
-  }, [props.color])
+  }, [color, thickness])
   useLayoutEffect(() => {
-    if (!canvasRef.current) return
-    canvasRef.current.addEventListener('pointerdown', startDrawing)
+    const currentRef = canvasRef.current
+    if (!currentRef) return
+    currentRef.addEventListener('pointerdown', startDrawing)
     return () => {
-      canvasRef.current!.removeEventListener('pointerdown', startDrawing)
+      currentRef.removeEventListener('pointerdown', startDrawing)
     }
   }, [startDrawing])
 
@@ -63,20 +69,20 @@ export const Eraser: FunctionComponent<EraserProps> = (props) => {
         if (event.buttons === 1) {
           const [x, y] = getCanvasCoordsFromEvent(canvasRef.current!, event)
           bresenhamLine(mousePosition.x, mousePosition.y, x, y, (fillX, fillY) => context.fillRect(
-            fillX - props.thickness / 2,
-            fillY - props.thickness / 2,
-            props.thickness,
-            props.thickness
+            fillX - thickness / 2,
+            fillY - thickness / 2,
+            thickness,
+            thickness
           ))
           setMousePosition({ x, y })
         } else if (event.button === 2) {
-          context.drawImage(props.image, 0, 0)
+          context.drawImage(image, 0, 0)
           setIsDrawing(false)
           contextMenuShouldBePrevented.current = true
         }
       }
     },
-    [isDrawing, mousePosition, props.image]
+    [isDrawing, mousePosition, image, thickness]
   )
   useLayoutEffect(() => {
     document.addEventListener('pointermove', draw)
@@ -88,8 +94,8 @@ export const Eraser: FunctionComponent<EraserProps> = (props) => {
   const finishDrawing = useCallback(() => {
     if (!canvasRef.current) return
     setIsDrawing(false)
-    props.onImageChange(canvasRef.current)
-  }, [])
+    onImageChange(canvasRef.current)
+  }, [onImageChange])
   useLayoutEffect(() => {
     document.addEventListener('pointerup', finishDrawing)
     return () => {
@@ -113,24 +119,24 @@ export const Eraser: FunctionComponent<EraserProps> = (props) => {
       const context = pointerCanvasRef.current!.getContext('2d')!
       context.clearRect(0, 0, pointerCanvasRef.current!.width, pointerCanvasRef.current!.height)
       context.strokeStyle = 'black'
-      const { r, g, b } = props.color
+      const { r, g, b } = color
       context.fillStyle = `rgb(${r},${g},${b})`
       const [x, y] = getCanvasCoordsFromEvent(pointerCanvasRef.current!, event)
 
       context.fillRect(
-        x - props.thickness / 2,
-        y - props.thickness / 2,
-        props.thickness,
-        props.thickness
+        x - thickness / 2,
+        y - thickness / 2,
+        thickness,
+        thickness
       )
       context.strokeRect(
-        x - props.thickness / 2 + 0.5,
-        y - props.thickness / 2 + 0.5,
-        props.thickness - 1,
-        props.thickness - 1
+        x - thickness / 2 + 0.5,
+        y - thickness / 2 + 0.5,
+        thickness - 1,
+        thickness - 1
       )
     },
-    [props.color]
+    [color, thickness]
   )
   useLayoutEffect(() => {
     document.addEventListener('pointermove', drawPointer)
@@ -143,14 +149,14 @@ export const Eraser: FunctionComponent<EraserProps> = (props) => {
     <canvas
       className="eraser-canvas"
       ref={canvasRef}
-      width={props.image.width}
-      height={props.image.height}
+      width={image.width}
+      height={image.height}
     />
     <canvas
       className="eraser-canvas-cursor"
       ref={pointerCanvasRef}
-      width={props.image.width}
-      height={props.image.height}
+      width={image.width}
+      height={image.height}
     />
   </>)
 }
