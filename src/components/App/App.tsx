@@ -20,6 +20,8 @@ import { Pen } from '../instruments/Pen/Pen'
 import { Dropper } from '../instruments/Dropper/Dropper'
 import { Fill } from '../instruments/Fill/Fill'
 import { Eraser } from '../instruments/Eraser/Eraser'
+import { Selection } from '../instruments/Selection/Selection'
+import { Rectangle } from '../../common/Rectangle'
 
 export const App = () => {
   const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(create())
@@ -109,6 +111,11 @@ export const App = () => {
   }
   // #endregion
 
+  const [isResizerHidden, setIsResizerHidden] = useState(false)
+  const [selectionRectangle, setSelectionRectangle] = useState<Rectangle | null>(null)
+  const [selectionImage, setSelectionImage] = useState<HTMLCanvasElement | null>(null)
+  const [selectionBackground, setSelectionBackground] = useState<HTMLCanvasElement | null>(null)
+
   let instrumentComponent = <></>
   switch (instrument) {
     case 'pen':
@@ -140,6 +147,20 @@ export const App = () => {
         onImageChange={updateCanvas}
         thickness={8}
       />
+      break
+    case 'selection':
+      instrumentComponent = <Selection
+        image={mainCanvas}
+        onImageChange={updateCanvas}
+        setIsResizerHidden={setIsResizerHidden}
+        selectionRectangle={selectionRectangle}
+        setSelectionRectangle={setSelectionRectangle}
+        selectionImage={selectionImage}
+        setSelectionImage={setSelectionImage}
+        selectionBackground={selectionBackground}
+        setSelectionBackground={setSelectionBackground}
+        />
+      break
   }
 
   return <>
@@ -187,12 +208,15 @@ export const App = () => {
     <Canvas
       ref={canvasOnDisplayRef}
       canvas={mainCanvas}>
-      <CanvasResizer
-          backgroundColor={secondaryColor}
-          canvas={mainCanvas}
-          onImageChange={updateCanvas}
-        />
-      {instrumentComponent}
+        {isResizerHidden || selectionRectangle
+          ? null
+          : <CanvasResizer
+            backgroundColor={secondaryColor}
+            canvas={mainCanvas}
+            onImageChange={updateCanvas}
+            key='shmek'
+          />}
+        {instrumentComponent}
     </Canvas>
   </>
 }

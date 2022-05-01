@@ -1,11 +1,11 @@
-import { forwardRef, ReactElement, RefObject } from 'react'
+import { forwardRef, ReactElement, ReactNode, RefObject } from 'react'
 
 import './Canvas.css'
 
 export interface CanvasProps {
   ref: RefObject<HTMLCanvasElement>
   canvas: HTMLCanvasElement
-  children: ReactElement[]
+  children: ReactNode[]
 }
 
 export const Canvas = forwardRef<HTMLCanvasElement, CanvasProps>(function Canvas (props, ref) {
