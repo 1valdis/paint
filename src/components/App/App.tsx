@@ -111,7 +111,7 @@ export const App = () => {
   }
   // #endregion
 
-  const [isResizerHidden, setIsResizerHidden] = useState(false)
+  const [isSelectionActive, setIsSelectionActive] = useState(false)
   const [selectionRectangle, setSelectionRectangle] = useState<Rectangle | null>(null)
   const [selectionImage, setSelectionImage] = useState<HTMLCanvasElement | null>(null)
   const [selectionBackground, setSelectionBackground] = useState<HTMLCanvasElement | null>(null)
@@ -152,7 +152,7 @@ export const App = () => {
       instrumentComponent = <Selection
         image={mainCanvas}
         onImageChange={updateCanvas}
-        setIsResizerHidden={setIsResizerHidden}
+        setIsSelectionActive={setIsSelectionActive}
         selectionRectangle={selectionRectangle}
         setSelectionRectangle={setSelectionRectangle}
         selectionImage={selectionImage}
@@ -208,7 +208,7 @@ export const App = () => {
     <Canvas
       ref={canvasOnDisplayRef}
       canvas={mainCanvas}>
-        {isResizerHidden || selectionRectangle
+        {isSelectionActive || selectionRectangle
           ? null
           : <CanvasResizer
             backgroundColor={secondaryColor}

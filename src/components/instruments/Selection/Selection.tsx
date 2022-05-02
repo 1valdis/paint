@@ -25,7 +25,7 @@ import './Selection.css'
 export interface SelectionProps {
   image: HTMLCanvasElement
   onImageChange: (canvas: HTMLCanvasElement) => void
-  setIsResizerHidden: (value: boolean) => void
+  setIsSelectionActive: (value: boolean) => void
   selectionRectangle: Rectangle | null
   setSelectionRectangle: (value: Rectangle | null) => void
   selectionImage: HTMLCanvasElement | null
@@ -37,7 +37,7 @@ export interface SelectionProps {
 export const Selection: FunctionComponent<SelectionProps> = ({
   image,
   onImageChange,
-  setIsResizerHidden,
+  setIsSelectionActive,
   selectionRectangle,
   setSelectionRectangle,
   selectionImage,
@@ -95,12 +95,11 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     ]
     ;[top, left] = [Math.ceil(mouseY - top), Math.ceil(mouseX - left)]
 
-    console.log('should set it, right?')
     setIsSelecting(true)
     setSelectingOrigin({ y: top, x: left })
     setSelectingRectangle(null)
-    setIsResizerHidden(true)
-  }, [setIsResizerHidden])
+    setIsSelectionActive(true)
+  }, [setIsSelectionActive])
 
   const handleDocumentPointerMove = useCallback((e: PointerEvent) => {
     if (!isSelecting) return
@@ -215,17 +214,17 @@ export const Selection: FunctionComponent<SelectionProps> = ({
           setSelectionRectangle(selectingRectangle)
         } else {
           setSelectionRectangle(null)
-          setIsResizerHidden(false)
+          setIsSelectionActive(false)
         }
       } else {
         setSelectionRectangle(null)
-        setIsResizerHidden(false)
+        setIsSelectionActive(false)
       }
     }
     setIsSelecting(false)
     setSelectingOrigin(null)
     setSelectingRectangle(null)
-  }, [isSelecting, selectingRectangle, setIsResizerHidden, setSelectionRectangle])
+  }, [isSelecting, selectingRectangle, setIsSelectionActive, setSelectionRectangle])
   useEffect(() => {
     document.addEventListener('pointerup', handleDocumentPointerUp)
     return () => {
@@ -235,22 +234,22 @@ export const Selection: FunctionComponent<SelectionProps> = ({
   // #endregion
 
   // #region work with existing selection
-  // const handleResizeEnd = useCallback(() => {
-  //   if (!this.newCtx) throw new Error("Coudn't acquire context")
-  //   if (!this.backgroundColor) {
-  //     this.backgroundColor = this.secondaryColor
-  //     this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
-  //   }
-  //   this.onCoordsChanged({ top, left, width, height })
-  //   this.onImageChanged(
-  //     this.newCtx.getImageData(
-  //       0,
-  //       0,
-  //       this.newCtx.canvas.width,
-  //       this.newCtx.canvas.height
-  //     )
-  //   )
-  // })
+  const handleResizeEnd = useCallback(({ top, left, width, height }: Rectangle) => {
+    // if (!this.newCtx) throw new Error("Coudn't acquire context")
+    // if (!this.backgroundColor) {
+    //   this.backgroundColor = this.secondaryColor
+    //   this.newCtx.fillStyle = `rgb(${this.backgroundColor.r}, ${this.backgroundColor.g}, ${this.backgroundColor.b})`
+    // }
+    setSelectionRectangle({ top, left, width, height })
+    // this.onImageChanged(
+    //   this.newCtx.getImageData(
+    //     0,
+    //     0,
+    //     this.newCtx.canvas.width,
+    //     this.newCtx.canvas.height
+    //   )
+    // )
+  }, [setSelectionRectangle])
   const handleMoving = useCallback(({ top, left, width, height }: Rectangle) => {
     // const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
     // if (!modifiedCtx || !selectionRectangle || !movedSelectionRectangle) throw new Error('Something is wrong')
@@ -280,10 +279,10 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     // )
   }, [setSelectionRectangle])
 
-  // const handleMoveEnd = useCallback(() => {
-  //   if (!modifiedCanvasRef.current) throw new Error('Something is wrong')
-  //   onImageChange(modifiedCanvasRef.current)
-  // }, [onImageChange])
+  const handleMoveEnd = useCallback(() => {
+    // if (!modifiedCanvasRef.current) throw new Error('Something is wrong')
+    // onImageChange(modifiedCanvasRef.current)
+  }, [onImageChange])
   // #endregion
 
   let El = <></>
@@ -305,9 +304,9 @@ export const Selection: FunctionComponent<SelectionProps> = ({
         height={image.height}/>
       <MovableSelection
         {...selectionRectangle}
-        // onResizeEnd={this.handleResizeEnd}
+        onResizeEnd={handleResizeEnd}
         onMoving={handleMoving}
-        // onMoveEnd={handleMoveEnd}
+        onMoveEnd={handleMoveEnd}
         hideBorderOnResizing={false}
       />
     </>
