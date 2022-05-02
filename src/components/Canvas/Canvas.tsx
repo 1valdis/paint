@@ -1,4 +1,4 @@
-import { forwardRef, ReactElement, ReactNode, RefObject } from 'react'
+import { forwardRef, ReactNode, RefObject } from 'react'
 
 import './Canvas.css'
 

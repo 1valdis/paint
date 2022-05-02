@@ -16,10 +16,8 @@ export function addClickOutsideListener (
   callback: ClickOutsideListener
 ) {
   const outsideClickListener = (event: MouseEvent) => {
-    if (!element.contains(event.target as HTMLElement)) {
-      if (isVisible(element)) {
-        callback(event)
-      }
+    if (!element.contains(event.target as HTMLElement) && isVisible(element)) {
+      callback(event)
     }
   }
 
