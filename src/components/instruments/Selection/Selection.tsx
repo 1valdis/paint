@@ -208,13 +208,19 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     //     selectingY: null
     //   }
     // }
-    if (isSelecting && selectingRectangle &&
-      selectingRectangle.width > 0 &&
-      selectingRectangle.height > 0) {
-      setSelectionRectangle(selectingRectangle)
-    } else {
-      setSelectionRectangle(null)
-      setIsResizerHidden(false)
+    if (isSelecting) {
+      if (selectingRectangle) {
+        if (selectingRectangle.width > 0 &&
+          selectingRectangle.height > 0) {
+          setSelectionRectangle(selectingRectangle)
+        } else {
+          setSelectionRectangle(null)
+          setIsResizerHidden(false)
+        }
+      } else {
+        setSelectionRectangle(null)
+        setIsResizerHidden(false)
+      }
     }
     setIsSelecting(false)
     setSelectingOrigin(null)
@@ -245,34 +251,34 @@ export const Selection: FunctionComponent<SelectionProps> = ({
   //     )
   //   )
   // })
-  // const handleMoving = useCallback(({ top, left, width, height }: Rectangle) => {
-  //   const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
-  //   if (!modifiedCtx || !selectionRectangle || !movedSelectionRectangle) throw new Error('Something is wrong')
-  //   if (!usedSecondaryColor) {
-  //     setUsedSecondaryColor(secondaryColor)
-  //     modifiedCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
-  //   }
-  //   setMovedSelectionRectangle({ top, left, width, height })
+  const handleMoving = useCallback(({ top, left, width, height }: Rectangle) => {
+    // const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
+    // if (!modifiedCtx || !selectionRectangle || !movedSelectionRectangle) throw new Error('Something is wrong')
+    // if (!usedSecondaryColor) {
+    //   setUsedSecondaryColor(secondaryColor)
+    //   modifiedCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
+    // }
+    setSelectionRectangle({ top, left, width, height })
 
-  //   modifiedCtx.drawImage(image, 0, 0)
-  //   modifiedCtx.fillRect(
-  //     selectionRectangle.left,
-  //     selectionRectangle.top,
-  //     selectionRectangle.width,
-  //     selectionRectangle.height
-  //   )
-  //   modifiedCtx.drawImage(
-  //     image,
-  //     selectionRectangle.left,
-  //     selectionRectangle.top,
-  //     selectionRectangle.width,
-  //     selectionRectangle.height,
-  //     movedSelectionRectangle.left,
-  //     movedSelectionRectangle.top,
-  //     movedSelectionRectangle.width,
-  //     movedSelectionRectangle.height
-  //   )
-  // }, [selectionRectangle, image, movedSelectionRectangle, secondaryColor, usedSecondaryColor])
+    // modifiedCtx.drawImage(image, 0, 0)
+    // modifiedCtx.fillRect(
+    //   selectionRectangle.left,
+    //   selectionRectangle.top,
+    //   selectionRectangle.width,
+    //   selectionRectangle.height
+    // )
+    // modifiedCtx.drawImage(
+    //   image,
+    //   selectionRectangle.left,
+    //   selectionRectangle.top,
+    //   selectionRectangle.width,
+    //   selectionRectangle.height,
+    //   movedSelectionRectangle.left,
+    //   movedSelectionRectangle.top,
+    //   movedSelectionRectangle.width,
+    //   movedSelectionRectangle.height
+    // )
+  }, [setSelectionRectangle])
 
   // const handleMoveEnd = useCallback(() => {
   //   if (!modifiedCanvasRef.current) throw new Error('Something is wrong')
@@ -300,7 +306,7 @@ export const Selection: FunctionComponent<SelectionProps> = ({
       <MovableSelection
         {...selectionRectangle}
         // onResizeEnd={this.handleResizeEnd}
-        // onMoving={handleMoving}
+        onMoving={handleMoving}
         // onMoveEnd={handleMoveEnd}
         hideBorderOnResizing={false}
       />
