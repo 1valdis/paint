@@ -116,6 +116,13 @@ export const App = () => {
   const [selectionImage, setSelectionImage] = useState<HTMLCanvasElement | null>(null)
   const [selectionBackground, setSelectionBackground] = useState<HTMLCanvasElement | null>(null)
 
+  const selectInstrument = (instrument: Instrument) => {
+    setInstrument(instrument)
+    setSelectionRectangle(null)
+    setSelectionBackground(null)
+    setSelectionImage(null)
+  }
+
   let instrumentComponent = <></>
   switch (instrument) {
     case 'pen':
@@ -159,6 +166,7 @@ export const App = () => {
         setSelectionImage={setSelectionImage}
         selectionBackground={selectionBackground}
         setSelectionBackground={setSelectionBackground}
+        secondaryColor={secondaryColor}
         />
       break
   }
@@ -178,9 +186,8 @@ export const App = () => {
       </NavBarItem>
       <NavBarItem footer="Image">
         <Image
-          selectionCoords={undefined}
           instrument={instrument}
-          onInstrumentSelect={setInstrument}
+          onInstrumentSelect={selectInstrument}
           image={mainCanvas}
           onImageChange={updateCanvas}
         />
@@ -188,7 +195,7 @@ export const App = () => {
       <NavBarItem footer="Instruments">
         <Instruments
           instrument={instrument}
-          onInstrumentSelect={setInstrument}/>
+          onInstrumentSelect={selectInstrument}/>
       </NavBarItem>
       <NavBarItem footer="Colors">
         <Colors
