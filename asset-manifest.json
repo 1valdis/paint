@@ -1,19 +1,21 @@
 {
   "files": {
-    "main.css": "/paint/static/css/main.5a2359f1.chunk.css",
-    "main.js": "/paint/static/js/main.514bbf9c.chunk.js",
-    "main.js.map": "/paint/static/js/main.514bbf9c.chunk.js.map",
-    "runtime~main.js": "/paint/static/js/runtime~main.b1b46447.js",
-    "runtime~main.js.map": "/paint/static/js/runtime~main.b1b46447.js.map",
-    "static/js/2.ea1a157d.chunk.js": "/paint/static/js/2.ea1a157d.chunk.js",
-    "static/js/2.ea1a157d.chunk.js.map": "/paint/static/js/2.ea1a157d.chunk.js.map",
+    "main.css": "/paint/static/css/main.c3e9b87b.css",
+    "main.js": "/paint/static/js/main.9bcf8f80.js",
+    "static/media/color-input-icon.png": "/paint/static/media/color-input-icon.9832ed4e5e04118f5236.png",
+    "static/media/crosshair-monochrome.svg": "/paint/static/media/crosshair-monochrome.c08f75fc8e5834ade755.svg",
+    "static/media/pen_colorful.svg": "/paint/static/media/pen_colorful.08ff890607b444275d5f.svg",
+    "static/media/zoom_colorful.svg": "/paint/static/media/zoom_colorful.7b1accb2f56621be1b08.svg",
+    "static/media/dropper_colorful.svg": "/paint/static/media/dropper_colorful.7e9745e7647ba13efc04.svg",
+    "static/media/dropper_monochrome.svg": "/paint/static/media/dropper_monochrome.5f8148514c198f73f862.svg",
+    "static/media/fill_colorful.svg": "/paint/static/media/fill_colorful.252c42823041905f92a2.svg",
+    "static/media/eraser_colorful.svg": "/paint/static/media/eraser_colorful.81c6dcb825dbe758a640.svg",
     "index.html": "/paint/index.html",
-    "precache-manifest.bbe019686c78af1eef181573e9dbc830.js": "/paint/precache-manifest.bbe019686c78af1eef181573e9dbc830.js",
-    "service-worker.js": "/paint/service-worker.js",
-    "static/css/main.5a2359f1.chunk.css.map": "/paint/static/css/main.5a2359f1.chunk.css.map",
-    "static/media/ColorInput.css": "/paint/static/media/color-input-icon.e9f5edd1.png",
-    "static/media/SelectionInstrument.css": "/paint/static/media/crosshair-monochrome.be0d253d.svg",
-    "static/media/Instruments.css": "/paint/static/media/zoom_colorful.70d7efe5.svg",
-    "static/media/Dropper.css": "/paint/static/media/dropper_monochrome.e172e5fc.svg"
-  }
+    "main.c3e9b87b.css.map": "/paint/static/css/main.c3e9b87b.css.map",
+    "main.9bcf8f80.js.map": "/paint/static/js/main.9bcf8f80.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c3e9b87b.css",
+    "static/js/main.9bcf8f80.js"
+  ]
 }
