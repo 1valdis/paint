@@ -56,6 +56,11 @@ export const App = () => {
   const [activeColor, setActiveColor] = useState<'primary' | 'secondary'>('primary')
   const [instrument, setInstrument] = useState<Instrument>('pen')
 
+  const [isSelectionActive, setIsSelectionActive] = useState(false)
+  const [selectionRectangle, setSelectionRectangle] = useState<Rectangle | null>(null)
+  const [selectionImage, setSelectionImage] = useState<HTMLCanvasElement | null>(null)
+  const [selectionBackground, setSelectionBackground] = useState<HTMLCanvasElement | null>(null)
+
   useLayoutEffect(() => {
     const canvasOnDiplay = canvasOnDisplayRef.current
     if (!canvasOnDiplay) return
@@ -102,11 +107,6 @@ export const App = () => {
     }
   }
   // #endregion
-
-  const [isSelectionActive, setIsSelectionActive] = useState(false)
-  const [selectionRectangle, setSelectionRectangle] = useState<Rectangle | null>(null)
-  const [selectionImage, setSelectionImage] = useState<HTMLCanvasElement | null>(null)
-  const [selectionBackground, setSelectionBackground] = useState<HTMLCanvasElement | null>(null)
 
   const selectInstrument = (instrument: Instrument) => {
     setInstrument(instrument)
