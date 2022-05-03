@@ -219,19 +219,19 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     return () => {
       document.removeEventListener('pointerup', handleDocumentPointerUp)
     }
-  })
+  }, [handleDocumentPointerUp])
   // #endregion
 
   // #region work with existing selection
   const handleMoving = useCallback(({ top, left, width, height }: Rectangle) => {
     const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
-    if (!modifiedCtx || !selectionRectangle) throw new Error('Something is wrong')
+    if (!modifiedCtx || !selectionRectangle) throw new Error()
     if (!selectionBackground) {
       const backgroundCanvas = document.createElement('canvas')
       backgroundCanvas.width = image.width
       backgroundCanvas.height = image.height
       const backgroundCtx = backgroundCanvas.getContext('2d')
-      if (!backgroundCtx) throw new Error("Couldn't get context")
+      if (!backgroundCtx) throw new Error()
       backgroundCtx.drawImage(image, 0, 0)
       backgroundCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
       backgroundCtx.fillRect(selectionRectangle.left, selectionRectangle.top, selectionRectangle.width, selectionRectangle.height)
@@ -242,7 +242,7 @@ export const Selection: FunctionComponent<SelectionProps> = ({
       selectionCanvas.width = selectionRectangle.width
       selectionCanvas.height = selectionRectangle.height
       const selectionCtx = selectionCanvas.getContext('2d')
-      if (!selectionCtx) throw new Error("Couldn't get context")
+      if (!selectionCtx) throw new Error()
       selectionCtx.drawImage(
         image,
         selectionRectangle.left,
@@ -259,10 +259,43 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     setSelectionRectangle({ top, left, width, height })
   }, [image, secondaryColor, selectionBackground, selectionImage, selectionRectangle, setSelectionBackground, setSelectionImage, setSelectionRectangle])
 
-  const handleMoveEndOrResize = useCallback(() => {
-    if (!modifiedCanvasRef.current) throw new Error('Something is wrong')
-    onImageChange(modifiedCanvasRef.current)
-  }, [onImageChange])
+  const handleResizeOrMoveEnd = useCallback(({ top, left, width, height }: Rectangle) => {
+    const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
+    if (!modifiedCtx || !selectionRectangle) throw new Error()
+    if (width === selectionRectangle.width && height === selectionRectangle.height) return
+    if (!selectionBackground) {
+      const backgroundCanvas = document.createElement('canvas')
+      backgroundCanvas.width = image.width
+      backgroundCanvas.height = image.height
+      const backgroundCtx = backgroundCanvas.getContext('2d')
+      if (!backgroundCtx) throw new Error()
+      backgroundCtx.drawImage(image, 0, 0)
+      backgroundCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
+      backgroundCtx.fillRect(selectionRectangle.left, selectionRectangle.top, selectionRectangle.width, selectionRectangle.height)
+      setSelectionBackground(backgroundCanvas)
+    }
+    if (!selectionImage || selectionRectangle.width !== width || selectionRectangle.height !== height) {
+      const selectionCanvas = document.createElement('canvas')
+      selectionCanvas.width = width
+      selectionCanvas.height = height
+      const selectionCtx = selectionCanvas.getContext('2d')
+      if (!selectionCtx) throw new Error()
+      selectionCtx.imageSmoothingEnabled = false
+      selectionCtx.drawImage(
+        image,
+        selectionRectangle.left,
+        selectionRectangle.top,
+        selectionRectangle.width,
+        selectionRectangle.height,
+        0,
+        0,
+        selectionCanvas.width,
+        selectionCanvas.height
+      )
+      setSelectionImage(selectionCanvas)
+    }
+    setSelectionRectangle({ top, left, width, height })
+  }, [image, secondaryColor, selectionBackground, selectionImage, selectionRectangle, setSelectionBackground, setSelectionImage, setSelectionRectangle])
   // #endregion
 
   let El = <></>
@@ -284,9 +317,9 @@ export const Selection: FunctionComponent<SelectionProps> = ({
         height={image.height}/>
       <MovableSelection
         {...selectionRectangle}
-        onResizeEnd={handleMoving}
+        onResizeEnd={handleResizeOrMoveEnd}
         onMoving={handleMoving}
-        onMoveEnd={handleMoveEndOrResize}
+        onMoveEnd={handleResizeOrMoveEnd}
         hideBorderOnResizing={false}
       />
     </>
