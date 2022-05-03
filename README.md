@@ -1,9 +1,5 @@
 # Paint [WiP]
 
-## WARNING: master branch is undergoing a rewrite and does NOT correspond to the app hosted on Github Pages.
-
-The checklist below corresponds to the older hosted variant. The master branch is yet to have the same functionality.
-
 This is my replica of MS Paint on canvas and [React](https://reactjs.org/). Created using [create-react-app](https://github.com/facebook/create-react-app).
 
 [![forthebadge](https://forthebadge.com/images/badges/you-didnt-ask-for-this.svg)](https://forthebadge.com) [![forthebadge](https://forthebadge.com/images/badges/contains-technical-debt.svg)](https://forthebadge.com)
@@ -32,13 +28,13 @@ Live demo: https://1valdis.github.io/paint/
 - [ ] Image
   - [ ] Clipboard
     - [ ] Copy
-    - [ ] Paste
+    - [x] Paste
     - [ ] Cut
   - [ ] Selection
-    - [ ] Paste
-      - [ ] From clipboard
+    - [x] Paste
+      - [x] From clipboard
       - [ ] From file
-    - [ ] Move, resize
+    - [x] Move, resize
     - [ ] Clip selection
     - [ ] Transparent selection
 
