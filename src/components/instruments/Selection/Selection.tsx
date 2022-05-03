@@ -178,10 +178,13 @@ export const Selection: FunctionComponent<SelectionProps> = ({
         setIsSelecting(false)
         setSelectingOrigin(null)
         setSelectingRectangle(null)
+        setSelectionRectangle(null)
+        setSelectionBackground(null)
+        setSelectionImage(null)
         contextMenuShouldBePrevented.current = true
         break // no default
     }
-  }, [image, isSelecting, selectingOrigin, setIsSelecting])
+  }, [image, isSelecting, selectingOrigin, setSelectionBackground, setSelectionImage, setSelectionRectangle])
   useEffect(() => {
     document.addEventListener('pointermove', handleDocumentPointerMove)
     return () => {
