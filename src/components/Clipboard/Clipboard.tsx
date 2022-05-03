@@ -1,18 +1,9 @@
 import './Clipboard.css'
 import { FunctionComponent, useEffect, useState } from 'react'
 
-function createCanvas (width?: number, height?: number) {
-  const canvas = document.createElement('canvas')
-  if (width) canvas.width = width
-  if (height) canvas.height = height
-  const context = canvas.getContext('2d')
-  if (!context) throw new Error("Couldn't get canvas context")
-  return { canvas, context }
-}
-
 export interface ClipboardProps {
   canvas: HTMLCanvasElement
-  onPaste: (canvas: HTMLCanvasElement) => void
+  onPaste: (blob: Blob) => void
 }
 
 export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
@@ -29,24 +20,16 @@ export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
     ])
   }
 
-  const paste = async (): Promise<HTMLCanvasElement | null> => {
+  const paste = async () => {
     const clipboardItems = await navigator.clipboard.read()
     for (const clipboardItem of clipboardItems) {
       for (const type of clipboardItem.types) {
         if (!type.startsWith('image/')) continue
         const blob = await clipboardItem.getType(type)
-        const img = new Image()
-        img.src = URL.createObjectURL(blob)
-        await new Promise(resolve => {
-          img.onload = resolve
-        })
-        const { canvas, context } = createCanvas(img.width, img.height)
-        context.drawImage(img, 0, 0)
-        URL.revokeObjectURL(img.src)
-        props.onPaste(canvas)
+        props.onPaste(blob)
+        return
       }
     }
-    return null
   }
 
   useEffect(() => {

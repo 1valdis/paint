@@ -115,7 +115,34 @@ export const App = () => {
     setSelectionImage(null)
   }
 
-  const pasteFromEvent = useCallback((e: ClipboardEvent) => {
+  const pasteFromBlob = useCallback((blob: Blob) => {
+    const source = window.URL.createObjectURL(blob)
+    const pastedImage = new Image()
+    pastedImage.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.max(pastedImage.width, mainCanvas.width)
+      canvas.height = Math.max(pastedImage.height, mainCanvas.height)
+      const context = canvas.getContext('2d')
+      if (!context) throw new Error("Couldn't create context")
+      context.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
+      context.fillRect(0, 0, canvas.width, canvas.height)
+      context.drawImage(mainCanvas, 0, 0)
+      updateCanvas(canvas)
+      setSelectionBackground(canvas)
+      const pastedCanvas = document.createElement('canvas')
+      pastedCanvas.width = pastedImage.width
+      pastedCanvas.height = pastedImage.height
+      const pastedContext = pastedCanvas.getContext('2d')
+      if (!pastedContext) throw new Error("Couldn't create context")
+      pastedContext.drawImage(pastedImage, 0, 0)
+      setSelectionImage(pastedCanvas)
+      setSelectionRectangle({ top: 0, left: 0, width: pastedImage.width, height: pastedImage.height })
+      setInstrument('selection')
+    }
+    pastedImage.src = source
+  }, [mainCanvas, secondaryColor])
+
+  const pasteFromCtrlV = useCallback((e: ClipboardEvent) => {
     if (e.clipboardData) {
       const items = e.clipboardData.items
       if (!items) return
@@ -125,40 +152,16 @@ export const App = () => {
 
       const blob = imageClipboardItem.getAsFile()
       if (!blob) return
-      const source = window.URL.createObjectURL(blob)
-      const pastedImage = new Image()
-      pastedImage.onload = () => {
-        const canvas = document.createElement('canvas')
-        canvas.width = Math.max(pastedImage.width, mainCanvas.width)
-        canvas.height = Math.max(pastedImage.height, mainCanvas.height)
-        const context = canvas.getContext('2d')
-        if (!context) throw new Error("Couldn't create context")
-        context.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
-        context.fillRect(0, 0, canvas.width, canvas.height)
-        context.drawImage(mainCanvas, 0, 0)
-        updateCanvas(canvas)
-        setSelectionBackground(canvas)
-        const pastedCanvas = document.createElement('canvas')
-        pastedCanvas.width = pastedImage.width
-        pastedCanvas.height = pastedImage.height
-        const pastedContext = pastedCanvas.getContext('2d')
-        if (!pastedContext) throw new Error("Couldn't create context")
-        pastedContext.drawImage(pastedImage, 0, 0)
-        setSelectionImage(pastedCanvas)
-        setSelectionRectangle({ top: 0, left: 0, width: pastedImage.width, height: pastedImage.height })
-        setInstrument('selection')
-      }
-      pastedImage.src = source
-
+      pasteFromBlob(blob)
       e.preventDefault()
     }
-  }, [mainCanvas, secondaryColor])
+  }, [pasteFromBlob])
   useEffect(() => {
-    document.addEventListener('paste', pasteFromEvent)
+    document.addEventListener('paste', pasteFromCtrlV)
     return () => {
-      document.removeEventListener('paste', pasteFromEvent)
+      document.removeEventListener('paste', pasteFromCtrlV)
     }
-  }, [pasteFromEvent])
+  }, [pasteFromCtrlV])
 
   let instrumentComponent = <></>
   switch (instrument) {
@@ -218,7 +221,7 @@ export const App = () => {
       <NavBarItem footer="Clipboard">
         <Clipboard
           canvas={mainCanvas}
-          onPaste={updateCanvas}
+          onPaste={pasteFromBlob}
         />
       </NavBarItem>
       <NavBarItem footer="Image">
