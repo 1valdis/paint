@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import './App.css'
 
@@ -7,13 +7,12 @@ import { Canvas } from '../Canvas/Canvas'
 import { NavBar } from '../NavBar/NavBar'
 import { NavBarItem } from '../NavBar/NavBarItem'
 import { Colors } from '../Colors/Colors'
-import { Image, Instrument } from '../Image/Image'
+import { Image as ImageMenu, Instrument } from '../Image/Image'
 import { Clipboard } from '../Clipboard/Clipboard'
 import { Instruments } from '../instruments/Instruments'
 import { create } from './create'
 import { open } from './open'
 import { save } from './save'
-import { pasteFromEvent } from './paste-from-event'
 import { CanvasResizer } from '../CanvasResizer/CanvasResizer'
 import { Color } from '../../common/Color'
 import { Pen } from '../instruments/Pen/Pen'
@@ -74,14 +73,6 @@ export const App = () => {
     setMainCanvas({ canvas, context })
   }
 
-  useEffect(() => {
-    const listener = pasteFromEvent(mainCanvas, mainCanvasCtx, setMainCanvas)
-    document.addEventListener('paste', listener)
-    return () => {
-      document.removeEventListener('paste', listener)
-    }
-  }, [mainCanvas, mainCanvasCtx, setMainCanvas])
-
   // #region functions
   const addNewColor = (newColor: Color) => {
     if (colors.find(
@@ -122,6 +113,51 @@ export const App = () => {
     setSelectionBackground(null)
     setSelectionImage(null)
   }
+
+  const pasteFromEvent = useCallback((e: ClipboardEvent) => {
+    if (e.clipboardData) {
+      const items = e.clipboardData.items
+      if (!items) return
+
+      const imageClipboardItem = [...items].find(item => item.type.indexOf('image') !== -1)
+      if (!imageClipboardItem) return
+
+      const blob = imageClipboardItem.getAsFile()
+      if (!blob) return
+      const source = window.URL.createObjectURL(blob)
+      const pastedImage = new Image()
+      pastedImage.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = Math.max(pastedImage.width, mainCanvas.width)
+        canvas.height = Math.max(pastedImage.height, mainCanvas.height)
+        const context = canvas.getContext('2d')
+        if (!context) throw new Error("Couldn't create context")
+        context.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
+        context.fillRect(0, 0, canvas.width, canvas.height)
+        context.drawImage(mainCanvas, 0, 0)
+        updateCanvas(canvas)
+        setSelectionBackground(canvas)
+        const pastedCanvas = document.createElement('canvas')
+        pastedCanvas.width = pastedImage.width
+        pastedCanvas.height = pastedImage.height
+        const pastedContext = pastedCanvas.getContext('2d')
+        if (!pastedContext) throw new Error("Couldn't create context")
+        pastedContext.drawImage(pastedImage, 0, 0)
+        setSelectionImage(pastedCanvas)
+        setSelectionRectangle({ top: 0, left: 0, width: pastedImage.width, height: pastedImage.height })
+        setInstrument('selection')
+      }
+      pastedImage.src = source
+
+      e.preventDefault()
+    }
+  }, [mainCanvas, secondaryColor])
+  useEffect(() => {
+    document.addEventListener('paste', pasteFromEvent)
+    return () => {
+      document.removeEventListener('paste', pasteFromEvent)
+    }
+  }, [pasteFromEvent])
 
   let instrumentComponent = <></>
   switch (instrument) {
@@ -185,7 +221,7 @@ export const App = () => {
         />
       </NavBarItem>
       <NavBarItem footer="Image">
-        <Image
+        <ImageMenu
           instrument={instrument}
           onInstrumentSelect={selectInstrument}
           image={mainCanvas}
