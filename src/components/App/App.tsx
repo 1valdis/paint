@@ -7,7 +7,7 @@ import { Canvas } from '../Canvas/Canvas'
 import { NavBar } from '../NavBar/NavBar'
 import { NavBarItem } from '../NavBar/NavBarItem'
 import { Colors } from '../Colors/Colors'
-import { Image as ImageMenu, Instrument } from '../Image/Image'
+import { ImagePanel } from '../Image/Image'
 import { Clipboard } from '../Clipboard/Clipboard'
 import { Instruments } from '../instruments/Instruments'
 import { create } from './create'
@@ -21,6 +21,7 @@ import { Fill } from '../instruments/Fill/Fill'
 import { Eraser } from '../instruments/Eraser/Eraser'
 import { Selection } from '../instruments/Selection/Selection'
 import { Rectangle } from '../../common/Rectangle'
+import { Instrument } from '../../common/Instrument'
 
 export const App = () => {
   const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(create())
@@ -221,7 +222,7 @@ export const App = () => {
         />
       </NavBarItem>
       <NavBarItem footer="Image">
-        <ImageMenu
+        <ImagePanel
           instrument={instrument}
           onInstrumentSelect={selectInstrument}
           image={mainCanvas}

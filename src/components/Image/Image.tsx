@@ -3,34 +3,18 @@ import './Image.css'
 import classNames from 'classnames'
 
 import { FunctionComponent } from 'react'
-
-export type Instrument =
-| 'pen'
-| 'fill'
-| 'text'
-| 'eraser'
-| 'dropper'
-| 'zoom'
-| 'brushes'
-| 'shapes'
-| 'selection'
-
-interface SelectionCoords {
-  top: number
-  left: number
-  width: number
-  height: number
-}
+import { Instrument } from '../../common/Instrument'
+import { Rectangle } from '../../common/Rectangle'
 
 interface ImageProps {
   image: HTMLCanvasElement
   instrument: Instrument
-  selectionCoords?: SelectionCoords
+  selectionCoords?: Rectangle
   onInstrumentSelect: (instrument: Instrument) => void
   onImageChange: (canvas: HTMLCanvasElement) => void
 }
 
-export const Image: FunctionComponent<ImageProps> = (props) => {
+export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
   const handleClipClick = () => {
     if (!props.selectionCoords) {
       return

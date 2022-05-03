@@ -1,9 +1,9 @@
 import { FunctionComponent } from 'react'
 
 import classNames from 'classnames'
-import { Instrument } from '../Image/Image'
 
 import './Instruments.css'
+import { Instrument } from '../../common/Instrument'
 
 export interface InstrumentsProps {
   instrument: Instrument

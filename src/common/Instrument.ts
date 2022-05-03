@@ -1,0 +1,10 @@
+export type Instrument =
+| 'pen'
+| 'fill'
+| 'text'
+| 'eraser'
+| 'dropper'
+| 'zoom'
+| 'brushes'
+| 'shapes'
+| 'selection'

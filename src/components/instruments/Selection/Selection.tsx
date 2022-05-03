@@ -7,8 +7,6 @@ import {
   useEffect
 } from 'react'
 
-// import { ZoneSelection } from '../ZoneSelection/ZoneSelection'
-// import { ImageDataSelection } from '../ImageDataSelection/ImageDataSelection'
 import { Rectangle } from '../../../common/Rectangle'
 import { Color } from '../../../common/Color'
 import { Point } from '../../../common/Point'
@@ -152,11 +150,8 @@ export const Selection: FunctionComponent<SelectionProps> = ({
           )
         ]
 
-        // console.log(canvasRelativeTop, canvasRelativeLeft)
-
         if (!selectingOrigin) { throw new Error('No coordinates in the state') }
 
-        // maybe change to function
         setSelectingRectangle({
           top: Math.min(selectingOrigin.y, canvasRelativeTop),
           left: Math.min(selectingOrigin.x, canvasRelativeLeft),
