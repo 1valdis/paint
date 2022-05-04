@@ -36,7 +36,7 @@ Live demo: https://1valdis.github.io/paint/
       - [x] From clipboard
       - [ ] From file
     - [x] Move, resize
-    - [ ] Clip selection
+    - [x] Clip selection
     - [ ] Transparent selection
 
 Screenshot:
