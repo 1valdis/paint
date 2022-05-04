@@ -4,34 +4,15 @@ import classNames from 'classnames'
 
 import { FunctionComponent } from 'react'
 import { Instrument } from '../../common/Instrument'
-import { Rectangle } from '../../common/Rectangle'
 
 interface ImageProps {
-  image: HTMLCanvasElement
   instrument: Instrument
-  selectionCoords?: Rectangle
   onInstrumentSelect: (instrument: Instrument) => void
-  onImageChange: (canvas: HTMLCanvasElement) => void
+  canClip: boolean
+  handleClipClick: () => void
 }
 
 export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
-  const handleClipClick = () => {
-    if (!props.selectionCoords) {
-      return
-    }
-    const newCanvas = document.createElement('canvas')
-    const newCtx = newCanvas.getContext('2d')
-    ;({
-      width: newCanvas.width,
-      height: newCanvas.height
-    } = props.selectionCoords)
-
-    if (!newCtx) throw new Error("Couldn't acquire canvas context")
-    newCtx.drawImage(props.image, -props.selectionCoords.top, -props.selectionCoords.left)
-    props.onImageChange(newCanvas)
-    props.onInstrumentSelect('selection')
-  }
-
   return (
     <nav className="image">
       <button
@@ -55,9 +36,9 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
       </button>
       <div className="side-buttons">
         <button
-          onClick={handleClipClick}
-          disabled={!props.selectionCoords}>
-          Crop
+          onClick={props.handleClipClick}
+          disabled={!props.canClip}>
+          Clip
         </button>
         <button>Change size</button>
         <button>Rotate</button>

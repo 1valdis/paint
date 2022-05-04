@@ -222,6 +222,18 @@ export const App = () => {
     }
   }, [cut])
 
+  const clip = useCallback(async () => {
+    if (!selectionRectangle) return
+    const newCanvas = document.createElement('canvas')
+    newCanvas.width = selectionRectangle.width
+    newCanvas.height = selectionRectangle.height
+    const newCtx = newCanvas.getContext('2d')
+    if (!newCtx) throw new Error()
+    newCtx.drawImage(mainCanvas, -selectionRectangle.left, -selectionRectangle.top)
+    selectInstrument('selection')
+    updateCanvas(newCanvas)
+  }, [mainCanvas, selectionRectangle])
+
   let instrumentComponent = <></>
   switch (instrument) {
     case 'pen':
@@ -289,8 +301,8 @@ export const App = () => {
         <ImagePanel
           instrument={instrument}
           onInstrumentSelect={selectInstrument}
-          image={mainCanvas}
-          onImageChange={updateCanvas}
+          canClip={!!selectionRectangle}
+          handleClipClick={clip}
         />
       </NavBarItem>
       <NavBarItem footer="Instruments">
