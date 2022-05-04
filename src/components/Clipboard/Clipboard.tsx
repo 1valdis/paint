@@ -2,23 +2,15 @@ import './Clipboard.css'
 import { FunctionComponent, useEffect, useState } from 'react'
 
 export interface ClipboardProps {
-  canvas: HTMLCanvasElement
   onPaste: (blob: Blob) => void
+  onCopy: () => void
+  onCut: () => void
+  canCutOrCopy: boolean
 }
 
 export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
   const [clipboardWriteState, setClipboardWriteState] = useState<PermissionState | null>(null)
   const [clipboardReadState, setClipboardReadState] = useState<PermissionState | null>(null)
-
-  const copy = async () => {
-    const blob = await new Promise<Blob | null>(resolve =>
-      props.canvas.toBlob(resolve, 'image/png', 1)
-    )
-    if (!blob) throw new Error("Couldn't acquire blob from canvas")
-    await navigator.clipboard.write([
-      new ClipboardItem({ 'image/png': blob })
-    ])
-  }
 
   const paste = async () => {
     const clipboardItems = await navigator.clipboard.read()
@@ -78,10 +70,14 @@ export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
       }
   return (
     <nav className="clipboard">
-      <button disabled={[null, 'denied'].includes(clipboardWriteState)} onClick={copy}>
+      <button
+        disabled={[null, 'denied'].includes(clipboardWriteState) || !props.canCutOrCopy}
+        onClick={props.onCut}>
         Cut
       </button>
-      <button disabled={[null, 'denied'].includes(clipboardWriteState)} onClick={copy}>
+      <button
+        disabled={[null, 'denied'].includes(clipboardWriteState) || !props.canCutOrCopy}
+        onClick={props.onCopy}>
         Copy
       </button>
       <button

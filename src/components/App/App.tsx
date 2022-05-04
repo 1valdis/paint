@@ -113,6 +113,7 @@ export const App = () => {
     setSelectionRectangle(null)
     setSelectionBackground(null)
     setSelectionImage(null)
+    setIsSelectionActive(false)
   }
 
   const pasteFromBlob = useCallback((blob: Blob) => {
@@ -162,6 +163,64 @@ export const App = () => {
       document.removeEventListener('paste', pasteFromCtrlV)
     }
   }, [pasteFromCtrlV])
+
+  const copy = useCallback(async () => {
+    if (!selectionRectangle) return
+    const copiedCanvas = document.createElement('canvas')
+    copiedCanvas.width = selectionRectangle.width
+    copiedCanvas.height = selectionRectangle.height
+    const copiedCtx = copiedCanvas.getContext('2d')
+    if (!copiedCtx) throw new Error()
+    copiedCtx.drawImage(
+      mainCanvas,
+      selectionRectangle.left,
+      selectionRectangle.top,
+      selectionRectangle.width,
+      selectionRectangle.height,
+      0,
+      0,
+      copiedCanvas.width,
+      copiedCanvas.height
+    )
+    const blob = await new Promise<Blob | null>(resolve =>
+      copiedCanvas.toBlob(resolve, 'image/png', 1)
+    )
+    if (!blob) throw new Error("Couldn't acquire blob from canvas")
+    await navigator.clipboard.write([
+      new ClipboardItem({ 'image/png': blob })
+    ])
+  }, [mainCanvas, selectionRectangle])
+  useEffect(() => {
+    document.addEventListener('copy', copy)
+    return () => {
+      document.removeEventListener('copy', copy)
+    }
+  }, [copy])
+
+  const cut = useCallback(async () => {
+    copy()
+    if (!selectionRectangle) return
+    const newCanvas = document.createElement('canvas')
+    newCanvas.width = mainCanvas.width
+    newCanvas.height = mainCanvas.height
+    const newCtx = newCanvas.getContext('2d')
+    if (!newCtx) throw new Error()
+    if (selectionBackground) {
+      newCtx.drawImage(selectionBackground, 0, 0)
+    } else {
+      newCtx.drawImage(mainCanvas, 0, 0)
+      newCtx.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
+      newCtx.fillRect(selectionRectangle.left, selectionRectangle.top, selectionRectangle.width, selectionRectangle.height)
+    }
+    selectInstrument('selection')
+    updateCanvas(newCanvas)
+  }, [copy, selectionRectangle, mainCanvas, selectionBackground, secondaryColor])
+  useEffect(() => {
+    document.addEventListener('cut', cut)
+    return () => {
+      document.removeEventListener('cut', cut)
+    }
+  }, [cut])
 
   let instrumentComponent = <></>
   switch (instrument) {
@@ -220,8 +279,10 @@ export const App = () => {
     <NavBar>
       <NavBarItem footer="Clipboard">
         <Clipboard
-          canvas={mainCanvas}
           onPaste={pasteFromBlob}
+          onCopy={copy}
+          onCut={cut}
+          canCutOrCopy={!!selectionRectangle}
         />
       </NavBarItem>
       <NavBarItem footer="Image">

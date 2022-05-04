@@ -33,6 +33,14 @@ export interface SelectionProps {
   secondaryColor: Color,
 }
 
+function usePrevious<T> (value: T): T {
+  const ref = useRef(value)
+  useEffect(() => {
+    ref.current = value
+  })
+  return ref.current
+}
+
 export const Selection: FunctionComponent<SelectionProps> = ({
   image,
   onImageChange,
@@ -54,19 +62,24 @@ export const Selection: FunctionComponent<SelectionProps> = ({
 
   const modifiedCanvasRef = useRef<HTMLCanvasElement | null>(null)
 
+  const prevSelectionDetails = usePrevious({ selectionBackground, selectionImage, selectionRectangle })
+
   useEffect(() => {
     if (!modifiedCanvasRef.current) return
     modifiedCanvasRef.current.width = image.width
     modifiedCanvasRef.current.height = image.height
     const context = modifiedCanvasRef.current.getContext('2d')!
-    if (selectionBackground && selectionImage && selectionRectangle) {
+    if (selectionBackground && selectionImage && selectionRectangle &&
+      (prevSelectionDetails.selectionBackground !== selectionBackground ||
+        prevSelectionDetails.selectionImage !== selectionImage ||
+        prevSelectionDetails.selectionRectangle !== selectionRectangle)) {
       context.drawImage(selectionBackground, 0, 0)
       context.drawImage(selectionImage, selectionRectangle.left, selectionRectangle.top)
       onImageChange(modifiedCanvasRef.current)
     } else {
       context.drawImage(image, 0, 0)
     }
-  }, [image, onImageChange, selectionBackground, selectionImage, selectionRectangle])
+  }, [image, onImageChange, prevSelectionDetails, selectionBackground, selectionImage, selectionRectangle])
 
   // #region new selection creation
   useEffect(() => {

@@ -26,10 +26,11 @@ Live demo: https://1valdis.github.io/paint/
   - [ ] Text
   - [ ] Zoom
 - [ ] Image
-  - [ ] Clipboard
-    - [ ] Copy
+  - [x] Clipboard
+    - [x] Copy
     - [x] Paste
-    - [ ] Cut
+    - [x] Cut
+    - [x] Keyboard combinations
   - [ ] Selection
     - [x] Paste
       - [x] From clipboard
