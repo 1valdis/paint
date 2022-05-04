@@ -5,7 +5,7 @@ import { Color } from '../../../common/Color'
 import './Dropper.css'
 
 interface DropperProps {
-  context: CanvasRenderingContext2D
+  image: HTMLCanvasElement
   onColorSelected: (color: Color) => void
 }
 
@@ -31,7 +31,9 @@ export const Dropper: FunctionComponent<DropperProps> = (props) => {
     ]
     ;[top, left] = [Math.ceil(mouseY - top), Math.ceil(mouseX - left)]
 
-    const imageData = props.context.getImageData(left, top, 1, 1)
+    const context = props.image.getContext('2d')
+    if (!context) throw new Error()
+    const imageData = context.getImageData(left, top, 1, 1)
 
     props.onColorSelected({
       r: imageData.data[0]!,
@@ -45,8 +47,8 @@ export const Dropper: FunctionComponent<DropperProps> = (props) => {
       className="dropper"
       onClick={handleClick}
       style={{
-        width: props.context.canvas.width,
-        height: props.context.canvas.height
+        width: props.image.width,
+        height: props.image.height
       }}
     />
   )

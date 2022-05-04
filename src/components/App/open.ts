@@ -1,4 +1,4 @@
-export const open = async (file: File): Promise<{ canvas: HTMLCanvasElement, context: CanvasRenderingContext2D }> => {
+export const open = async (file: File): Promise<HTMLCanvasElement> => {
   const reader = new FileReader()
   await new Promise<ProgressEvent<FileReader>>(resolve => {
     reader.readAsDataURL(file)
@@ -17,7 +17,7 @@ export const open = async (file: File): Promise<{ canvas: HTMLCanvasElement, con
         const ctx = canvas.getContext('2d')
         if (!ctx) throw new Error("Coulnd't create context")
         ctx.drawImage(img, 0, 0)
-        resolve({ canvas, context: ctx })
+        resolve(canvas)
       }
     }
   })

@@ -24,7 +24,7 @@ import { Rectangle } from '../../common/Rectangle'
 import { Instrument } from '../../common/Instrument'
 
 export const App = () => {
-  const [{ canvas: mainCanvas, context: mainCanvasCtx }, setMainCanvas] = useState(create())
+  const [mainCanvas, setMainCanvas] = useState(create())
   const canvasOnDisplayRef = useRef<HTMLCanvasElement | null>(null)
 
   const [filename] = useState('pic.png')
@@ -76,7 +76,7 @@ export const App = () => {
     canvas.height = newCanvas.height
     const context = canvas.getContext('2d')!
     context.drawImage(newCanvas, 0, 0)
-    setMainCanvas({ canvas, context })
+    setMainCanvas(canvas)
   }
 
   // #region functions
@@ -248,7 +248,7 @@ export const App = () => {
           setPrimaryColor(color)
           setInstrument('pen')
         }}
-        context={mainCanvasCtx}
+        image={mainCanvas}
       />
       break
     case 'fill':
