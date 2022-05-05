@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import './App.css'
 
@@ -10,8 +10,6 @@ import { Colors } from '../Colors/Colors'
 import { ImagePanel } from '../Image/Image'
 import { Clipboard } from '../Clipboard/Clipboard'
 import { Instruments } from '../instruments/Instruments'
-import { create } from './create'
-import { open } from './open'
 import { save } from './save'
 import { CanvasResizer } from '../CanvasResizer/CanvasResizer'
 import { Color } from '../../common/Color'
@@ -24,6 +22,15 @@ import { Rectangle } from '../../common/Rectangle'
 import { Instrument } from '../../common/Instrument'
 
 export const App = () => {
+  const create = useCallback(() => {
+    const canvas = document.createElement('canvas')
+    ;[canvas.width, canvas.height] = [800, 450]
+    const context = canvas.getContext('2d')!
+    context.fillStyle = 'white'
+    context.fillRect(0, 0, 800, 450)
+    return canvas
+  }, [])
+
   const [mainCanvas, setMainCanvas] = useState(create())
   const canvasOnDisplayRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -115,6 +122,41 @@ export const App = () => {
     setSelectionImage(null)
     setIsSelectionActive(false)
   }
+
+  const open = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    try {
+      await new Promise<ProgressEvent<FileReader>>((resolve, reject) => {
+        reader.readAsDataURL(file)
+        reader.onload = resolve
+        reader.onerror = reject
+      })
+      const canvas = await new Promise<HTMLCanvasElement>((resolve, reject) => {
+        reader.readAsDataURL(file as Blob)
+        reader.onload = e => {
+          if (!e.target) throw new Error("Couldn't access FileReader from event")
+          const img = new Image()
+          img.src = e.target.result as string
+          img.onload = () => {
+            const canvas = document.createElement('canvas')
+            canvas.width = img.width
+            canvas.height = img.height
+            const ctx = canvas.getContext('2d')
+            if (!ctx) return reject(new Error())
+            ctx.drawImage(img, 0, 0)
+            resolve(canvas)
+          }
+          img.onerror = reject
+        }
+      })
+      setMainCanvas(canvas)
+      selectInstrument(instrument)
+    } catch (error) {
+      alert("Couldn't open file")
+    }
+  }, [instrument])
 
   const pasteFromBlob = useCallback((blob: Blob) => {
     const source = window.URL.createObjectURL(blob)
@@ -284,8 +326,8 @@ export const App = () => {
 
   return <>
     <FileMenu
-      onFileCreate={() => setMainCanvas(create())}
-      onFileOpen={async (event) => { event.target.files?.[0] && setMainCanvas(await open(event.target.files[0])) }}
+      onFileCreate={() => { setMainCanvas(create()); selectInstrument(instrument) }}
+      onFileOpen={open}
       onDownload={() => save(mainCanvas, filename)}
     ></FileMenu>
     <NavBar>
@@ -334,7 +376,6 @@ export const App = () => {
             backgroundColor={secondaryColor}
             canvas={mainCanvas}
             onImageChange={updateCanvas}
-            key='shmek'
           />}
         {instrumentComponent}
     </Canvas>
