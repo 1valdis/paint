@@ -39,7 +39,7 @@ Live demo: https://1valdis.github.io/paint/
     - [x] Clip selection
     - [x] Select all + Ctrl-A
     - [x] Delete selected
-    - [ ] Free-form selection
+    - [x] Free-form selection
     - [ ] Invert selection
     - [ ] Transparent selection
 

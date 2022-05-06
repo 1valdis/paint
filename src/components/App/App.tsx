@@ -22,6 +22,7 @@ import { Selection } from '../instruments/Selection/Selection'
 import { Rectangle } from '../../common/Rectangle'
 import { Instrument } from '../../common/Instrument'
 import { SelectionZoneType } from '../../common/SelectionZoneType'
+import { Point } from '../../common/Point'
 
 export const App = () => {
   const create = useCallback(() => {
@@ -70,6 +71,7 @@ export const App = () => {
   const [selectionImage, setSelectionImage] = useState<HTMLCanvasElement | null>(null)
   const [selectionBackground, setSelectionBackground] = useState<HTMLCanvasElement | null>(null)
   const [selectionZoneType, setSelectionZoneType] = useState<SelectionZoneType>('rectangle')
+  const [freeformSelectionPath, setFreeformSelectionPath] = useState<Array<Point> | null>(null)
 
   useLayoutEffect(() => {
     const canvasOnDiplay = canvasOnDisplayRef.current
@@ -354,6 +356,8 @@ export const App = () => {
         setSelectionBackground={setSelectionBackground}
         secondaryColor={secondaryColor}
         zoneType={selectionZoneType}
+        setFreeformSelectionPath={setFreeformSelectionPath}
+        freeformSelectionPath={freeformSelectionPath}
         />
       break
   }

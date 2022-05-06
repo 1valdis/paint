@@ -4,7 +4,8 @@ import {
   useRef,
   useState,
   useCallback,
-  useEffect
+  useEffect,
+  useLayoutEffect
 } from 'react'
 
 import { Rectangle } from '../../../common/Rectangle'
@@ -32,7 +33,9 @@ export interface SelectionProps {
   selectionBackground: HTMLCanvasElement | null
   setSelectionBackground: (image: HTMLCanvasElement | null) => void,
   secondaryColor: Color,
-  zoneType: SelectionZoneType
+  zoneType: SelectionZoneType,
+  setFreeformSelectionPath: (path: Array<Point> | null) => void
+  freeformSelectionPath: Array<Point> | null
 }
 
 function usePrevious<T> (value: T): T {
@@ -53,16 +56,48 @@ export const Selection: FunctionComponent<SelectionProps> = ({
   setSelectionImage,
   selectionBackground,
   setSelectionBackground,
-  secondaryColor
+  secondaryColor,
+  zoneType,
+  setFreeformSelectionPath,
+  freeformSelectionPath
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const [selectingOrigin, setSelectingOrigin] = useState<Point | null>(null)
   const [selectingRectangle, setSelectingRectangle] = useState<Rectangle | null>(null)
   const [isSelecting, setIsSelecting] = useState(false)
+  const [path, setPath] = useState<Array<Point> | null>(null)
+
   const contextMenuShouldBePrevented = useRef(false)
 
   const modifiedCanvasRef = useRef<HTMLCanvasElement | null>(null)
+  const freeformSelectorPathRef = useRef<HTMLCanvasElement | null>(null)
+  useEffect(() => {
+    const canvas = freeformSelectorPathRef.current
+    if (!canvas) throw new Error()
+    canvas.width = image.width
+    canvas.height = image.height
+  }, [image])
+  useLayoutEffect(() => {
+    const canvas = freeformSelectorPathRef.current
+    if (!canvas) throw new Error()
+    const context = canvas.getContext('2d')
+    if (!context) throw new Error()
+    context.clearRect(0, 0, canvas.width, canvas.height)
+    if (!path) return
+    context.imageSmoothingEnabled = false
+    context.strokeStyle = 'white'
+    context.lineWidth = 3
+    context.beginPath()
+    const [start, ...rest] = path
+    if (start) {
+      context.moveTo(start.x, start.y)
+    }
+    for (const point of rest) {
+      context.lineTo(point.x, point.y)
+    }
+    context.stroke()
+  }, [path])
 
   const prevSelectionDetails = usePrevious({ selectionBackground, selectionImage, selectionRectangle })
 
@@ -118,11 +153,18 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     ]
     ;[top, left] = [Math.ceil(mouseY - top), Math.ceil(mouseX - left)]
 
+    const point = { y: top, x: left }
+    if (zoneType === 'rectangle') {
+      setSelectingOrigin(point)
+    } else {
+      setPath([point])
+    }
     setIsSelecting(true)
-    setSelectingOrigin({ y: top, x: left })
     setSelectingRectangle(null)
     setIsSelectionActive(true)
-  }, [setIsSelectionActive])
+    setSelectionRectangle(null)
+    setFreeformSelectionPath(null)
+  }, [setFreeformSelectionPath, setIsSelectionActive, setSelectionRectangle, zoneType])
 
   const handleDocumentPointerMove = useCallback((e: PointerEvent) => {
     if (!isSelecting) return
@@ -165,22 +207,26 @@ export const Selection: FunctionComponent<SelectionProps> = ({
           )
         ]
 
-        if (!selectingOrigin) { throw new Error('No coordinates in the state') }
+        if (zoneType === 'rectangle') {
+          if (!selectingOrigin) { throw new Error('No coordinates in the state') }
 
-        setSelectingRectangle({
-          top: Math.min(selectingOrigin.y, canvasRelativeTop),
-          left: Math.min(selectingOrigin.x, canvasRelativeLeft),
-          width: Math.max(
-            Math.max(selectingOrigin.x, canvasRelativeLeft) -
-              Math.min(selectingOrigin.x, canvasRelativeLeft),
-            0
-          ),
-          height: Math.max(
-            Math.max(selectingOrigin.y, canvasRelativeTop) -
-              Math.min(selectingOrigin.y, canvasRelativeTop),
-            0
-          )
-        })
+          setSelectingRectangle({
+            top: Math.min(selectingOrigin.y, canvasRelativeTop),
+            left: Math.min(selectingOrigin.x, canvasRelativeLeft),
+            width: Math.max(
+              Math.max(selectingOrigin.x, canvasRelativeLeft) -
+                Math.min(selectingOrigin.x, canvasRelativeLeft),
+              0
+            ),
+            height: Math.max(
+              Math.max(selectingOrigin.y, canvasRelativeTop) -
+                Math.min(selectingOrigin.y, canvasRelativeTop),
+              0
+            )
+          })
+        } else {
+          setPath((path) => [...path ?? [], { x: canvasRelativeLeft, y: canvasRelativeTop }])
+        }
         break
       }
       case 2:
@@ -191,17 +237,20 @@ export const Selection: FunctionComponent<SelectionProps> = ({
         setSelectionRectangle(null)
         setSelectionBackground(null)
         setSelectionImage(null)
+        setPath(null)
+        setFreeformSelectionPath(null)
         contextMenuShouldBePrevented.current = true
         break // no default
     }
-  }, [image, isSelecting, selectingOrigin, setSelectionBackground, setSelectionImage, setSelectionRectangle])
-  useEffect(() => {
+  }, [image, isSelecting, selectingOrigin, setFreeformSelectionPath, setSelectionBackground, setSelectionImage, setSelectionRectangle, zoneType])
+  useLayoutEffect(() => {
     document.addEventListener('pointermove', handleDocumentPointerMove)
     return () => {
       document.removeEventListener('pointermove', handleDocumentPointerMove)
     }
   }, [handleDocumentPointerMove])
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleDocumentPointerUp = useCallback(() => {
     if (isSelecting) {
       if (selectingRectangle) {
@@ -216,6 +265,35 @@ export const Selection: FunctionComponent<SelectionProps> = ({
           setSelectionImage(null)
           setIsSelectionActive(false)
         }
+      } else if (path) {
+        if (path.length > 1) {
+          const top = Math.min(...path.map(point => point.y))
+          const left = Math.min(...path.map(point => point.x))
+          const selectionRectangle = {
+            top,
+            left,
+            width: Math.max(...path.map(point => point.x)) - left,
+            height: Math.max(...path.map(point => point.y)) - top
+          }
+          if (selectionRectangle.width > 0 && selectionRectangle.height > 0) {
+            setFreeformSelectionPath(path)
+            setSelectionRectangle(selectionRectangle)
+            setSelectionBackground(null)
+            setSelectionImage(null)
+          } else {
+            setFreeformSelectionPath(null)
+            setSelectionRectangle(null)
+            setSelectionBackground(null)
+            setSelectionImage(null)
+            setIsSelectionActive(false)
+          }
+        } else {
+          setFreeformSelectionPath(null)
+          setSelectionRectangle(null)
+          setSelectionBackground(null)
+          setSelectionImage(null)
+          setIsSelectionActive(false)
+        }
       } else {
         setSelectionRectangle(null)
         setSelectionBackground(null)
@@ -224,9 +302,10 @@ export const Selection: FunctionComponent<SelectionProps> = ({
       }
     }
     setIsSelecting(false)
+    setPath(null)
     setSelectingOrigin(null)
     setSelectingRectangle(null)
-  }, [isSelecting, selectingRectangle, setIsSelectionActive, setSelectionBackground, setSelectionImage, setSelectionRectangle])
+  }, [isSelecting, path, selectingRectangle, setFreeformSelectionPath, setIsSelectionActive, setSelectionBackground, setSelectionImage, setSelectionRectangle])
   useEffect(() => {
     document.addEventListener('pointerup', handleDocumentPointerUp)
     return () => {
@@ -236,6 +315,7 @@ export const Selection: FunctionComponent<SelectionProps> = ({
   // #endregion
 
   // #region work with existing selection
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleMoving = useCallback(({ top, left, width, height }: Rectangle) => {
     const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
     if (!modifiedCtx || !selectionRectangle) throw new Error()
@@ -247,7 +327,19 @@ export const Selection: FunctionComponent<SelectionProps> = ({
       if (!backgroundCtx) throw new Error()
       backgroundCtx.drawImage(image, 0, 0)
       backgroundCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
-      backgroundCtx.fillRect(selectionRectangle.left, selectionRectangle.top, selectionRectangle.width, selectionRectangle.height)
+      if (freeformSelectionPath) {
+        backgroundCtx.beginPath()
+        const [start, ...rest] = freeformSelectionPath
+        if (start) {
+          backgroundCtx.moveTo(start.x, start.y)
+        }
+        for (const point of rest) {
+          backgroundCtx.lineTo(point.x, point.y)
+        }
+        backgroundCtx.fill()
+      } else {
+        backgroundCtx.fillRect(selectionRectangle.left, selectionRectangle.top, selectionRectangle.width, selectionRectangle.height)
+      }
       setSelectionBackground(backgroundCanvas)
     }
     if (!selectionImage || selectionRectangle.width !== width || selectionRectangle.height !== height) {
@@ -256,6 +348,17 @@ export const Selection: FunctionComponent<SelectionProps> = ({
       selectionCanvas.height = selectionRectangle.height
       const selectionCtx = selectionCanvas.getContext('2d')
       if (!selectionCtx) throw new Error()
+      if (freeformSelectionPath) {
+        selectionCtx.beginPath()
+        const [start, ...rest] = freeformSelectionPath
+        if (start) {
+          selectionCtx.moveTo(start.x - selectionRectangle.left, start.y - selectionRectangle.top)
+        }
+        for (const point of rest) {
+          selectionCtx.lineTo(point.x - selectionRectangle.left, point.y - selectionRectangle.top)
+        }
+        selectionCtx.clip()
+      }
       selectionCtx.drawImage(
         image,
         selectionRectangle.left,
@@ -268,9 +371,10 @@ export const Selection: FunctionComponent<SelectionProps> = ({
         selectionCanvas.height
       )
       setSelectionImage(selectionCanvas)
+      setFreeformSelectionPath(null)
     }
     setSelectionRectangle({ top, left, width, height })
-  }, [image, secondaryColor, selectionBackground, selectionImage, selectionRectangle, setSelectionBackground, setSelectionImage, setSelectionRectangle])
+  }, [freeformSelectionPath, image, secondaryColor, selectionBackground, selectionImage, selectionRectangle, setFreeformSelectionPath, setSelectionBackground, setSelectionImage, setSelectionRectangle])
 
   const handleResizeOrMoveEnd = useCallback(({ top, left, width, height }: Rectangle) => {
     const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
@@ -341,6 +445,7 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     className="selection"
     onPointerDown={startSelecting}
     ref={containerRef}>
+      <canvas ref={freeformSelectorPathRef} className='freeform-canvas'/>
       {El}
   </div>
 }
