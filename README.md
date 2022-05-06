@@ -27,9 +27,9 @@ Live demo: https://1valdis.github.io/paint/
   - [ ] Zoom
 - [ ] Image
   - [x] Clipboard
-    - [x] Copy
-    - [x] Paste
-    - [x] Cut
+    - [x] Copy + Ctrl-C
+    - [x] Paste + Ctrl-V
+    - [x] Cut + Ctrl-X
     - [x] Keyboard combinations
   - [ ] Selection
     - [x] Paste
@@ -37,6 +37,9 @@ Live demo: https://1valdis.github.io/paint/
       - [ ] From file
     - [x] Move, resize
     - [x] Clip selection
+    - [x] Select all + Ctrl-A
+    - [ ] Free-form selection
+    - [ ] Invert selection
     - [ ] Transparent selection
 
 Screenshot:

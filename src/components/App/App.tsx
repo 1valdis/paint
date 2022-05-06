@@ -296,6 +296,15 @@ export const App = () => {
     setSelectionRectangle(newRectangle)
   }, [mainCanvas])
 
+  useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey && e.code === 'KeyA')) return
+      onSelectAll()
+    }
+    document.addEventListener('keydown', listener)
+    return () => document.removeEventListener('keydown', listener)
+  }, [onSelectAll])
+
   let instrumentComponent = <></>
   switch (instrument) {
     case 'pen':

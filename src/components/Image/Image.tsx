@@ -61,10 +61,10 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
           onClick={() => setIsMenuShown(false)}>
             <span>Zone type</span>
             <button
-              className={classNames({ active: props.zoneType === 'rectangle' })}
+              className={classNames({ active: props.zoneType === 'rectangle' && props.instrument === 'selection' })}
               onClick={() => props.selectZoneType('rectangle')}>Rectangular zone</button>
             <button
-              className={classNames({ active: props.zoneType === 'freeform' })}
+              className={classNames({ active: props.zoneType === 'freeform' && props.instrument === 'selection' })}
               onClick={() => props.selectZoneType('freeform')}>Free-form zone</button>
             <span>Options</span>
             <button onClick={props.onSelectAll}>Select all</button>
