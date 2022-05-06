@@ -242,8 +242,7 @@ export const App = () => {
     }
   }, [copy])
 
-  const cut = useCallback(async () => {
-    copy()
+  const deleteSelected = useCallback(() => {
     if (!selectionRectangle) return
     const newCanvas = document.createElement('canvas')
     newCanvas.width = mainCanvas.width
@@ -259,7 +258,12 @@ export const App = () => {
     }
     selectInstrument('selection')
     updateCanvas(newCanvas)
-  }, [copy, selectionRectangle, mainCanvas, selectionBackground, secondaryColor])
+  }, [mainCanvas, secondaryColor, selectionBackground, selectionRectangle])
+
+  const cut = useCallback(async () => {
+    copy()
+    deleteSelected()
+  }, [copy, deleteSelected])
   useEffect(() => {
     document.addEventListener('cut', cut)
     return () => {
@@ -284,7 +288,7 @@ export const App = () => {
     setSelectionZoneType(type)
   }, [])
 
-  const onSelectAll = useCallback(() => {
+  const selectAll = useCallback(() => {
     const newRectangle = {
       top: 0,
       left: 0,
@@ -299,11 +303,11 @@ export const App = () => {
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       if (!(e.ctrlKey && e.code === 'KeyA')) return
-      onSelectAll()
+      selectAll()
     }
     document.addEventListener('keydown', listener)
     return () => document.removeEventListener('keydown', listener)
-  }, [onSelectAll])
+  }, [selectAll])
 
   let instrumentComponent = <></>
   switch (instrument) {
@@ -377,7 +381,8 @@ export const App = () => {
           handleClipClick={clip}
           zoneType={selectionZoneType}
           selectZoneType={selectZoneType}
-          onSelectAll={onSelectAll}
+          onSelectAll={selectAll}
+          onDeleteSelected={deleteSelected}
         />
       </NavBarItem>
       <NavBarItem footer="Instruments">

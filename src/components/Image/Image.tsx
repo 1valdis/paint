@@ -15,6 +15,7 @@ interface ImageProps {
   zoneType: SelectionZoneType
   selectZoneType: (type: SelectionZoneType) => void
   onSelectAll: () => void
+  onDeleteSelected: () => void
 }
 
 export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
@@ -53,7 +54,7 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
         </button>
         <button
           className={classNames({
-            active: props.instrument === 'selection'
+            active: props.instrument === 'selection' || isMenuShown
           })}
           onClick={() => setIsMenuShown((value) => !value)}>Select<br/>▾</button>
         <nav
@@ -69,7 +70,7 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
             <span>Options</span>
             <button onClick={props.onSelectAll}>Select all</button>
             <button disabled={!props.canModifySelection}>Invert zone</button>
-            <button disabled={!props.canModifySelection}>Remove selected</button>
+            <button onClick={props.onDeleteSelected} disabled={!props.canModifySelection}>Delete selected</button>
             <button>Transparency</button>
         </nav>
       </section>
