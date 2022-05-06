@@ -19,6 +19,7 @@ import { MovableSelection } from './MovableSelection/MovableSelection'
 // at least it works somehow, will polish it later maybe.
 
 import './Selection.css'
+import { SelectionZoneType } from '../../../common/SelectionZoneType'
 
 export interface SelectionProps {
   image: HTMLCanvasElement
@@ -31,6 +32,7 @@ export interface SelectionProps {
   selectionBackground: HTMLCanvasElement | null
   setSelectionBackground: (image: HTMLCanvasElement | null) => void,
   secondaryColor: Color,
+  zoneType: SelectionZoneType
 }
 
 function usePrevious<T> (value: T): T {

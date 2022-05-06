@@ -2,43 +2,61 @@
   padding: 0.5em;
   width: 3.5em;
 }
-.image .select {
-  display: block;
-  background: none;
-  border: 1px solid transparent;
-}
-.image .select:hover {
-  background: var(--hover-background-color);
-  border: 1px solid var(--hover-border-color);
-}
-.image .select:active, .image .select_active {
-  background: var(--active-background-color);
-  border: 1px solid var(--active-border-color);
-}
-.image .select:focus {
+
+.image button:focus {
   outline: none;
 }
 .image {
+  position: relative;
   display: flex;
 }
+.image .main-buttons > button {
+  text-align: center;
+  width: 100%;
+}
 
-.image .side-buttons button {
+.select-options {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  box-shadow: 3px 3px 6px darkgrey;
+  background: rgb(245,245,245);
+  z-index: 10;
+}
+.select-options.select-options_active {
+  display: flex;
+}
+.select-options > * {
+  text-align: start;
+}
+.select-options > button {
+  padding-left: 1em;
+}
+.select-options > span {
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: .25em .5em;
+  color: #222222;
+}
+
+.image button {
   display: block;
   background: none;
   border: 1px solid transparent;
+  font-size: 0.8em;
 }
-.image .side-buttons button:hover {
+.image button:hover {
   background: var(--hover-background-color);
   border: 1px solid var(--hover-border-color);
 }
-.image .side-buttons button:active {
+
+.image button:active, .image .active {
   background: var(--active-background-color);
   border: 1px solid var(--active-border-color);
 }
-.image .side-buttons button:focus {
-  outline: none;
-}
-.image .side-buttons button:disabled {
+
+.image button:disabled {
   background: none;
   border: 1px solid transparent;
 }

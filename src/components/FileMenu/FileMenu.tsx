@@ -29,7 +29,7 @@ export const FileMenu: FunctionComponent<FileMenuProps> = (props) => {
     if (!menuRef.current) throw new Error('No menu in ref')
     return addClickOutsideListener(
       menuRef.current,
-      () => setMenuOpen(() => false)
+      () => setMenuOpen(false)
     )
   })
 
@@ -42,7 +42,7 @@ export const FileMenu: FunctionComponent<FileMenuProps> = (props) => {
       <button className="file-menu-button" onClick={() => setMenuOpen((previous) => !previous)}>
           File
       </button>
-      <nav className="file-menu-items" onClick={() => setMenuOpen(() => false)}>
+      <nav className="file-menu-items" onClick={() => setMenuOpen(false)}>
         <button className="file-menu-item" onClick={props.onFileCreate}>
             Create
         </button>
@@ -58,13 +58,13 @@ export const FileMenu: FunctionComponent<FileMenuProps> = (props) => {
         <button className="file-menu-item" onClick={props.onDownload}>
             Save
         </button>
-        <button className="file-menu-item" onClick={() => setAboutOpen(() => true)}>
+        <button className="file-menu-item" onClick={() => setAboutOpen(true)}>
             About...
         </button>
       </nav>
       {aboutOpen && (
         <Modal>
-          <About onClose={() => setAboutOpen(() => false)} />
+          <About onClose={() => setAboutOpen(false)} />
         </Modal>
       )}
     </div>

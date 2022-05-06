@@ -2,6 +2,7 @@
   display: block;
   background: none;
   border: 1px solid transparent;
+  font-size: 0.8em;
 }
 .clipboard button:hover {
   background: var(--hover-background-color);

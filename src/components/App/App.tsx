@@ -1,5 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
+import './normalize.css'
 import './App.css'
 
 import { FileMenu } from '../FileMenu/FileMenu'
@@ -20,6 +21,7 @@ import { Eraser } from '../instruments/Eraser/Eraser'
 import { Selection } from '../instruments/Selection/Selection'
 import { Rectangle } from '../../common/Rectangle'
 import { Instrument } from '../../common/Instrument'
+import { SelectionZoneType } from '../../common/SelectionZoneType'
 
 export const App = () => {
   const create = useCallback(() => {
@@ -67,6 +69,7 @@ export const App = () => {
   const [selectionRectangle, setSelectionRectangle] = useState<Rectangle | null>(null)
   const [selectionImage, setSelectionImage] = useState<HTMLCanvasElement | null>(null)
   const [selectionBackground, setSelectionBackground] = useState<HTMLCanvasElement | null>(null)
+  const [selectionZoneType, setSelectionZoneType] = useState<SelectionZoneType>('rectangle')
 
   useLayoutEffect(() => {
     const canvasOnDiplay = canvasOnDisplayRef.current
@@ -276,6 +279,23 @@ export const App = () => {
     updateCanvas(newCanvas)
   }, [mainCanvas, selectionRectangle])
 
+  const selectZoneType = useCallback((type: SelectionZoneType) => {
+    selectInstrument('selection')
+    setSelectionZoneType(type)
+  }, [])
+
+  const onSelectAll = useCallback(() => {
+    const newRectangle = {
+      top: 0,
+      left: 0,
+      width: mainCanvas.width,
+      height: mainCanvas.height
+    }
+    selectInstrument('selection')
+    setSelectionZoneType('rectangle')
+    setSelectionRectangle(newRectangle)
+  }, [mainCanvas])
+
   let instrumentComponent = <></>
   switch (instrument) {
     case 'pen':
@@ -320,6 +340,7 @@ export const App = () => {
         selectionBackground={selectionBackground}
         setSelectionBackground={setSelectionBackground}
         secondaryColor={secondaryColor}
+        zoneType={selectionZoneType}
         />
       break
   }
@@ -343,8 +364,11 @@ export const App = () => {
         <ImagePanel
           instrument={instrument}
           onInstrumentSelect={selectInstrument}
-          canClip={!!selectionRectangle}
+          canModifySelection={!!selectionRectangle}
           handleClipClick={clip}
+          zoneType={selectionZoneType}
+          selectZoneType={selectZoneType}
+          onSelectAll={onSelectAll}
         />
       </NavBarItem>
       <NavBarItem footer="Instruments">
