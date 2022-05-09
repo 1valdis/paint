@@ -72,6 +72,7 @@ export const App = () => {
   const [selectionBackground, setSelectionBackground] = useState<HTMLCanvasElement | null>(null)
   const [selectionZoneType, setSelectionZoneType] = useState<SelectionZoneType>('rectangle')
   const [freeformSelectionPath, setFreeformSelectionPath] = useState<Array<Point> | null>(null)
+  const [isSelectionTransparent, setIsSelectionTransparent] = useState(false)
 
   useLayoutEffect(() => {
     const canvasOnDiplay = canvasOnDisplayRef.current
@@ -388,6 +389,8 @@ export const App = () => {
           selectZoneType={selectZoneType}
           onSelectAll={selectAll}
           onDeleteSelected={deleteSelected}
+          isSelectionTransparent={isSelectionTransparent}
+          setIsSelectionTransparent={setIsSelectionTransparent}
         />
       </NavBarItem>
       <NavBarItem footer="Instruments">

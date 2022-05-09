@@ -16,6 +16,8 @@ interface ImageProps {
   selectZoneType: (type: SelectionZoneType) => void
   onSelectAll: () => void
   onDeleteSelected: () => void
+  isSelectionTransparent: boolean
+  setIsSelectionTransparent: (value: boolean) => void
 }
 
 export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
@@ -71,7 +73,9 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
             <button onClick={props.onSelectAll}>Select all</button>
             <button disabled={!props.canModifySelection}>Invert zone</button>
             <button onClick={props.onDeleteSelected} disabled={!props.canModifySelection}>Delete selected</button>
-            <button>Transparency</button>
+            <button
+              className={classNames({ active: props.isSelectionTransparent })}
+              onClick={() => props.setIsSelectionTransparent(!props.isSelectionTransparent)}>Transparency</button>
         </nav>
       </section>
       <section className="side-buttons">
