@@ -398,17 +398,31 @@ export const Selection: FunctionComponent<SelectionProps> = ({
       const selectionCtx = selectionCanvas.getContext('2d')
       if (!selectionCtx) throw new Error()
       selectionCtx.imageSmoothingEnabled = false
-      selectionCtx.drawImage(
-        image,
-        selectionRectangle.left,
-        selectionRectangle.top,
-        selectionRectangle.width,
-        selectionRectangle.height,
-        0,
-        0,
-        selectionCanvas.width,
-        selectionCanvas.height
-      )
+      if (selectionImage) {
+        selectionCtx.drawImage(
+          selectionImage,
+          0,
+          0,
+          selectionImage.width,
+          selectionImage.height,
+          0,
+          0,
+          selectionCanvas.width,
+          selectionCanvas.height
+        )
+      } else {
+        selectionCtx.drawImage(
+          image,
+          selectionRectangle.left,
+          selectionRectangle.top,
+          selectionRectangle.width,
+          selectionRectangle.height,
+          0,
+          0,
+          selectionCanvas.width,
+          selectionCanvas.height
+        )
+      }
       setSelectionImage(selectionCanvas)
     }
     setSelectionRectangle({ top, left, width, height })
