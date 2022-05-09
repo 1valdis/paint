@@ -126,6 +126,7 @@ export const App = () => {
     setSelectionBackground(null)
     setSelectionImage(null)
     setIsSelectionActive(false)
+    setSelectionZoneType('rectangle')
   }
 
   const open = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
