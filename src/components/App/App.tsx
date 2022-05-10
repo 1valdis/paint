@@ -130,9 +130,9 @@ export const App = () => {
     setSelectionZoneType('rectangle')
   }
 
-  const open = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+  const openFileAsCanvas = useCallback(async (event: ChangeEvent<HTMLInputElement>): Promise<HTMLCanvasElement | null> => {
     const file = event.target.files?.[0]
-    if (!file) return
+    if (!file) return null
     const reader = new FileReader()
     try {
       await new Promise<ProgressEvent<FileReader>>((resolve, reject) => {
@@ -140,6 +140,8 @@ export const App = () => {
         reader.onload = resolve
         reader.onerror = reject
       })
+      // to catch error
+      // eslint-disable-next-line sonarjs/prefer-immediate-return
       const canvas = await new Promise<HTMLCanvasElement>((resolve, reject) => {
         reader.readAsDataURL(file as Blob)
         reader.onload = e => {
@@ -158,39 +160,56 @@ export const App = () => {
           img.onerror = reject
         }
       })
-      setMainCanvas(canvas)
-      selectInstrument(instrument)
+      return canvas
     } catch (error) {
       alert("Couldn't open file")
+      return null
     }
-  }, [instrument])
+  }, [])
+
+  const createSelectionFromPastedImage = useCallback((pastedImage: HTMLImageElement | HTMLCanvasElement) => {
+    const canvas = document.createElement('canvas')
+    canvas.width = Math.max(pastedImage.width, mainCanvas.width)
+    canvas.height = Math.max(pastedImage.height, mainCanvas.height)
+    const context = canvas.getContext('2d')
+    if (!context) throw new Error()
+    context.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
+    context.fillRect(0, 0, canvas.width, canvas.height)
+    context.drawImage(mainCanvas, 0, 0)
+    updateCanvas(canvas)
+    setSelectionBackground(canvas)
+    const pastedCanvas = document.createElement('canvas')
+    pastedCanvas.width = pastedImage.width
+    pastedCanvas.height = pastedImage.height
+    const pastedContext = pastedCanvas.getContext('2d')
+    if (!pastedContext) throw new Error()
+    pastedContext.drawImage(pastedImage, 0, 0)
+    setSelectionImage(pastedCanvas)
+    setSelectionRectangle({ top: 0, left: 0, width: pastedImage.width, height: pastedImage.height })
+    setInstrument('selection')
+  }, [mainCanvas, secondaryColor])
+
+  const open = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+    const canvas = await openFileAsCanvas(event)
+    if (!canvas) return
+    setMainCanvas(canvas)
+    selectInstrument(instrument)
+  }, [instrument, openFileAsCanvas])
+
+  const pasteFromFile = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
+    const canvas = await openFileAsCanvas(event)
+    if (!canvas) return
+    createSelectionFromPastedImage(canvas)
+  }, [createSelectionFromPastedImage, openFileAsCanvas])
 
   const pasteFromBlob = useCallback((blob: Blob) => {
     const source = window.URL.createObjectURL(blob)
     const pastedImage = new Image()
     pastedImage.onload = () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = Math.max(pastedImage.width, mainCanvas.width)
-      canvas.height = Math.max(pastedImage.height, mainCanvas.height)
-      const context = canvas.getContext('2d')
-      if (!context) throw new Error("Couldn't create context")
-      context.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
-      context.fillRect(0, 0, canvas.width, canvas.height)
-      context.drawImage(mainCanvas, 0, 0)
-      updateCanvas(canvas)
-      setSelectionBackground(canvas)
-      const pastedCanvas = document.createElement('canvas')
-      pastedCanvas.width = pastedImage.width
-      pastedCanvas.height = pastedImage.height
-      const pastedContext = pastedCanvas.getContext('2d')
-      if (!pastedContext) throw new Error("Couldn't create context")
-      pastedContext.drawImage(pastedImage, 0, 0)
-      setSelectionImage(pastedCanvas)
-      setSelectionRectangle({ top: 0, left: 0, width: pastedImage.width, height: pastedImage.height })
-      setInstrument('selection')
+      createSelectionFromPastedImage(pastedImage)
     }
     pastedImage.src = source
-  }, [mainCanvas, secondaryColor])
+  }, [createSelectionFromPastedImage])
 
   const pasteFromCtrlV = useCallback((e: ClipboardEvent) => {
     if (e.clipboardData) {
@@ -378,6 +397,7 @@ export const App = () => {
           onCopy={copy}
           onCut={cut}
           canCutOrCopy={!!selectionRectangle}
+          onPasteFromFile={pasteFromFile}
         />
       </NavBarItem>
       <NavBarItem footer="Image">

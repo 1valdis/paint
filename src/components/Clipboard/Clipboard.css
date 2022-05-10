@@ -1,21 +1,68 @@
-.clipboard button {
+.clipboard .paste-button {
+  display: block;
+  padding: 0.5em;
+  width: 3.5em;
+  height: 3.5em;
+  background-size: 3.5em 3.5em;
+  background-position: top;
+  background-repeat: no-repeat;
+  background-image: url('./paste.png')
+}
+
+.clipboard button:focus {
+  outline: none;
+}
+.clipboard {
+  position: relative;
+  display: flex;
+}
+.clipboard input {
+  display: none;
+}
+
+.clipboard button, .clipboard label {
   display: block;
   background: none;
   border: 1px solid transparent;
   font-size: 0.8em;
 }
-.clipboard button:hover {
+.clipboard .hoverable:not(:disabled):hover, .clipboard label:hover {
   background: var(--hover-background-color);
   border: 1px solid var(--hover-border-color);
 }
-.clipboard button:active {
+.clipboard .hoverable:not(:disabled):active, .clipboard label:active {
   background: var(--active-background-color);
   border: 1px solid var(--active-border-color);
 }
-.clipboard button:focus {
+.clipboard button:focus, .clipboard label:focus {
   outline: none;
+}
+.clipboard .paste-button:hover {
+  border: 1px solid var(--hover-border-color);
+}
+.clipboard .paste-button:active {
+  border: 1px solid var(--active-border-color);
 }
 .clipboard button:disabled {
   background: none;
   border: 1px solid transparent;
+}
+.options {
+  width: 100%
+}
+.paste-options {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  box-shadow: 3px 3px 6px darkgrey;
+  background: rgb(245,245,245);
+  z-index: 10;
+  width: max-content;
+}
+.paste-options label {
+  padding: .2em 1em;
+}
+.paste-options.paste-options_active {
+  display: flex;
 }

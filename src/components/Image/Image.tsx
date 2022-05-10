@@ -34,8 +34,8 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
   })
 
   return (
-    <nav className="image" ref={menuRef}>
-      <section className="main-buttons">
+    <nav className="image">
+      <section className="main-buttons" ref={menuRef}>
         <button
           className={classNames('select', {
             active: props.instrument === 'selection'

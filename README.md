@@ -34,7 +34,7 @@ Live demo: https://1valdis.github.io/paint/
   - [ ] Selection
     - [x] Paste
       - [x] From clipboard
-      - [ ] From file
+      - [x] From file
     - [x] Move, resize
     - [x] Clip selection
     - [x] Select all + Ctrl-A
