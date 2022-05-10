@@ -360,6 +360,7 @@ export const App = () => {
         zoneType={selectionZoneType}
         setFreeformSelectionPath={setFreeformSelectionPath}
         freeformSelectionPath={freeformSelectionPath}
+        isSelectionTransparent={isSelectionTransparent}
         />
       break
   }

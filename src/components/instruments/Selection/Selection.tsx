@@ -36,6 +36,7 @@ export interface SelectionProps {
   zoneType: SelectionZoneType,
   setFreeformSelectionPath: (path: Array<Point> | null) => void
   freeformSelectionPath: Array<Point> | null
+  isSelectionTransparent: boolean
 }
 
 function usePrevious<T> (value: T): T {
@@ -59,7 +60,8 @@ export const Selection: FunctionComponent<SelectionProps> = ({
   secondaryColor,
   zoneType,
   setFreeformSelectionPath,
-  freeformSelectionPath
+  freeformSelectionPath,
+  isSelectionTransparent
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -370,12 +372,24 @@ export const Selection: FunctionComponent<SelectionProps> = ({
         selectionCanvas.width,
         selectionCanvas.height
       )
+      if (isSelectionTransparent) {
+        const imageData = selectionCtx.getImageData(0, 0, selectionCanvas.width, selectionCanvas.height)
+        for (let i = 0; i < imageData.data.length; i += 4) {
+          if (secondaryColor.r === imageData.data[i] &&
+            secondaryColor.g === imageData.data[i + 1] &&
+            secondaryColor.b === imageData.data[i + 2]) {
+            imageData.data[i + 3] = 0
+          }
+        }
+        selectionCtx.putImageData(imageData, 0, 0)
+      }
       setSelectionImage(selectionCanvas)
       setFreeformSelectionPath(null)
     }
     setSelectionRectangle({ top, left, width, height })
-  }, [freeformSelectionPath, image, secondaryColor, selectionBackground, selectionImage, selectionRectangle, setFreeformSelectionPath, setSelectionBackground, setSelectionImage, setSelectionRectangle])
+  }, [freeformSelectionPath, image, secondaryColor, selectionBackground, selectionImage, selectionRectangle, setFreeformSelectionPath, setSelectionBackground, setSelectionImage, setSelectionRectangle, isSelectionTransparent])
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleResizeOrMoveEnd = useCallback(({ top, left, width, height }: Rectangle) => {
     const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
     if (!modifiedCtx || !selectionRectangle) throw new Error()
@@ -423,10 +437,31 @@ export const Selection: FunctionComponent<SelectionProps> = ({
           selectionCanvas.height
         )
       }
+      if (isSelectionTransparent) {
+        const imageData = selectionCtx.getImageData(0, 0, selectionCanvas.width, selectionCanvas.height)
+        for (let i = 0; i < imageData.data.length; i += 4) {
+          if (secondaryColor.r === imageData.data[i] &&
+            secondaryColor.g === imageData.data[i + 1] &&
+            secondaryColor.b === imageData.data[i + 2]) {
+            imageData.data[i + 3] = 0
+          }
+        }
+        selectionCtx.putImageData(imageData, 0, 0)
+      }
       setSelectionImage(selectionCanvas)
     }
     setSelectionRectangle({ top, left, width, height })
-  }, [image, secondaryColor, selectionBackground, selectionImage, selectionRectangle, setSelectionBackground, setSelectionImage, setSelectionRectangle])
+  }, [
+    image,
+    isSelectionTransparent,
+    secondaryColor,
+    selectionBackground,
+    selectionImage,
+    selectionRectangle,
+    setSelectionBackground,
+    setSelectionImage,
+    setSelectionRectangle
+  ])
   // #endregion
 
   let El = <></>

@@ -41,7 +41,7 @@ Live demo: https://1valdis.github.io/paint/
     - [x] Delete selected
     - [x] Free-form selection
     - [ ] Invert selection
-    - [ ] Transparent selection
+    - [x] Transparent selection
 
 Screenshot:
 ![Screenshot](screenshot.png)

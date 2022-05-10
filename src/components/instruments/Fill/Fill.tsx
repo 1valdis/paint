@@ -19,6 +19,7 @@ const floodFill = (
   y: number,
   colorToReplace: Color,
   colorToFillWith: Color
+// eslint-disable-next-line sonarjs/cognitive-complexity
 ) => {
   const replaceR = colorToReplace.r
   const replaceG = colorToReplace.g
