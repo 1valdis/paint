@@ -267,11 +267,10 @@ export const Selection: FunctionComponent<SelectionProps> = ({
   // #endregion
 
   // #region work with existing selection
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleMoving = useCallback(({ top, left, width, height }: Rectangle) => {
     const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
     if (!modifiedCtx || !selectionDetails) throw new Error()
-    if (selectionDetails.rectangle.width === width || selectionDetails.rectangle.height === height) {
+    if (selectionDetails.rectangle.width === width && selectionDetails.rectangle.height === height) {
       setSelectionDetails({
         background: selectionDetails.background,
         image: selectionDetails.image,
@@ -281,29 +280,29 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     }
 
     const selectionCanvas = document.createElement('canvas')
-    selectionCanvas.width = selectionDetails.rectangle.width
-    selectionCanvas.height = selectionDetails.rectangle.height
+    selectionCanvas.width = width
+    selectionCanvas.height = height
     const selectionCtx = selectionCanvas.getContext('2d')
     if (!selectionCtx) throw new Error()
+    selectionCtx.imageSmoothingEnabled = false
     selectionCtx.drawImage(
-      image,
-      selectionDetails.rectangle.left,
-      selectionDetails.rectangle.top,
-      selectionDetails.rectangle.width,
-      selectionDetails.rectangle.height,
+      selectionDetails.image,
       0,
       0,
-      selectionCanvas.width,
-      selectionCanvas.height
+      selectionDetails.image.width,
+      selectionDetails.image.height,
+      0,
+      0,
+      width,
+      height
     )
     setSelectionDetails({
       background: selectionDetails.background,
       image: selectionCanvas,
       rectangle: { top, left, width, height }
     })
-  }, [selectionDetails, setSelectionDetails, image])
+  }, [selectionDetails, setSelectionDetails])
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleResizeOrMoveEnd = useCallback(({ top, left, width, height }: Rectangle) => {
     handleMoving({ top, left, width, height })
     onImageChange(modifiedCanvasRef.current!)
