@@ -243,6 +243,10 @@ export const Selection: FunctionComponent<SelectionProps> = ({
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleDocumentPointerUp = useCallback(() => {
+    setIsSelecting(false)
+    setPath(null)
+    setSelectingOrigin(null)
+    setSelectingRectangle(null)
     if (isSelecting) {
       if (selectingRectangle) {
         createSelectionDetailsFromRectangle(selectingRectangle)
@@ -253,10 +257,6 @@ export const Selection: FunctionComponent<SelectionProps> = ({
       }
       setIsSelectionActive(false)
     }
-    setIsSelecting(false)
-    setPath(null)
-    setSelectingOrigin(null)
-    setSelectingRectangle(null)
   }, [createSelectionDetailsFromPointSequence, createSelectionDetailsFromRectangle, isSelecting, path, selectingRectangle, setIsSelectionActive, setSelectionDetails])
   useEffect(() => {
     document.addEventListener('pointerup', handleDocumentPointerUp)
