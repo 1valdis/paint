@@ -18,7 +18,7 @@ import { Pen } from '../instruments/Pen/Pen'
 import { Dropper } from '../instruments/Dropper/Dropper'
 import { Fill } from '../instruments/Fill/Fill'
 import { Eraser } from '../instruments/Eraser/Eraser'
-import { Selection } from '../instruments/Selection/Selection'
+import { Selection, SelectionDetails } from '../instruments/Selection/Selection'
 import { Rectangle } from '../../common/Rectangle'
 import { Instrument } from '../../common/Instrument'
 import { SelectionZoneType } from '../../common/SelectionZoneType'
@@ -67,11 +67,8 @@ export const App = () => {
   const [instrument, setInstrument] = useState<Instrument>('pen')
 
   const [isSelectionActive, setIsSelectionActive] = useState(false)
-  const [selectionRectangle, setSelectionRectangle] = useState<Rectangle | null>(null)
-  const [selectionImage, setSelectionImage] = useState<HTMLCanvasElement | null>(null)
-  const [selectionBackground, setSelectionBackground] = useState<HTMLCanvasElement | null>(null)
+  const [selectionDetails, setSelectionDetails] = useState<SelectionDetails | null>(null)
   const [selectionZoneType, setSelectionZoneType] = useState<SelectionZoneType>('rectangle')
-  const [freeformSelectionPath, setFreeformSelectionPath] = useState<Array<Point> | null>(null)
   const [isSelectionTransparent, setIsSelectionTransparent] = useState(false)
 
   useLayoutEffect(() => {
@@ -123,9 +120,7 @@ export const App = () => {
 
   const selectInstrument = (instrument: Instrument) => {
     setInstrument(instrument)
-    setSelectionRectangle(null)
-    setSelectionBackground(null)
-    setSelectionImage(null)
+    setSelectionDetails(null)
     setIsSelectionActive(false)
     setSelectionZoneType('rectangle')
   }
@@ -167,7 +162,7 @@ export const App = () => {
     }
   }, [])
 
-  const createSelectionFromPastedImage = useCallback((pastedImage: HTMLImageElement | HTMLCanvasElement) => {
+  const createSelectionDetailsFromPastedImage = useCallback((pastedImage: HTMLImageElement | HTMLCanvasElement) => {
     const canvas = document.createElement('canvas')
     canvas.width = Math.max(pastedImage.width, mainCanvas.width)
     canvas.height = Math.max(pastedImage.height, mainCanvas.height)
@@ -177,17 +172,156 @@ export const App = () => {
     context.fillRect(0, 0, canvas.width, canvas.height)
     context.drawImage(mainCanvas, 0, 0)
     updateCanvas(canvas)
-    setSelectionBackground(canvas)
     const pastedCanvas = document.createElement('canvas')
     pastedCanvas.width = pastedImage.width
     pastedCanvas.height = pastedImage.height
     const pastedContext = pastedCanvas.getContext('2d')
     if (!pastedContext) throw new Error()
     pastedContext.drawImage(pastedImage, 0, 0)
-    setSelectionImage(pastedCanvas)
-    setSelectionRectangle({ top: 0, left: 0, width: pastedImage.width, height: pastedImage.height })
+    if (isSelectionTransparent) {
+      const imageData = pastedContext.getImageData(0, 0, pastedCanvas.width, pastedCanvas.height)
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        if (secondaryColor.r === imageData.data[i] &&
+            secondaryColor.g === imageData.data[i + 1] &&
+            secondaryColor.b === imageData.data[i + 2]) {
+          imageData.data[i + 3] = 0
+        }
+      }
+      pastedContext.putImageData(imageData, 0, 0)
+    }
+    setSelectionDetails({
+      background: canvas,
+      image: pastedCanvas,
+      rectangle: { top: 0, left: 0, width: pastedImage.width, height: pastedImage.height }
+    })
     setInstrument('selection')
-  }, [mainCanvas, secondaryColor])
+  }, [mainCanvas, secondaryColor, isSelectionTransparent])
+
+  const createSelectionDetailsFromRectangle = useCallback((rectangle: Rectangle) => {
+    if (rectangle.width === 0 && rectangle.height === 0) {
+      setSelectionDetails(null)
+      return
+    }
+    const backgroundCanvas = document.createElement('canvas')
+    backgroundCanvas.width = mainCanvas.width
+    backgroundCanvas.height = mainCanvas.height
+    const backgroundCtx = backgroundCanvas.getContext('2d')
+    if (!backgroundCtx) throw new Error()
+    backgroundCtx.drawImage(mainCanvas, 0, 0)
+    backgroundCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
+    backgroundCtx.fillRect(rectangle.left, rectangle.top, rectangle.width, rectangle.height)
+
+    const selectionCanvas = document.createElement('canvas')
+    selectionCanvas.width = rectangle.width
+    selectionCanvas.height = rectangle.height
+    const selectionCtx = selectionCanvas.getContext('2d')
+    if (!selectionCtx) throw new Error()
+    selectionCtx.drawImage(
+      mainCanvas,
+      rectangle.left,
+      rectangle.top,
+      rectangle.width,
+      rectangle.height,
+      0,
+      0,
+      selectionCanvas.width,
+      selectionCanvas.height
+    )
+    if (isSelectionTransparent) {
+      const imageData = selectionCtx.getImageData(0, 0, selectionCanvas.width, selectionCanvas.height)
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        if (secondaryColor.r === imageData.data[i] &&
+            secondaryColor.g === imageData.data[i + 1] &&
+            secondaryColor.b === imageData.data[i + 2]) {
+          imageData.data[i + 3] = 0
+        }
+      }
+      selectionCtx.putImageData(imageData, 0, 0)
+    }
+    setSelectionDetails({
+      background: backgroundCanvas,
+      image: selectionCanvas,
+      rectangle
+    })
+  }, [isSelectionTransparent, mainCanvas, secondaryColor])
+
+  const createSelectionDetailsFromPointSequence = useCallback((path: Point[]) => {
+    if (path.length <= 1) {
+      setSelectionDetails(null)
+      setIsSelectionActive(false)
+      return
+    }
+
+    const top = Math.min(...path.map(point => point.y))
+    const left = Math.min(...path.map(point => point.x))
+    const rectangle = {
+      top,
+      left,
+      width: Math.max(...path.map(point => point.x)) - left,
+      height: Math.max(...path.map(point => point.y)) - top
+    }
+    if (rectangle.width === 0 && rectangle.height === 0) {
+      setSelectionDetails(null)
+      setIsSelectionActive(false)
+      return
+    }
+
+    const backgroundCanvas = document.createElement('canvas')
+    backgroundCanvas.width = mainCanvas.width
+    backgroundCanvas.height = mainCanvas.height
+    const backgroundCtx = backgroundCanvas.getContext('2d')
+    if (!backgroundCtx) throw new Error()
+    backgroundCtx.drawImage(mainCanvas, 0, 0)
+    backgroundCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
+
+    backgroundCtx.beginPath()
+    const [start, ...rest] = path as [Point, ...Point[]]
+    backgroundCtx.moveTo(start.x, start.y)
+    for (const point of rest) {
+      backgroundCtx.lineTo(point.x, point.y)
+    }
+    backgroundCtx.fill()
+
+    const selectionCanvas = document.createElement('canvas')
+    selectionCanvas.width = rectangle.width
+    selectionCanvas.height = rectangle.height
+    const selectionCtx = selectionCanvas.getContext('2d')
+    if (!selectionCtx) throw new Error()
+    selectionCtx.imageSmoothingEnabled = false
+    selectionCtx.beginPath()
+    selectionCtx.moveTo(start.x - rectangle.left, start.y - rectangle.top)
+    for (const point of rest) {
+      selectionCtx.lineTo(point.x - rectangle.left, point.y - rectangle.top)
+    }
+    selectionCtx.clip()
+    selectionCtx.drawImage(
+      mainCanvas,
+      rectangle.left,
+      rectangle.top,
+      rectangle.width,
+      rectangle.height,
+      0,
+      0,
+      selectionCanvas.width,
+      selectionCanvas.height
+    )
+    if (isSelectionTransparent) {
+      const imageData = selectionCtx.getImageData(0, 0, selectionCanvas.width, selectionCanvas.height)
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        if (secondaryColor.r === imageData.data[i] &&
+          secondaryColor.g === imageData.data[i + 1] &&
+          secondaryColor.b === imageData.data[i + 2]) {
+          imageData.data[i + 3] = 0
+        }
+      }
+      selectionCtx.putImageData(imageData, 0, 0)
+    }
+    setSelectionDetails({
+      background: backgroundCanvas,
+      image: selectionCanvas,
+      rectangle
+    })
+  }, [isSelectionTransparent, mainCanvas, secondaryColor])
 
   const open = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     const canvas = await openFileAsCanvas(event)
@@ -199,17 +333,17 @@ export const App = () => {
   const pasteFromFile = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
     const canvas = await openFileAsCanvas(event)
     if (!canvas) return
-    createSelectionFromPastedImage(canvas)
-  }, [createSelectionFromPastedImage, openFileAsCanvas])
+    createSelectionDetailsFromPastedImage(canvas)
+  }, [createSelectionDetailsFromPastedImage, openFileAsCanvas])
 
   const pasteFromBlob = useCallback((blob: Blob) => {
     const source = window.URL.createObjectURL(blob)
     const pastedImage = new Image()
     pastedImage.onload = () => {
-      createSelectionFromPastedImage(pastedImage)
+      createSelectionDetailsFromPastedImage(pastedImage)
     }
     pastedImage.src = source
-  }, [createSelectionFromPastedImage])
+  }, [createSelectionDetailsFromPastedImage])
 
   const pasteFromCtrlV = useCallback((e: ClipboardEvent) => {
     if (e.clipboardData) {
@@ -233,18 +367,18 @@ export const App = () => {
   }, [pasteFromCtrlV])
 
   const copy = useCallback(async () => {
-    if (!selectionRectangle) return
+    if (!selectionDetails) return
     const copiedCanvas = document.createElement('canvas')
-    copiedCanvas.width = selectionRectangle.width
-    copiedCanvas.height = selectionRectangle.height
+    copiedCanvas.width = selectionDetails.rectangle.width
+    copiedCanvas.height = selectionDetails.rectangle.height
     const copiedCtx = copiedCanvas.getContext('2d')
     if (!copiedCtx) throw new Error()
     copiedCtx.drawImage(
       mainCanvas,
-      selectionRectangle.left,
-      selectionRectangle.top,
-      selectionRectangle.width,
-      selectionRectangle.height,
+      selectionDetails.rectangle.left,
+      selectionDetails.rectangle.top,
+      selectionDetails.rectangle.width,
+      selectionDetails.rectangle.height,
       0,
       0,
       copiedCanvas.width,
@@ -257,7 +391,7 @@ export const App = () => {
     await navigator.clipboard.write([
       new ClipboardItem({ 'image/png': blob })
     ])
-  }, [mainCanvas, selectionRectangle])
+  }, [mainCanvas, selectionDetails])
   useEffect(() => {
     document.addEventListener('copy', copy)
     return () => {
@@ -266,22 +400,16 @@ export const App = () => {
   }, [copy])
 
   const deleteSelected = useCallback(() => {
-    if (!selectionRectangle) return
+    if (!selectionDetails) return
     const newCanvas = document.createElement('canvas')
     newCanvas.width = mainCanvas.width
     newCanvas.height = mainCanvas.height
     const newCtx = newCanvas.getContext('2d')
     if (!newCtx) throw new Error()
-    if (selectionBackground) {
-      newCtx.drawImage(selectionBackground, 0, 0)
-    } else {
-      newCtx.drawImage(mainCanvas, 0, 0)
-      newCtx.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
-      newCtx.fillRect(selectionRectangle.left, selectionRectangle.top, selectionRectangle.width, selectionRectangle.height)
-    }
+    newCtx.drawImage(selectionDetails.background, 0, 0)
     selectInstrument('selection')
     updateCanvas(newCanvas)
-  }, [mainCanvas, secondaryColor, selectionBackground, selectionRectangle])
+  }, [mainCanvas, selectionDetails])
 
   const cut = useCallback(async () => {
     copy()
@@ -295,16 +423,16 @@ export const App = () => {
   }, [cut])
 
   const clip = useCallback(async () => {
-    if (!selectionRectangle) return
+    if (!selectionDetails) return
     const newCanvas = document.createElement('canvas')
-    newCanvas.width = selectionRectangle.width
-    newCanvas.height = selectionRectangle.height
+    newCanvas.width = selectionDetails.rectangle.width
+    newCanvas.height = selectionDetails.rectangle.height
     const newCtx = newCanvas.getContext('2d')
     if (!newCtx) throw new Error()
-    newCtx.drawImage(mainCanvas, -selectionRectangle.left, -selectionRectangle.top)
+    newCtx.drawImage(mainCanvas, -selectionDetails.rectangle.left, -selectionDetails.rectangle.top)
     selectInstrument('selection')
     updateCanvas(newCanvas)
-  }, [mainCanvas, selectionRectangle])
+  }, [mainCanvas, selectionDetails])
 
   const selectZoneType = useCallback((type: SelectionZoneType) => {
     selectInstrument('selection')
@@ -320,8 +448,8 @@ export const App = () => {
     }
     selectInstrument('selection')
     setSelectionZoneType('rectangle')
-    setSelectionRectangle(newRectangle)
-  }, [mainCanvas])
+    createSelectionDetailsFromRectangle(newRectangle)
+  }, [createSelectionDetailsFromRectangle, mainCanvas])
 
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
@@ -369,17 +497,11 @@ export const App = () => {
         image={mainCanvas}
         onImageChange={updateCanvas}
         setIsSelectionActive={setIsSelectionActive}
-        selectionRectangle={selectionRectangle}
-        setSelectionRectangle={setSelectionRectangle}
-        selectionImage={selectionImage}
-        setSelectionImage={setSelectionImage}
-        selectionBackground={selectionBackground}
-        setSelectionBackground={setSelectionBackground}
-        secondaryColor={secondaryColor}
+        selectionDetails={selectionDetails}
+        setSelectionDetails={setSelectionDetails}
+        createSelectionDetailsFromRectangle={createSelectionDetailsFromRectangle}
+        createSelectionDetailsFromPointSequence={createSelectionDetailsFromPointSequence}
         zoneType={selectionZoneType}
-        setFreeformSelectionPath={setFreeformSelectionPath}
-        freeformSelectionPath={freeformSelectionPath}
-        isSelectionTransparent={isSelectionTransparent}
         />
       break
   }
@@ -396,7 +518,7 @@ export const App = () => {
           onPaste={pasteFromBlob}
           onCopy={copy}
           onCut={cut}
-          canCutOrCopy={!!selectionRectangle}
+          canCutOrCopy={!!selectionDetails}
           onPasteFromFile={pasteFromFile}
         />
       </NavBarItem>
@@ -404,7 +526,7 @@ export const App = () => {
         <ImagePanel
           instrument={instrument}
           onInstrumentSelect={selectInstrument}
-          canModifySelection={!!selectionRectangle}
+          canModifySelection={!!selectionDetails}
           handleClipClick={clip}
           zoneType={selectionZoneType}
           selectZoneType={selectZoneType}
@@ -437,7 +559,7 @@ export const App = () => {
     <Canvas
       ref={canvasOnDisplayRef}
       canvas={mainCanvas}>
-        {isSelectionActive || selectionRectangle
+        {isSelectionActive || selectionDetails
           ? null
           : <CanvasResizer
             backgroundColor={secondaryColor}

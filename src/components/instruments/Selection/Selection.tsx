@@ -9,7 +9,6 @@ import {
 } from 'react'
 
 import { Rectangle } from '../../../common/Rectangle'
-import { Color } from '../../../common/Color'
 import { Point } from '../../../common/Point'
 import { MovableSelection } from './MovableSelection/MovableSelection'
 
@@ -22,21 +21,21 @@ import { MovableSelection } from './MovableSelection/MovableSelection'
 import './Selection.css'
 import { SelectionZoneType } from '../../../common/SelectionZoneType'
 
+export type SelectionDetails = {
+  rectangle: Rectangle
+  image: HTMLCanvasElement
+  background: HTMLCanvasElement
+}
+
 export interface SelectionProps {
   image: HTMLCanvasElement
   onImageChange: (canvas: HTMLCanvasElement) => void
   setIsSelectionActive: (value: boolean) => void
-  selectionRectangle: Rectangle | null
-  setSelectionRectangle: (value: Rectangle | null) => void
-  selectionImage: HTMLCanvasElement | null
-  setSelectionImage: (image: HTMLCanvasElement | null) => void
-  selectionBackground: HTMLCanvasElement | null
-  setSelectionBackground: (image: HTMLCanvasElement | null) => void,
-  secondaryColor: Color,
-  zoneType: SelectionZoneType,
-  setFreeformSelectionPath: (path: Array<Point> | null) => void
-  freeformSelectionPath: Array<Point> | null
-  isSelectionTransparent: boolean
+  selectionDetails: SelectionDetails | null
+  setSelectionDetails: (selectionDetails: SelectionDetails | null) => void
+  createSelectionDetailsFromRectangle: (rectangle: Rectangle) => void
+  createSelectionDetailsFromPointSequence: (points: Array<Point>) => void
+  zoneType: SelectionZoneType
 }
 
 function usePrevious<T> (value: T): T {
@@ -51,17 +50,11 @@ export const Selection: FunctionComponent<SelectionProps> = ({
   image,
   onImageChange,
   setIsSelectionActive,
-  selectionRectangle,
-  setSelectionRectangle,
-  selectionImage,
-  setSelectionImage,
-  selectionBackground,
-  setSelectionBackground,
-  secondaryColor,
-  zoneType,
-  setFreeformSelectionPath,
-  freeformSelectionPath,
-  isSelectionTransparent
+  selectionDetails,
+  setSelectionDetails,
+  createSelectionDetailsFromRectangle,
+  createSelectionDetailsFromPointSequence,
+  zoneType
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -101,24 +94,24 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     context.stroke()
   }, [path])
 
-  const prevSelectionDetails = usePrevious({ selectionBackground, selectionImage, selectionRectangle })
+  const prevSelectionDetails = usePrevious(selectionDetails)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!modifiedCanvasRef.current) return
     modifiedCanvasRef.current.width = image.width
     modifiedCanvasRef.current.height = image.height
     const context = modifiedCanvasRef.current.getContext('2d')!
-    if (selectionBackground && selectionImage && selectionRectangle &&
-      (prevSelectionDetails.selectionBackground !== selectionBackground ||
-        prevSelectionDetails.selectionImage !== selectionImage ||
-        prevSelectionDetails.selectionRectangle !== selectionRectangle)) {
-      context.drawImage(selectionBackground, 0, 0)
-      context.drawImage(selectionImage, selectionRectangle.left, selectionRectangle.top)
+    if (selectionDetails &&
+      (prevSelectionDetails?.background !== selectionDetails.background ||
+        prevSelectionDetails?.image !== selectionDetails.image ||
+        prevSelectionDetails?.rectangle !== selectionDetails.rectangle)) {
+      context.drawImage(selectionDetails.background, 0, 0)
+      context.drawImage(selectionDetails.image, selectionDetails.rectangle.left, selectionDetails.rectangle.top)
       onImageChange(modifiedCanvasRef.current)
     } else {
       context.drawImage(image, 0, 0)
     }
-  }, [image, onImageChange, prevSelectionDetails, selectionBackground, selectionImage, selectionRectangle])
+  }, [image, onImageChange, prevSelectionDetails, selectionDetails])
 
   // #region new selection creation
   useEffect(() => {
@@ -164,9 +157,8 @@ export const Selection: FunctionComponent<SelectionProps> = ({
     setIsSelecting(true)
     setSelectingRectangle(null)
     setIsSelectionActive(true)
-    setSelectionRectangle(null)
-    setFreeformSelectionPath(null)
-  }, [setFreeformSelectionPath, setIsSelectionActive, setSelectionRectangle, zoneType])
+    setSelectionDetails(null)
+  }, [setIsSelectionActive, setSelectionDetails, zoneType])
 
   const handleDocumentPointerMove = useCallback((e: PointerEvent) => {
     if (!isSelecting) return
@@ -236,15 +228,12 @@ export const Selection: FunctionComponent<SelectionProps> = ({
         setIsSelecting(false)
         setSelectingOrigin(null)
         setSelectingRectangle(null)
-        setSelectionRectangle(null)
-        setSelectionBackground(null)
-        setSelectionImage(null)
+        setSelectionDetails(null)
         setPath(null)
-        setFreeformSelectionPath(null)
         contextMenuShouldBePrevented.current = true
         break // no default
     }
-  }, [image, isSelecting, selectingOrigin, setFreeformSelectionPath, setSelectionBackground, setSelectionImage, setSelectionRectangle, zoneType])
+  }, [image, isSelecting, selectingOrigin, setSelectionDetails, zoneType])
   useLayoutEffect(() => {
     document.addEventListener('pointermove', handleDocumentPointerMove)
     return () => {
@@ -256,58 +245,19 @@ export const Selection: FunctionComponent<SelectionProps> = ({
   const handleDocumentPointerUp = useCallback(() => {
     if (isSelecting) {
       if (selectingRectangle) {
-        if (selectingRectangle.width > 0 &&
-          selectingRectangle.height > 0) {
-          setSelectionRectangle(selectingRectangle)
-          setSelectionBackground(null)
-          setSelectionImage(null)
-        } else {
-          setSelectionRectangle(null)
-          setSelectionBackground(null)
-          setSelectionImage(null)
-          setIsSelectionActive(false)
-        }
+        createSelectionDetailsFromRectangle(selectingRectangle)
       } else if (path) {
-        if (path.length > 1) {
-          const top = Math.min(...path.map(point => point.y))
-          const left = Math.min(...path.map(point => point.x))
-          const selectionRectangle = {
-            top,
-            left,
-            width: Math.max(...path.map(point => point.x)) - left,
-            height: Math.max(...path.map(point => point.y)) - top
-          }
-          if (selectionRectangle.width > 0 && selectionRectangle.height > 0) {
-            setFreeformSelectionPath(path)
-            setSelectionRectangle(selectionRectangle)
-            setSelectionBackground(null)
-            setSelectionImage(null)
-          } else {
-            setFreeformSelectionPath(null)
-            setSelectionRectangle(null)
-            setSelectionBackground(null)
-            setSelectionImage(null)
-            setIsSelectionActive(false)
-          }
-        } else {
-          setFreeformSelectionPath(null)
-          setSelectionRectangle(null)
-          setSelectionBackground(null)
-          setSelectionImage(null)
-          setIsSelectionActive(false)
-        }
+        createSelectionDetailsFromPointSequence(path)
       } else {
-        setSelectionRectangle(null)
-        setSelectionBackground(null)
-        setSelectionImage(null)
-        setIsSelectionActive(false)
+        setSelectionDetails(null)
       }
+      setIsSelectionActive(false)
     }
     setIsSelecting(false)
     setPath(null)
     setSelectingOrigin(null)
     setSelectingRectangle(null)
-  }, [isSelecting, path, selectingRectangle, setFreeformSelectionPath, setIsSelectionActive, setSelectionBackground, setSelectionImage, setSelectionRectangle])
+  }, [createSelectionDetailsFromPointSequence, createSelectionDetailsFromRectangle, isSelecting, path, selectingRectangle, setIsSelectionActive, setSelectionDetails])
   useEffect(() => {
     document.addEventListener('pointerup', handleDocumentPointerUp)
     return () => {
@@ -320,148 +270,44 @@ export const Selection: FunctionComponent<SelectionProps> = ({
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleMoving = useCallback(({ top, left, width, height }: Rectangle) => {
     const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
-    if (!modifiedCtx || !selectionRectangle) throw new Error()
-    if (!selectionBackground) {
-      const backgroundCanvas = document.createElement('canvas')
-      backgroundCanvas.width = image.width
-      backgroundCanvas.height = image.height
-      const backgroundCtx = backgroundCanvas.getContext('2d')
-      if (!backgroundCtx) throw new Error()
-      backgroundCtx.drawImage(image, 0, 0)
-      backgroundCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
-      if (freeformSelectionPath) {
-        backgroundCtx.beginPath()
-        const [start, ...rest] = freeformSelectionPath
-        if (start) {
-          backgroundCtx.moveTo(start.x, start.y)
-        }
-        for (const point of rest) {
-          backgroundCtx.lineTo(point.x, point.y)
-        }
-        backgroundCtx.fill()
-      } else {
-        backgroundCtx.fillRect(selectionRectangle.left, selectionRectangle.top, selectionRectangle.width, selectionRectangle.height)
-      }
-      setSelectionBackground(backgroundCanvas)
+    if (!modifiedCtx || !selectionDetails) throw new Error()
+    if (selectionDetails.rectangle.width === width || selectionDetails.rectangle.height === height) {
+      setSelectionDetails({
+        background: selectionDetails.background,
+        image: selectionDetails.image,
+        rectangle: { top, left, width, height }
+      })
+      return
     }
-    if (!selectionImage || selectionRectangle.width !== width || selectionRectangle.height !== height) {
-      const selectionCanvas = document.createElement('canvas')
-      selectionCanvas.width = selectionRectangle.width
-      selectionCanvas.height = selectionRectangle.height
-      const selectionCtx = selectionCanvas.getContext('2d')
-      if (!selectionCtx) throw new Error()
-      if (freeformSelectionPath) {
-        selectionCtx.beginPath()
-        const [start, ...rest] = freeformSelectionPath
-        if (start) {
-          selectionCtx.moveTo(start.x - selectionRectangle.left, start.y - selectionRectangle.top)
-        }
-        for (const point of rest) {
-          selectionCtx.lineTo(point.x - selectionRectangle.left, point.y - selectionRectangle.top)
-        }
-        selectionCtx.clip()
-      }
-      selectionCtx.drawImage(
-        image,
-        selectionRectangle.left,
-        selectionRectangle.top,
-        selectionRectangle.width,
-        selectionRectangle.height,
-        0,
-        0,
-        selectionCanvas.width,
-        selectionCanvas.height
-      )
-      if (isSelectionTransparent) {
-        const imageData = selectionCtx.getImageData(0, 0, selectionCanvas.width, selectionCanvas.height)
-        for (let i = 0; i < imageData.data.length; i += 4) {
-          if (secondaryColor.r === imageData.data[i] &&
-            secondaryColor.g === imageData.data[i + 1] &&
-            secondaryColor.b === imageData.data[i + 2]) {
-            imageData.data[i + 3] = 0
-          }
-        }
-        selectionCtx.putImageData(imageData, 0, 0)
-      }
-      setSelectionImage(selectionCanvas)
-      setFreeformSelectionPath(null)
-    }
-    setSelectionRectangle({ top, left, width, height })
-  }, [freeformSelectionPath, image, secondaryColor, selectionBackground, selectionImage, selectionRectangle, setFreeformSelectionPath, setSelectionBackground, setSelectionImage, setSelectionRectangle, isSelectionTransparent])
+
+    const selectionCanvas = document.createElement('canvas')
+    selectionCanvas.width = selectionDetails.rectangle.width
+    selectionCanvas.height = selectionDetails.rectangle.height
+    const selectionCtx = selectionCanvas.getContext('2d')
+    if (!selectionCtx) throw new Error()
+    selectionCtx.drawImage(
+      image,
+      selectionDetails.rectangle.left,
+      selectionDetails.rectangle.top,
+      selectionDetails.rectangle.width,
+      selectionDetails.rectangle.height,
+      0,
+      0,
+      selectionCanvas.width,
+      selectionCanvas.height
+    )
+    setSelectionDetails({
+      background: selectionDetails.background,
+      image: selectionCanvas,
+      rectangle: { top, left, width, height }
+    })
+  }, [selectionDetails, setSelectionDetails, image])
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleResizeOrMoveEnd = useCallback(({ top, left, width, height }: Rectangle) => {
-    const modifiedCtx = modifiedCanvasRef.current?.getContext('2d')
-    if (!modifiedCtx || !selectionRectangle) throw new Error()
-    if (width === selectionRectangle.width && height === selectionRectangle.height) return
-    if (!selectionBackground) {
-      const backgroundCanvas = document.createElement('canvas')
-      backgroundCanvas.width = image.width
-      backgroundCanvas.height = image.height
-      const backgroundCtx = backgroundCanvas.getContext('2d')
-      if (!backgroundCtx) throw new Error()
-      backgroundCtx.drawImage(image, 0, 0)
-      backgroundCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
-      backgroundCtx.fillRect(selectionRectangle.left, selectionRectangle.top, selectionRectangle.width, selectionRectangle.height)
-      setSelectionBackground(backgroundCanvas)
-    }
-    if (!selectionImage || selectionRectangle.width !== width || selectionRectangle.height !== height) {
-      const selectionCanvas = document.createElement('canvas')
-      selectionCanvas.width = width
-      selectionCanvas.height = height
-      const selectionCtx = selectionCanvas.getContext('2d')
-      if (!selectionCtx) throw new Error()
-      selectionCtx.imageSmoothingEnabled = false
-      if (selectionImage) {
-        selectionCtx.drawImage(
-          selectionImage,
-          0,
-          0,
-          selectionImage.width,
-          selectionImage.height,
-          0,
-          0,
-          selectionCanvas.width,
-          selectionCanvas.height
-        )
-      } else {
-        selectionCtx.drawImage(
-          image,
-          selectionRectangle.left,
-          selectionRectangle.top,
-          selectionRectangle.width,
-          selectionRectangle.height,
-          0,
-          0,
-          selectionCanvas.width,
-          selectionCanvas.height
-        )
-      }
-      if (isSelectionTransparent) {
-        const imageData = selectionCtx.getImageData(0, 0, selectionCanvas.width, selectionCanvas.height)
-        for (let i = 0; i < imageData.data.length; i += 4) {
-          if (secondaryColor.r === imageData.data[i] &&
-            secondaryColor.g === imageData.data[i + 1] &&
-            secondaryColor.b === imageData.data[i + 2]) {
-            imageData.data[i + 3] = 0
-          }
-        }
-        selectionCtx.putImageData(imageData, 0, 0)
-      }
-      setSelectionImage(selectionCanvas)
-    }
-    setSelectionRectangle({ top, left, width, height })
-  }, [
-    image,
-    isSelectionTransparent,
-    secondaryColor,
-    selectionBackground,
-    selectionImage,
-    selectionRectangle,
-    setSelectionBackground,
-    setSelectionImage,
-    setSelectionRectangle
-  ])
+    handleMoving({ top, left, width, height })
+    onImageChange(modifiedCanvasRef.current!)
+  }, [handleMoving, onImageChange])
   // #endregion
 
   let El = <></>
@@ -475,14 +321,14 @@ export const Selection: FunctionComponent<SelectionProps> = ({
         height: `${selectingRectangle.height}px`
       }}
     />
-  } else if (selectionRectangle) {
+  } else if (selectionDetails) {
     El = <>
       <canvas
         ref={modifiedCanvasRef}
         width={image.width}
         height={image.height}/>
       <MovableSelection
-        {...selectionRectangle}
+        {...selectionDetails.rectangle}
         onResizeEnd={handleResizeOrMoveEnd}
         onMoving={handleMoving}
         onMoveEnd={handleResizeOrMoveEnd}
