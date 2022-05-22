@@ -366,6 +366,47 @@ export const App = () => {
     }
   }, [pasteFromCtrlV])
 
+  const invertSelectedZone = useCallback(() => {
+    if (!selectionDetails) {
+      return
+    }
+    const backgroundCanvas = document.createElement('canvas')
+    backgroundCanvas.width = mainCanvas.width
+    backgroundCanvas.height = mainCanvas.height
+    const backgroundCtx = backgroundCanvas.getContext('2d')
+    if (!backgroundCtx) throw new Error()
+    backgroundCtx.fillStyle = `rgb(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b})`
+    backgroundCtx.fillRect(0, 0, mainCanvas.width, mainCanvas.height)
+    backgroundCtx.drawImage(selectionDetails.image, selectionDetails.rectangle.left, selectionDetails.rectangle.top)
+
+    const selectionCanvas = document.createElement('canvas')
+    selectionCanvas.width = mainCanvas.width
+    selectionCanvas.height = mainCanvas.height
+    const selectionCtx = selectionCanvas.getContext('2d')
+    if (!selectionCtx) throw new Error()
+    selectionCtx.drawImage(selectionDetails.background, 0, 0)
+    if (isSelectionTransparent) {
+      const imageData = selectionCtx.getImageData(0, 0, selectionCanvas.width, selectionCanvas.height)
+      for (let i = 0; i < imageData.data.length; i += 4) {
+        if (secondaryColor.r === imageData.data[i] &&
+            secondaryColor.g === imageData.data[i + 1] &&
+            secondaryColor.b === imageData.data[i + 2]) {
+          imageData.data[i + 3] = 0
+        }
+      }
+      selectionCtx.putImageData(imageData, 0, 0)
+    }
+    selectionCtx.globalCompositeOperation = 'destination-out'
+    selectionCtx.drawImage(selectionDetails.image, selectionDetails.rectangle.left, selectionDetails.rectangle.top)
+    selectionCtx.globalCompositeOperation = 'source-over'
+
+    setSelectionDetails({
+      background: backgroundCanvas,
+      image: selectionCanvas,
+      rectangle: { top: 0, left: 0, width: mainCanvas.width, height: mainCanvas.height }
+    })
+  }, [isSelectionTransparent, mainCanvas, secondaryColor, selectionDetails])
+
   const copy = useCallback(async () => {
     if (!selectionDetails) return
     const copiedCanvas = document.createElement('canvas')
@@ -534,6 +575,7 @@ export const App = () => {
           onDeleteSelected={deleteSelected}
           isSelectionTransparent={isSelectionTransparent}
           setIsSelectionTransparent={setIsSelectionTransparent}
+          onInvertSelectedZone={invertSelectedZone}
         />
       </NavBarItem>
       <NavBarItem footer="Instruments">

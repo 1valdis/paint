@@ -18,6 +18,7 @@ interface ImageProps {
   onDeleteSelected: () => void
   isSelectionTransparent: boolean
   setIsSelectionTransparent: (value: boolean) => void
+  onInvertSelectedZone: () => void
 }
 
 export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
@@ -71,7 +72,7 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
               onClick={() => props.selectZoneType('freeform')}>Free-form zone</button>
             <span>Options</span>
             <button onClick={props.onSelectAll}>Select all</button>
-            <button disabled={!props.canModifySelection}>Invert zone</button>
+            <button onClick={props.onInvertSelectedZone} disabled={!props.canModifySelection}>Invert zone</button>
             <button onClick={props.onDeleteSelected} disabled={!props.canModifySelection}>Delete selected</button>
             <button
               className={classNames({ active: props.isSelectionTransparent })}
