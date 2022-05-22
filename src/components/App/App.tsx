@@ -171,7 +171,6 @@ export const App = () => {
     context.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
     context.fillRect(0, 0, canvas.width, canvas.height)
     context.drawImage(mainCanvas, 0, 0)
-    updateCanvas(canvas)
     const pastedCanvas = document.createElement('canvas')
     pastedCanvas.width = pastedImage.width
     pastedCanvas.height = pastedImage.height
@@ -189,6 +188,14 @@ export const App = () => {
       }
       pastedContext.putImageData(imageData, 0, 0)
     }
+    const newMainCanvas = document.createElement('canvas')
+    newMainCanvas.width = canvas.width
+    newMainCanvas.height = canvas.height
+    const newMainCanvasContext = newMainCanvas.getContext('2d')
+    if (!newMainCanvasContext) throw new Error()
+    newMainCanvasContext.drawImage(canvas, 0, 0)
+    newMainCanvasContext.drawImage(pastedCanvas, 0, 0)
+    updateCanvas(newMainCanvas)
     setSelectionDetails({
       background: canvas,
       image: pastedCanvas,
