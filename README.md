@@ -31,7 +31,7 @@ Live demo: https://1valdis.github.io/paint/
     - [x] Paste + Ctrl-V
     - [x] Cut + Ctrl-X
     - [x] Keyboard combinations
-  - [ ] Selection
+  - [x] Selection
     - [x] Paste
       - [x] From clipboard
       - [x] From file
@@ -40,8 +40,10 @@ Live demo: https://1valdis.github.io/paint/
     - [x] Select all + Ctrl-A
     - [x] Delete selected
     - [x] Free-form selection
-    - [ ] Invert selection
+    - [x] Invert selection
     - [x] Transparent selection
+  - [ ] Change size by percent or pixels
+  - [ ] Rotate, mirror
 
 Screenshot:
 ![Screenshot](screenshot.png)
