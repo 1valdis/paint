@@ -508,6 +508,90 @@ export const App = () => {
     return () => document.removeEventListener('keydown', listener)
   }, [selectAll])
 
+  // #region canvas or selection rotations and reflections
+  const rotateCanvasClockwise = useCallback((canvas: HTMLCanvasElement) => {
+    const rotated = document.createElement('canvas')
+    rotated.width = canvas.height
+    rotated.height = canvas.width
+    const rotatedContext = rotated.getContext('2d')
+    if (!rotatedContext) throw new Error()
+    rotatedContext.translate(rotated.width, 0)
+    rotatedContext.rotate((Math.PI / 180) * 90)
+    rotatedContext.drawImage(canvas, 0, 0)
+    return rotated
+  }, [])
+
+  const rotateCanvasCounterClockwise = useCallback((canvas: HTMLCanvasElement) => {
+    const rotated = document.createElement('canvas')
+    rotated.width = canvas.height
+    rotated.height = canvas.width
+    const rotatedContext = rotated.getContext('2d')
+    if (!rotatedContext) throw new Error()
+    rotatedContext.translate(0, rotated.height)
+    rotatedContext.rotate((Math.PI / 180) * -90)
+    rotatedContext.drawImage(canvas, 0, 0)
+    return rotated
+  }, [])
+
+  const rotateCanvasUpsideDown = useCallback((canvas: HTMLCanvasElement) => {
+    const rotated = document.createElement('canvas')
+    rotated.width = canvas.width
+    rotated.height = canvas.height
+    const rotatedContext = rotated.getContext('2d')
+    if (!rotatedContext) throw new Error()
+    rotatedContext.translate(rotated.width, rotated.height)
+    rotatedContext.rotate(Math.PI)
+    rotatedContext.drawImage(canvas, 0, 0)
+    return rotated
+  }, [])
+
+  const reflectCanvasHorizontally = useCallback((canvas: HTMLCanvasElement) => {
+    const reflected = document.createElement('canvas')
+    reflected.width = canvas.width
+    reflected.height = canvas.height
+    const reflectedContext = reflected.getContext('2d')
+    if (!reflectedContext) throw new Error()
+    reflectedContext.translate(reflected.width, 0)
+    reflectedContext.scale(-1, 1)
+    reflectedContext.drawImage(canvas, 0, 0)
+    return reflected
+  }, [])
+
+  const reflectCanvasVertically = useCallback((canvas: HTMLCanvasElement) => {
+    const reflected = document.createElement('canvas')
+    reflected.width = canvas.width
+    reflected.height = canvas.height
+    const reflectedContext = reflected.getContext('2d')
+    if (!reflectedContext) throw new Error()
+    reflectedContext.translate(0, reflected.height)
+    reflectedContext.scale(1, -1)
+    reflectedContext.drawImage(canvas, 0, 0)
+    return reflected
+  }, [])
+
+  const applyTransform = useCallback((transform: (canvas: HTMLCanvasElement) => HTMLCanvasElement) => {
+    if (!selectionDetails) {
+      return updateCanvas(transform(mainCanvas))
+    } else {
+      // if (transform === rotateCanvasClockwise || transform === rotateCanvasCounterClockwise) {
+      // centralize selection
+      // }
+      const transformedSelection = transform(selectionDetails.image)
+      setSelectionDetails({
+        background: selectionDetails.background,
+        image: transformedSelection,
+        rectangle: {
+          top: selectionDetails.rectangle.top,
+          left: selectionDetails.rectangle.left,
+          width: transformedSelection.width,
+          height: transformedSelection.height
+        }
+      })
+    }
+  }, [mainCanvas, selectionDetails])
+
+  // #endregion
+
   let instrumentComponent = <></>
   switch (instrument) {
     case 'pen':
@@ -583,6 +667,11 @@ export const App = () => {
           isSelectionTransparent={isSelectionTransparent}
           setIsSelectionTransparent={setIsSelectionTransparent}
           onInvertSelectedZone={invertSelectedZone}
+          onRotateClockwise={() => applyTransform(rotateCanvasClockwise)}
+          onRotateCounterClockwise={() => applyTransform(rotateCanvasCounterClockwise)}
+          onRotateUpsideDown={() => applyTransform(rotateCanvasUpsideDown)}
+          onReflectHorizontally={() => applyTransform(reflectCanvasHorizontally)}
+          onReflectVertically={() => applyTransform(reflectCanvasVertically)}
         />
       </NavBarItem>
       <NavBarItem footer="Instruments">

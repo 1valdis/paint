@@ -43,7 +43,7 @@ Live demo: https://1valdis.github.io/paint/
     - [x] Invert selection
     - [x] Transparent selection
   - [ ] Change size by percent or pixels
-  - [ ] Rotate, mirror
+  - [x] Rotate, reflect
 
 Screenshot:
 ![Screenshot](screenshot.png)

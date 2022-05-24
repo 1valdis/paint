@@ -23,6 +23,7 @@
   box-shadow: 3px 3px 6px darkgrey;
   background: rgb(245,245,245);
   z-index: 10;
+  width: max-content;
 }
 .select-options.select-options_active {
   display: flex;
@@ -38,6 +39,11 @@
   font-weight: bold;
   padding: .25em .5em;
   color: #222222;
+}
+
+.side-buttons {
+  align-self: start;
+  position: relative;
 }
 
 .image button {

@@ -19,18 +19,33 @@ interface ImageProps {
   isSelectionTransparent: boolean
   setIsSelectionTransparent: (value: boolean) => void
   onInvertSelectedZone: () => void
+  onRotateClockwise: () => void
+  onRotateCounterClockwise: () => void
+  onRotateUpsideDown: () => void
+  onReflectHorizontally: () => void
+  onReflectVertically: () => void
 }
 
 export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
   const [isMenuShown, setIsMenuShown] = useState(false)
+  const [isRotateMenuShown, setIsRotateMenuShown] = useState(false)
 
   const menuRef = useRef<HTMLDivElement>(null)
+  const rotateMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!menuRef.current) throw new Error('No menu in ref')
     return addClickOutsideListener(
       menuRef.current,
       () => setIsMenuShown(false)
+    )
+  })
+
+  useEffect(() => {
+    if (!rotateMenuRef.current) throw new Error('No menu in ref')
+    return addClickOutsideListener(
+      rotateMenuRef.current,
+      () => setIsRotateMenuShown(false)
     )
   })
 
@@ -79,14 +94,23 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
               onClick={() => props.setIsSelectionTransparent(!props.isSelectionTransparent)}>Transparency</button>
         </nav>
       </section>
-      <section className="side-buttons">
+      <section className="side-buttons" ref={rotateMenuRef}>
         <button
           onClick={props.handleClipClick}
           disabled={!props.canModifySelection}>
           Clip
         </button>
         <button>Change size</button>
-        <button>Rotate</button>
+        <button onClick={() => setIsRotateMenuShown((value) => !value)}>Rotate ▾</button>
+        <nav
+          className={classNames('select-options', { 'select-options_active': isRotateMenuShown }) }
+          onClick={() => setIsRotateMenuShown(false)}>
+            <button onClick={props.onRotateClockwise}>Rotate 90° right</button>
+            <button onClick={props.onRotateCounterClockwise}>Rotate 90° left</button>
+            <button onClick={props.onRotateUpsideDown}>Rotate 180°</button>
+            <button onClick={props.onReflectHorizontally}>Reflect horizontally</button>
+            <button onClick={props.onReflectVertically}>Reflect vertically</button>
+        </nav>
       </section>
     </nav>
   )
