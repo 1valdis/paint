@@ -63,8 +63,8 @@ export const FileMenu: FunctionComponent<FileMenuProps> = (props) => {
         </button>
       </nav>
       {aboutOpen && (
-        <Modal>
-          <About onClose={() => setAboutOpen(false)} />
+        <Modal onClose={() => setAboutOpen(false)}>
+          <About />
         </Modal>
       )}
     </div>

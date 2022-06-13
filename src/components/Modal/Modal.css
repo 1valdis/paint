@@ -7,3 +7,44 @@
   overflow: auto;
   z-index: 200;
 }
+
+.modal-contents {
+  width: 30em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 0.4em solid rgb(200, 210, 230);
+  border-top: 2em solid rgb(200, 210, 230);
+  padding: 1em;
+  outline: 1px solid gray;
+  background: rgb(245, 245, 245)
+}
+
+.modal-title {
+  position: absolute;
+  top: -2em;
+  left: 0em;
+  line-height: 2em;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: -2em;
+  right: -0.4em;
+  background: rgb(200, 80, 80);
+  color: white;
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
+  border: none;
+}
+
+.modal-close-button:hover {
+  background: rgb(255, 70, 70)
+}
+
+.modal-close-button::after {
+  font-size: 150%;
+  content: '×';
+}
