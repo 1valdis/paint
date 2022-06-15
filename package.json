@@ -41,7 +41,7 @@
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-sonarjs": "^0.13.0",
-    "gh-pages": "^3.2.3",
+    "gh-pages": "^4.0.0",
     "typescript": "^4.6.3"
   }
 }
