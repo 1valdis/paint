@@ -432,6 +432,11 @@ export const App = () => {
       copiedCanvas.width,
       copiedCanvas.height
     )
+    copiedCtx.drawImage(
+      selectionDetails.image,
+      0,
+      0
+    )
     const blob = await new Promise<Blob | null>(resolve =>
       copiedCanvas.toBlob(resolve, 'image/png', 1)
     )
