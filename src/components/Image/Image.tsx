@@ -6,6 +6,8 @@ import { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { Instrument } from '../../common/Instrument'
 import { SelectionZoneType } from '../../common/SelectionZoneType'
 import { addClickOutsideListener } from '../../common/helpers'
+import { Modal } from '../Modal/Modal'
+import { ResizeSkew, ResizeSkewResult } from './ResizeSkew'
 
 interface ImageProps {
   instrument: Instrument
@@ -24,11 +26,15 @@ interface ImageProps {
   onRotateUpsideDown: () => void
   onReflectHorizontally: () => void
   onReflectVertically: () => void
+  selectionOrImageWidth: number
+  selectionOrImageHeight: number
+  handleResizeSkew: (settings: ResizeSkewResult) => void
 }
 
 export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
   const [isMenuShown, setIsMenuShown] = useState(false)
   const [isRotateMenuShown, setIsRotateMenuShown] = useState(false)
+  const [isModalShown, setIsModalShown] = useState(false)
 
   const menuRef = useRef<HTMLDivElement>(null)
   const rotateMenuRef = useRef<HTMLDivElement>(null)
@@ -50,6 +56,7 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
   })
 
   return (
+    <>
     <nav className="image">
       <section className="main-buttons" ref={menuRef}>
         <button
@@ -100,7 +107,7 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
           disabled={!props.canModifySelection}>
           Clip
         </button>
-        <button>Change size</button>
+        <button onClick={() => setIsModalShown(true)}>Change size</button>
         <button onClick={() => setIsRotateMenuShown((value) => !value)}>Rotate ▾</button>
         <nav
           className={classNames('select-options', { 'select-options_active': isRotateMenuShown }) }
@@ -113,5 +120,16 @@ export const ImagePanel: FunctionComponent<ImageProps> = (props) => {
         </nav>
       </section>
     </nav>
+    {isModalShown
+      ? <Modal title="Change size and skew" onClose={() => setIsModalShown(false)}>
+          <ResizeSkew
+            startingWidth={props.selectionOrImageWidth}
+            startingHeight={props.selectionOrImageHeight}
+            handleResizeSkew={(options) => { props.handleResizeSkew(options); setIsModalShown(false) }}
+            handleCancel={() => setIsModalShown(false)}
+          />
+        </Modal>
+      : null}
+    </>
   )
 }

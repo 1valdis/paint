@@ -25,7 +25,7 @@ Live demo: https://1valdis.github.io/paint/
   - [ ] Thickness
   - [ ] Text
   - [ ] Zoom
-- [ ] Image
+- [x] Image
   - [x] Clipboard
     - [x] Copy + Ctrl-C
     - [x] Paste + Ctrl-V
@@ -42,7 +42,7 @@ Live demo: https://1valdis.github.io/paint/
     - [x] Free-form selection
     - [x] Invert selection
     - [x] Transparent selection
-  - [ ] Change size by percent or pixels
+  - [x] Skew, resize by percent or pixels
   - [x] Rotate, reflect
 
 Screenshot:

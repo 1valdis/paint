@@ -23,6 +23,7 @@ import { Rectangle } from '../../common/Rectangle'
 import { Instrument } from '../../common/Instrument'
 import { SelectionZoneType } from '../../common/SelectionZoneType'
 import { Point } from '../../common/Point'
+import { ResizeSkewResult } from '../Image/ResizeSkew'
 
 export const App = () => {
   const create = useCallback(() => {
@@ -597,6 +598,61 @@ export const App = () => {
 
   // #endregion
 
+  const handleResizeSkew = useCallback((resizeSkewSettings: ResizeSkewResult) => {
+    const canvasToModify = selectionDetails?.image ?? mainCanvas
+    const transformedCanvas = document.createElement('canvas')
+    console.log(resizeSkewSettings)
+    transformedCanvas.width = Math.floor(
+      Math.tan(resizeSkewSettings.skewRadiansHorizontally) * resizeSkewSettings.resizeToHeight + resizeSkewSettings.resizeToWidth
+    )
+    transformedCanvas.height = Math.floor(
+      Math.tan(resizeSkewSettings.skewRadiansVertically) * resizeSkewSettings.resizeToWidth + resizeSkewSettings.resizeToHeight
+    )
+    const context = transformedCanvas.getContext('2d')
+    if (!context) throw new Error()
+    context.save()
+    context.imageSmoothingEnabled = false
+    context.setTransform(
+      1,
+      -Math.tan(resizeSkewSettings.skewRadiansVertically),
+      -Math.tan(resizeSkewSettings.skewRadiansHorizontally),
+      1,
+      0,
+      0
+    )
+    context.drawImage(
+      canvasToModify,
+      0,
+      0,
+      canvasToModify.width,
+      canvasToModify.height,
+      Math.floor(Math.tan(resizeSkewSettings.skewRadiansHorizontally) * resizeSkewSettings.resizeToHeight),
+      Math.floor(Math.tan(resizeSkewSettings.skewRadiansVertically) * resizeSkewSettings.resizeToWidth),
+      resizeSkewSettings.resizeToWidth,
+      resizeSkewSettings.resizeToHeight
+    )
+    context.restore()
+    if (!selectionDetails) {
+      context.globalCompositeOperation = 'destination-over'
+      context.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
+      context.fillRect(0, 0, transformedCanvas.width, transformedCanvas.height)
+    }
+    if (selectionDetails) {
+      setSelectionDetails({
+        background: selectionDetails.background,
+        image: transformedCanvas,
+        rectangle: {
+          top: selectionDetails.rectangle.top,
+          left: selectionDetails.rectangle.left,
+          width: transformedCanvas.width,
+          height: transformedCanvas.height
+        }
+      })
+    } else {
+      updateCanvas(transformedCanvas)
+    }
+  }, [mainCanvas, selectionDetails, secondaryColor])
+
   let instrumentComponent = <></>
   switch (instrument) {
     case 'pen':
@@ -677,6 +733,9 @@ export const App = () => {
           onRotateUpsideDown={() => applyTransform(rotateCanvasUpsideDown)}
           onReflectHorizontally={() => applyTransform(reflectCanvasHorizontally)}
           onReflectVertically={() => applyTransform(reflectCanvasVertically)}
+          selectionOrImageWidth={selectionDetails?.rectangle.width ?? mainCanvas.width}
+          selectionOrImageHeight={selectionDetails?.rectangle.height ?? mainCanvas.height}
+          handleResizeSkew={handleResizeSkew}
         />
       </NavBarItem>
       <NavBarItem footer="Instruments">

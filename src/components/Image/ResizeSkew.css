@@ -1,0 +1,28 @@
+.resize-skew > * {
+  margin: .5em;
+}
+
+fieldset {
+  display: grid;
+  gap: .5em;
+}
+
+.resize {
+  grid-template-areas: "label percents pixels"
+                       "empty inputs inputs"
+                       "aspect-ratio aspect-ratio aspect-ratio";
+}
+
+.align-inputs {
+  display: grid;
+  grid-area: inputs;
+  gap: .5em;
+  grid-template-rows: auto auto;
+  grid-template-columns: 1fr 1fr;
+}
+
+.align-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5em;
+}
