@@ -632,11 +632,6 @@ export const App = () => {
       resizeSkewSettings.resizeToHeight
     )
     context.restore()
-    if (!selectionDetails) {
-      context.globalCompositeOperation = 'destination-over'
-      context.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
-      context.fillRect(0, 0, transformedCanvas.width, transformedCanvas.height)
-    }
     if (selectionDetails) {
       setSelectionDetails({
         background: selectionDetails.background,
@@ -649,6 +644,9 @@ export const App = () => {
         }
       })
     } else {
+      context.globalCompositeOperation = 'destination-over'
+      context.fillStyle = `rgb(${secondaryColor.r},${secondaryColor.g},${secondaryColor.b})`
+      context.fillRect(0, 0, transformedCanvas.width, transformedCanvas.height)
       updateCanvas(transformedCanvas)
     }
   }, [mainCanvas, selectionDetails, secondaryColor])
