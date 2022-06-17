@@ -19,6 +19,7 @@ import { Dropper } from '../instruments/Dropper/Dropper'
 import { Fill } from '../instruments/Fill/Fill'
 import { Eraser } from '../instruments/Eraser/Eraser'
 import { Selection, SelectionDetails } from '../instruments/Selection/Selection'
+import { Zoom } from '../instruments/Zoom/Zoom'
 import { Rectangle } from '../../common/Rectangle'
 import { Instrument } from '../../common/Instrument'
 import { SelectionZoneType } from '../../common/SelectionZoneType'
@@ -71,6 +72,7 @@ export const App = () => {
   const [selectionDetails, setSelectionDetails] = useState<SelectionDetails | null>(null)
   const [selectionZoneType, setSelectionZoneType] = useState<SelectionZoneType>('rectangle')
   const [isSelectionTransparent, setIsSelectionTransparent] = useState(false)
+  const [zoom, setZoom] = useState(1)
 
   useLayoutEffect(() => {
     const canvasOnDiplay = canvasOnDisplayRef.current
@@ -682,6 +684,9 @@ export const App = () => {
         onImageChange={updateCanvas}
         thickness={8}
       />
+      break
+    case 'zoom':
+      instrumentComponent = <Zoom level={1} onLevelChange={() => {}}/>
       break
     case 'selection':
       instrumentComponent = <Selection
