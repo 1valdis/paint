@@ -13,11 +13,12 @@ export interface ZoomProps {
 
 export const Zoom: FC<ZoomProps> = (props) => {
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.button === 0) {
-      console.log('zoom in')
+    const currentIndex = ZoomLevels.indexOf(props.level)
+    if (event.button === 0 && currentIndex < ZoomLevels.length - 1) {
+      props.onLevelChange(ZoomLevels[currentIndex + 1]!)
     }
-    if (event.button === 2) {
-      console.log('zoom out')
+    if (event.button === 2 && currentIndex > 0) {
+      props.onLevelChange(ZoomLevels[currentIndex - 1]!)
     }
     event.preventDefault()
   }
