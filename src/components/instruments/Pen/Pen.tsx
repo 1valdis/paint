@@ -15,12 +15,14 @@ import { flushSync } from 'react-dom'
 
 export interface PenProps {
   color: Color
+  thickness: number
   image: HTMLCanvasElement
   onImageChange: (canvas: HTMLCanvasElement) => void
 }
 
 export const Pen: FunctionComponent<PenProps> = ({
   color,
+  thickness,
   image,
   onImageChange
 }) => {
@@ -42,10 +44,10 @@ export const Pen: FunctionComponent<PenProps> = ({
     const context = canvasRef.current!.getContext('2d')
     const { r, g, b } = color
     context!.fillStyle = `rgb(${r},${g},${b})`
-    context!.fillRect(x, y, 1, 1)
+    context!.fillRect(x, y, thickness, thickness)
     setMousePosition({ x, y })
     setIsDrawing(true)
-  }, [color])
+  }, [color, thickness])
   useLayoutEffect(() => {
     const currentRef = canvasRef.current
     if (!currentRef) return
@@ -61,7 +63,7 @@ export const Pen: FunctionComponent<PenProps> = ({
         const context = canvasRef.current!.getContext('2d')!
         if (event.buttons === 1) {
           const [x, y] = getCanvasCoordsFromEvent(canvasRef.current!, event)
-          bresenhamLine(mousePosition.x, mousePosition.y, x, y, (fillX, fillY) => context.fillRect(fillX, fillY, 1, 1))
+          bresenhamLine(mousePosition.x, mousePosition.y, x, y, (fillX, fillY) => context.fillRect(fillX, fillY, thickness, thickness))
           flushSync(() => setMousePosition({ x, y }))
         } else if (event.button === 2) {
           context.drawImage(image, 0, 0)
@@ -70,7 +72,7 @@ export const Pen: FunctionComponent<PenProps> = ({
         }
       }
     },
-    [isDrawing, mousePosition, image]
+    [isDrawing, mousePosition, thickness, image]
   )
   useLayoutEffect(() => {
     document.addEventListener('pointermove', draw)

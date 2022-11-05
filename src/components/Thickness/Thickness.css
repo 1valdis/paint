@@ -1,0 +1,14 @@
+.thickness-item {
+  background: rgb(30,57,91);
+  margin: 4px 0px
+}
+
+.thickness-active {
+  background: var(--active-background-color);
+  border: 1px solid var(--active-border-color);
+}
+
+.thicknessess-example {
+  max-width: 3em;
+  margin: 0 auto 1em;
+}

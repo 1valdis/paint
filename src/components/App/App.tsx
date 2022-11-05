@@ -22,6 +22,7 @@ import { Selection, SelectionDetails } from '../instruments/Selection/Selection'
 import { Zoom, ZoomLevel } from '../instruments/Zoom/Zoom'
 import { Rectangle } from '../../common/Rectangle'
 import { Instrument } from '../../common/Instrument'
+import { InstrumentToThicknessMap, Thickness, TunableInstrumentToThicknessMap } from '../Thickness/Thickness'
 import { SelectionZoneType } from '../../common/SelectionZoneType'
 import { Point } from '../../common/Point'
 import { ResizeSkewResult } from '../Image/ResizeSkew'
@@ -67,6 +68,17 @@ export const App = () => {
   const [secondaryColor, setSecondaryColor] = useState<Color>(colors[10]!)
   const [activeColor, setActiveColor] = useState<'primary' | 'secondary'>('primary')
   const [instrument, setInstrument] = useState<Instrument>('pen')
+  const [selectedThicknessForInstruments, setSelectedThicknessForInstruments] = useState<TunableInstrumentToThicknessMap>({
+    pen: 1,
+    eraser: 4,
+    shapes: 5,
+    brushes: false,
+    dropper: false,
+    fill: false,
+    selection: false,
+    text: false,
+    zoom: false
+  })
 
   const [isSelectionActive, setIsSelectionActive] = useState(false)
   const [selectionDetails, setSelectionDetails] = useState<SelectionDetails | null>(null)
@@ -92,7 +104,6 @@ export const App = () => {
     setMainCanvas(canvas)
   }
 
-  // #region functions
   const addNewColor = (newColor: Color) => {
     if (colors.find(
       color =>
@@ -119,7 +130,6 @@ export const App = () => {
       }
     }
   }
-  // #endregion
 
   const selectInstrument = (instrument: Instrument) => {
     setInstrument(instrument)
@@ -598,8 +608,6 @@ export const App = () => {
     }
   }, [mainCanvas, selectionDetails])
 
-  // #endregion
-
   const handleResizeSkew = useCallback((resizeSkewSettings: ResizeSkewResult) => {
     const canvasToModify = selectionDetails?.image ?? mainCanvas
     const transformedCanvas = document.createElement('canvas')
@@ -652,12 +660,14 @@ export const App = () => {
       updateCanvas(transformedCanvas)
     }
   }, [mainCanvas, selectionDetails, secondaryColor])
+  // #endregion
 
   let instrumentComponent = <></>
   switch (instrument) {
     case 'pen':
       instrumentComponent = <Pen
         color={primaryColor}
+        thickness={selectedThicknessForInstruments.pen}
         image={mainCanvas}
         onImageChange={updateCanvas} />
       break
@@ -682,7 +692,7 @@ export const App = () => {
         color={secondaryColor}
         image={mainCanvas}
         onImageChange={updateCanvas}
-        thickness={8}
+        thickness={selectedThicknessForInstruments.eraser}
       />
       break
     case 'zoom':
@@ -745,6 +755,15 @@ export const App = () => {
         <Instruments
           instrument={instrument}
           onInstrumentSelect={selectInstrument}/>
+      </NavBarItem>
+      <NavBarItem>
+        <Thickness
+          available={InstrumentToThicknessMap[instrument] || []}
+          current={selectedThicknessForInstruments[instrument] || null}
+          setThickness={((thickness: number) => setSelectedThicknessForInstruments({
+            ...selectedThicknessForInstruments,
+            [instrument]: thickness
+          }))}/>
       </NavBarItem>
       <NavBarItem footer="Colors">
         <Colors
