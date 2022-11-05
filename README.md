@@ -22,7 +22,7 @@ Live demo: https://1valdis.github.io/paint/
   - [x] Eraser
   - [x] Fill
   - [ ] Shapes
-  - [ ] Thickness
+  - [x] Thickness
   - [ ] Text
   - [ ] Zoom
 - [x] Image
