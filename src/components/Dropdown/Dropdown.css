@@ -61,3 +61,7 @@
   background: none;
   border: 1px solid transparent;
 }
+
+.dropdown-menu_disabled {
+  background: none;
+}

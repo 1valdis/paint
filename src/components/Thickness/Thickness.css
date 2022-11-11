@@ -12,3 +12,7 @@
   max-width: 3em;
   margin: 0 auto 1em;
 }
+
+.thickness-example_disabled .thickness-item {
+  background: rgba(30,57,91,0.4);
+}

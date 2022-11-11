@@ -31,10 +31,12 @@ const ThicknessItem: FC<{ thickness: number }> = (props) => <div className="thic
 
 export const Thickness: FC<ThicknessProps> = (props) => {
   return <Dropdown
-    buttonContent={<><div className='thicknessess-example'>{
+    buttonContent={<><div className={classNames('thickness-example', {
+      'thickness-example_disabled': !props.available.length
+    })}>{
       [1, 2, 6, 10].map(i => <ThicknessItem thickness={i} key={i}></ThicknessItem>)
     }</div>Thickness<br/>▾</>}
-    isDisabled={!!props.available.length}
+    isDisabled={!props.available.length}
   >{
     props.available.map(
       (thickness) => <div

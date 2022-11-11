@@ -27,7 +27,7 @@ export const Dropdown: FC<PropsWithChildren<DropdownProps>> = (props) => {
         'dropdown-menu_open': isOpen
       })}
       ref={menuRef}>
-      <button className="dropdown-button" onClick={() => setIsOpen((previous) => !previous)}>
+      <button className="dropdown-button" onClick={() => setIsOpen((previous) => !previous)} disabled={props.isDisabled}>
           {props.buttonContent}
       </button>
       <nav className="dropdown-menu-items" onClick={() => setIsOpen(false)}>
