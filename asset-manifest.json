@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/paint/static/css/main.a7d59f37.css",
-    "main.js": "/paint/static/js/main.8647b87c.js",
+    "main.css": "/paint/static/css/main.284c2887.css",
+    "main.js": "/paint/static/js/main.8c7ab37d.js",
     "static/media/color-input-icon.png": "/paint/static/media/color-input-icon.9832ed4e5e04118f5236.png",
     "static/media/paste.png": "/paint/static/media/paste.b2e3eedad2b999181739.png",
     "static/media/crosshair-monochrome.svg": "/paint/static/media/crosshair-monochrome.c08f75fc8e5834ade755.svg",
@@ -13,11 +13,11 @@
     "static/media/fill_colorful.svg": "/paint/static/media/fill_colorful.252c42823041905f92a2.svg",
     "static/media/eraser_colorful.svg": "/paint/static/media/eraser_colorful.81c6dcb825dbe758a640.svg",
     "index.html": "/paint/index.html",
-    "main.a7d59f37.css.map": "/paint/static/css/main.a7d59f37.css.map",
-    "main.8647b87c.js.map": "/paint/static/js/main.8647b87c.js.map"
+    "main.284c2887.css.map": "/paint/static/css/main.284c2887.css.map",
+    "main.8c7ab37d.js.map": "/paint/static/js/main.8c7ab37d.js.map"
   },
   "entrypoints": [
-    "static/css/main.a7d59f37.css",
-    "static/js/main.8647b87c.js"
+    "static/css/main.284c2887.css",
+    "static/js/main.8c7ab37d.js"
   ]
 }
