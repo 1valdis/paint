@@ -1,7 +1,6 @@
 import './Clipboard.css'
-import { ChangeEventHandler, FunctionComponent, useEffect, useRef, useState } from 'react'
-import { addClickOutsideListener } from '../../common/helpers'
-import classNames from 'classnames'
+import { ChangeEventHandler, FunctionComponent, useEffect, useState } from 'react'
+import { Dropdown } from '../Dropdown/Dropdown'
 
 export interface ClipboardProps {
   onPaste: (blob: Blob) => void
@@ -14,18 +13,6 @@ export interface ClipboardProps {
 export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
   const [clipboardWriteState, setClipboardWriteState] = useState<PermissionState | null>(null)
   const [clipboardReadState, setClipboardReadState] = useState<PermissionState | null>(null)
-
-  const [isMenuShown, setIsMenuShown] = useState(false)
-
-  const menuRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!menuRef.current) throw new Error('No menu in ref')
-    return addClickOutsideListener(
-      menuRef.current,
-      () => setIsMenuShown(false)
-    )
-  })
 
   const paste = async () => {
     const clipboardItems = await navigator.clipboard.read()
@@ -85,21 +72,16 @@ export const Clipboard: FunctionComponent<ClipboardProps> = (props) => {
       }
   return (
     <nav className="clipboard">
-      <section className="main-buttons" ref={menuRef}>
+      <section className="main-buttons">
         <button
           className={'paste-button'}
           onClick={paste}>
         </button>
-        <button
-          className='hoverable options'
-          onClick={() => setIsMenuShown((value) => !value)}>▾</button>
-        <nav
-          className={classNames('paste-options', { 'paste-options_active': isMenuShown }) }
-          onClick={() => setIsMenuShown(false)}>
-            <label>Paste from file
-              <input type='file' accept='image/*' onChange={props.onPasteFromFile}></input>
-            </label>
-        </nav>
+        <Dropdown buttonContent="▾">
+          <label>Paste from file
+            <input type='file' accept='image/*' onChange={props.onPasteFromFile}></input>
+          </label>
+        </Dropdown>
       </section>
       <section className="side-buttons">
         <button

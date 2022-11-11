@@ -15,35 +15,11 @@
   width: 100%;
 }
 
-.select-options {
-  display: none;
-  flex-direction: column;
-  position: absolute;
-  top: 100%;
-  box-shadow: 3px 3px 6px darkgrey;
-  background: rgb(245,245,245);
-  z-index: 10;
-  width: max-content;
-}
-.select-options.select-options_active {
-  display: flex;
-}
-.select-options > * {
-  text-align: start;
-}
-.select-options > button {
-  padding-left: 1em;
-}
-.select-options > span {
-  font-size: 0.8em;
-  font-weight: bold;
-  padding: .25em .5em;
-  color: #222222;
-}
-
-.side-buttons {
+.side-buttons .dropdown-button {
   align-self: start;
   position: relative;
+  text-align: left;
+  min-width: auto;
 }
 
 .image button {

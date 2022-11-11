@@ -16,3 +16,7 @@
 .thickness-example_disabled .thickness-item {
   background: rgba(30,57,91,0.4);
 }
+
+.thickness-menu-item {
+  padding: .5em .5em;
+}

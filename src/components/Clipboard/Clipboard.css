@@ -20,7 +20,7 @@
   display: none;
 }
 
-.clipboard button, .clipboard label {
+.clipboard button {
   display: block;
   background: none;
   border: 1px solid transparent;
@@ -46,23 +46,4 @@
 .clipboard button:disabled {
   background: none;
   border: 1px solid transparent;
-}
-.options {
-  width: 100%
-}
-.paste-options {
-  display: none;
-  flex-direction: column;
-  position: absolute;
-  top: 100%;
-  box-shadow: 3px 3px 6px darkgrey;
-  background: rgb(245,245,245);
-  z-index: 10;
-  width: max-content;
-}
-.paste-options label {
-  padding: .2em 1em;
-}
-.paste-options.paste-options_active {
-  display: flex;
 }

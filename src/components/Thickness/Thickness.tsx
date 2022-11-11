@@ -41,7 +41,7 @@ export const Thickness: FC<ThicknessProps> = (props) => {
     props.available.map(
       (thickness) => <div
         onClick={() => props.setThickness(thickness)}
-        className={classNames({ 'thickness-active': thickness === props.current })}
+        className={classNames('thickness-menu-item', { 'thickness-active': thickness === props.current })}
         key={thickness}
       >
         <ThicknessItem thickness={thickness} />

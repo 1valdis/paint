@@ -3,6 +3,7 @@
   background: none;
   border: 1px solid transparent;
   font-size: 0.8em;
+  min-width: 100%;
 }
 .dropdown-button:hover {
   background: var(--hover-background-color);
@@ -35,29 +36,30 @@
 .dropdown-menu_open .dropdown-menu-items {
   display: flex;
 }
+
 .dropdown-menu-items > * {
   text-align: start;
   font-size: 0.8em;
-  font-weight: bold;
-  padding: .5em .5em;
-  color: #222222;
-  display: block;
-  background: none;
   border: 1px solid transparent;
-  font-size: 0.8em;
+  padding: .2em 1em;
 }
 
-.dropdown-menu-items > *:hover {
+.dropdown-menu-items > span {
+  padding: .2em 0em;
+  font-weight: bold;
+}
+
+.dropdown-menu-items > button:hover {
   background: var(--hover-background-color);
   border: 1px solid var(--hover-border-color);
 }
 
-.dropdown-menu-items > *:active {
+.dropdown-menu-items > button:active {
   background: var(--active-background-color);
   border: 1px solid var(--active-border-color);
 }
 
-.dropdown-menu-items > *:disabled {
+.dropdown-menu-items > button:disabled {
   background: none;
   border: 1px solid transparent;
 }

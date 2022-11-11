@@ -5,7 +5,7 @@ import './Dropdown.css'
 
 export interface DropdownProps {
   buttonContent: ReactNode
-  isDisabled: boolean
+  isDisabled?: boolean
 }
 
 export const Dropdown: FC<PropsWithChildren<DropdownProps>> = (props) => {
@@ -27,7 +27,7 @@ export const Dropdown: FC<PropsWithChildren<DropdownProps>> = (props) => {
         'dropdown-menu_open': isOpen
       })}
       ref={menuRef}>
-      <button className="dropdown-button" onClick={() => setIsOpen((previous) => !previous)} disabled={props.isDisabled}>
+      <button className="dropdown-button" onClick={() => setIsOpen((previous) => !previous)} disabled={props.isDisabled ?? false}>
           {props.buttonContent}
       </button>
       <nav className="dropdown-menu-items" onClick={() => setIsOpen(false)}>
