@@ -26,6 +26,7 @@ import { InstrumentToThicknessMap, Thickness, TunableInstrumentToThicknessMap } 
 import { SelectionZoneType } from '../../common/SelectionZoneType'
 import { Point } from '../../common/Point'
 import { ResizeSkewResult } from '../Image/ResizeSkew'
+import { Shape, Shapes, ShapeSettingValue } from '../Shapes/Shapes'
 
 export const App = () => {
   const create = useCallback(() => {
@@ -85,6 +86,9 @@ export const App = () => {
   const [selectionZoneType, setSelectionZoneType] = useState<SelectionZoneType>('rectangle')
   const [isSelectionTransparent, setIsSelectionTransparent] = useState(false)
   const [zoom, setZoom] = useState<ZoomLevel>(1)
+  const [shape, setShape] = useState<Shape>('straight-line')
+  const [shapeContour, setShapeContour] = useState<ShapeSettingValue>('solid')
+  const [shapeFilling, setShapeFilling] = useState<ShapeSettingValue>('none')
 
   useLayoutEffect(() => {
     const canvasOnDiplay = canvasOnDisplayRef.current
@@ -755,6 +759,16 @@ export const App = () => {
         <Instruments
           instrument={instrument}
           onInstrumentSelect={selectInstrument}/>
+      </NavBarItem>
+      <NavBarItem footer="Shapes">
+        <Shapes
+          contour={shapeContour}
+          setContour={setShapeContour}
+          filling={shapeFilling}
+          setFilling={setShapeFilling}
+          shape={instrument === 'shapes' ? shape : null}
+          setShape={(shape) => { selectInstrument('shapes'); setShape(shape) }}
+          />
       </NavBarItem>
       <NavBarItem>
         <Thickness
