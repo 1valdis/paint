@@ -10,7 +10,7 @@
   border: 1px solid var(--hover-border-color);
 }
 
-.dropdown-button:active {
+.dropdown-button:active, .dropdown-menu-items .dropdown-button-active {
   background: var(--active-background-color);
   border: 1px solid var(--active-border-color);
 }
