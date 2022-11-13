@@ -1,0 +1,99 @@
+.shapes {
+  display: flex;
+}
+.shapes-grid {
+  display: grid;
+  background: white;
+  grid-template-columns: repeat(7, 19px);
+  grid-template-rows: repeat(4, 19px);
+}
+.shapes .dropdown-button {
+  text-align: left;
+}
+.shapes-grid button {
+  display: block;
+  border: 1px solid transparent;
+  font-size: 0.8em;
+  background-image: url('./shapes.png');
+  background-clip: padding-box;
+}
+.shapes button:hover {
+  border: 1px solid var(--hover-border-color);
+}
+
+.shapes button:active, .shapes .active {
+  border: 1px solid var(--active-border-color);
+}
+.shapes-grid .shape_active {
+  border: 1px solid var(--active-border-color);
+}
+
+.straight-line {
+  background-position: -2px -1px;
+}
+.curved-line {
+  background-position: -22px -1px;
+}
+.ellipse {
+  background-position: -42px -1px;
+}
+.rectangle {
+  background-position: -62px -1px;
+}
+.rounded-rectangle {
+  background-position: -82px -1px;
+}
+.polygon {
+  background-position: -102px -1px;
+}
+.triangle {
+  background-position: -122px -2px;
+}
+.right-triangle {
+  background-position: -2px -22px;
+}
+.rhombus {
+  background-position: -22px -21px;
+}
+.pentagon {
+  background-position: -43px -22px;
+}
+.hexagon {
+  background-position: -63px -21px;
+}
+.right-arrow {
+  background-position: -82px -22px;
+}
+.left-arrow {
+  background-position: -103px -22px;
+}
+.top-arrow {
+  background-position: -122px -22px;
+}
+.down-arrow {
+  background-position: -2px -41px;
+}
+.four-pointed-star {
+  background-position: -22px -41px;
+}
+.five-pointed-star {
+  background-position: -42px -41px;
+}
+.six-pointed-star {
+  background-position: -62px -41px;
+}
+.rounded-rectangle-bubble {
+  background-position: -82px -41px;
+}
+.elliptical-bubble {
+  background-position: -102px -41px;
+}
+.cloud-bubble {
+  background-position: -122px -41px;
+}
+.heart {
+  background-position: -2px -61px;
+}
+.lightning {
+  background-position: -22px -61px;
+}
