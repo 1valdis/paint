@@ -39,13 +39,13 @@ export const Thickness: FC<ThicknessProps> = (props) => {
     isDisabled={!props.available.length}
   >{
     props.available.map(
-      (thickness) => <div
+      (thickness) => <button
         onClick={() => props.setThickness(thickness)}
         className={classNames('thickness-menu-item', { 'thickness-active': thickness === props.current })}
         key={thickness}
       >
         <ThicknessItem thickness={thickness} />
-      </div>
+      </button>
     )
   }</Dropdown>
 }
