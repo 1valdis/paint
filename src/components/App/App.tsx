@@ -27,6 +27,7 @@ import { SelectionZoneType } from '../../common/SelectionZoneType'
 import { Point } from '../../common/Point'
 import { ResizeSkewResult } from '../Image/ResizeSkew'
 import { Shape, Shapes, ShapeSettingValue } from '../Shapes/Shapes'
+import { ShapesInstrument } from '../instruments/Shapes/ShapesInstrument'
 
 export const App = () => {
   const create = useCallback(() => {
@@ -712,6 +713,17 @@ export const App = () => {
         createSelectionDetailsFromRectangle={createSelectionDetailsFromRectangle}
         createSelectionDetailsFromPointSequence={createSelectionDetailsFromPointSequence}
         zoneType={selectionZoneType}
+      />
+      break
+    case 'shapes':
+      instrumentComponent = <ShapesInstrument
+        shape={shape}
+        contour={shapeContour}
+        filling={shapeFilling}
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
+        image={mainCanvas}
+        onImageChange={updateCanvas}
       />
       break
   }
