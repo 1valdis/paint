@@ -17,7 +17,7 @@
   background-image: url('./shapes.png');
   background-clip: padding-box;
 }
-.shapes button:hover {
+.shapes-grid button:hover {
   border: 1px solid var(--hover-border-color);
 }
 

@@ -1,0 +1,7 @@
+.shape-canvas {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: url('../crosshair-monochrome.svg') 12 12, crosshair;
+}

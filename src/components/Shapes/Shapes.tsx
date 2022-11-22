@@ -81,7 +81,7 @@ export const Shapes: FunctionComponent<ShapesMenuProps> = (props) => {
           <button onClick={() => props.setContour('none')} className={classNames({ 'dropdown-button-active': props.contour === 'none' })}>No contour</button>
           <button onClick={() => props.setContour('solid')} className={classNames({ 'dropdown-button-active': props.contour === 'solid' })}>Solid color</button>
         </Dropdown>
-        <Dropdown buttonContent="Filling ▾">
+        <Dropdown buttonContent="Filling ▾" isDisabled={['straight-line', 'curved-line'].includes(props.shape as any)}>
           <button onClick={() => props.setFilling('none')} className={classNames({ 'dropdown-button-active': props.filling === 'none' })}>No filling</button>
           <button onClick={() => props.setFilling('solid')} className={classNames({ 'dropdown-button-active': props.filling === 'solid' })}>Solid color</button>
         </Dropdown>
