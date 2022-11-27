@@ -2,6 +2,7 @@ import { FunctionComponent, useCallback, useEffect, useLayoutEffect, useRef, use
 import { flushSync } from 'react-dom'
 import { getCanvasCoordsFromEvent } from '../../../common/helpers'
 import { Point } from '../../../common/Point'
+import { ResizerPoint } from '../../ResizerPoint/ResizerPoint'
 import { ShapesInstrumentProps } from './ShapesInstrumentProps'
 
 export const StraightLine: FunctionComponent<ShapesInstrumentProps> = ({
@@ -67,7 +68,7 @@ export const StraightLine: FunctionComponent<ShapesInstrumentProps> = ({
         }
       }
     },
-    [isDrawing, line, thickness, image]
+    [isDrawing, line, image]
   )
   useLayoutEffect(() => {
     document.addEventListener('pointermove', draw)
@@ -99,7 +100,26 @@ export const StraightLine: FunctionComponent<ShapesInstrumentProps> = ({
     return () => document.removeEventListener('contextmenu', preventContextMenu)
   }, [])
 
-  const El = <></>
+  let El = <></>
+  if (!isDrawing && line) {
+    El = <>
+      <div className='straight-line-mover'></div>
+      <ResizerPoint
+        onResizeStart={() => {}}
+        onResizeMove={(e) => {}}
+        onResizeEnd={() => {}}
+        onResizeCancel={() => {}}
+        outerStyle={{ top: line[0].y, left: line[0].x }}
+        className='straight-line-resizer'/>
+      <ResizerPoint
+        onResizeStart={() => {}}
+        onResizeMove={(e) => {}}
+        onResizeEnd={() => {}}
+        onResizeCancel={() => {}}
+        outerStyle={{ top: line[1].y, left: line[1].x }}
+        className='straight-line-resizer'/>
+    </>
+  }
   return <>
     <canvas
       className='shape-canvas'

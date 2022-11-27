@@ -5,3 +5,15 @@
   height: 100%;
   cursor: url('../crosshair-monochrome.svg') 12 12, crosshair;
 }
+
+.straight-line-resizer {
+  transform: translateX(-50%) translateY(-50%);
+  display: grid;
+  place-items: center center;
+  cursor: ns-resize;
+}
+
+.straight-line-mover {
+  width: 32px;
+  cursor: move;
+}
