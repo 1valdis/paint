@@ -25,6 +25,7 @@ Live demo: https://1valdis.github.io/paint/
   - [x] Thickness
   - [ ] Text
   - [ ] Zoom
+- [ ] Undo (Ctrl+Z) / Redo (Ctrl+Y)
 - [x] Image
   - [x] Clipboard
     - [x] Copy + Ctrl-C
