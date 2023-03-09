@@ -1,5 +1,4 @@
 import { FunctionComponent, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { flushSync } from 'react-dom'
 import { getCanvasCoordsFromEvent } from '../../../common/helpers'
 import { Point } from '../../../common/Point'
 import { ResizerPoint } from '../../ResizerPoint/ResizerPoint'
@@ -7,7 +6,6 @@ import { ShapesInstrumentProps } from './ShapesInstrumentProps'
 
 export const StraightLine: FunctionComponent<ShapesInstrumentProps> = ({
   primaryColor,
-  contour,
   image,
   thickness,
   onImageChange
@@ -16,29 +14,38 @@ export const StraightLine: FunctionComponent<ShapesInstrumentProps> = ({
   const [line, setLine] = useState<[Point, Point] | null>(null)
 
   const modifiedCanvasRef = useRef<HTMLCanvasElement | null>(null)
+  const startingCanvasRef = useRef(image)
+  const contextMenuShouldBePrevented = useRef(false)
 
   useEffect(() => {
     if (!modifiedCanvasRef.current) return
     const context = modifiedCanvasRef.current!.getContext('2d')!
-    context.drawImage(image, 0, 0)
-  }, [image])
-
-  const contextMenuShouldBePrevented = useRef(false)
-
-  const startDrawing = useCallback((event: PointerEvent) => {
-    if (event.button === 2) return
-    const [x, y] = getCanvasCoordsFromEvent(modifiedCanvasRef.current!, event)
-    const context = modifiedCanvasRef.current!.getContext('2d')
-    if (!context) throw new Error()
+    context.drawImage(startingCanvasRef.current, 0, 0)
+    if (!line) return
     const { r, g, b } = primaryColor
     context.strokeStyle = `rgb(${r},${g},${b})`
     context.lineCap = 'round'
     context.lineWidth = thickness
+    context.beginPath()
+    context.moveTo(line[0].x, line[0].y)
+    context.lineTo(line[1].x, line[1].y)
+    context.stroke()
+  }, [image, line, primaryColor, thickness])
+
+  const startDrawing = useCallback((event: PointerEvent) => {
+    if (event.button === 2 || !modifiedCanvasRef.current) return
+    const newCanvas = document.createElement('canvas')
+    newCanvas.height = image.height
+    newCanvas.width = image.width
+    const ctx = newCanvas.getContext('2d')!
+    ctx.drawImage(modifiedCanvasRef.current, 0, 0)
+    startingCanvasRef.current = newCanvas
+    const [x, y] = getCanvasCoordsFromEvent(modifiedCanvasRef.current!, event)
     setLine([{ x, y }, { x, y }])
     setIsDrawing(true)
-  }, [primaryColor, thickness])
+  }, [image])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const currentRef = modifiedCanvasRef.current
     if (!currentRef) return
     currentRef.addEventListener('pointerdown', startDrawing)
@@ -49,28 +56,21 @@ export const StraightLine: FunctionComponent<ShapesInstrumentProps> = ({
 
   const draw = useCallback(
     (event: PointerEvent) => {
-      if (isDrawing) {
-        const context = modifiedCanvasRef.current!.getContext('2d')!
+      if ((isDrawing) && line) {
         if (event.buttons === 1) {
           const [x, y] = getCanvasCoordsFromEvent(modifiedCanvasRef.current!, event)
-          if (!line) throw Error()
-          context.drawImage(image, 0, 0)
-          context.beginPath()
-          context.moveTo(line[0].x, line[0].y)
-          context.lineTo(x, y)
-          context.stroke()
-          flushSync(() => setLine([line[0], { x, y }]))
+          console.log('fuck')
+          setLine([line[0], { x, y }])
         } else if (event.button === 2) {
-          context.drawImage(image, 0, 0)
           setIsDrawing(false)
           setLine(null)
           contextMenuShouldBePrevented.current = true
         }
       }
     },
-    [isDrawing, line, image]
+    [isDrawing, line]
   )
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.addEventListener('pointermove', draw)
     return () => {
       document.removeEventListener('pointermove', draw)
@@ -105,16 +105,34 @@ export const StraightLine: FunctionComponent<ShapesInstrumentProps> = ({
     El = <>
       <div className='straight-line-mover'></div>
       <ResizerPoint
-        onResizeStart={() => {}}
-        onResizeMove={(e) => {}}
-        onResizeEnd={() => {}}
+        onResizeStart={(event) => {
+          event.stopPropagation()
+        }}
+        onResizeMove={(event) => {
+          event.stopPropagation()
+          const [x, y] = getCanvasCoordsFromEvent(modifiedCanvasRef.current!, event)
+          console.log(`setting line in FIRST handler to ${x + ' ' + y}, ${line[1].x + ' ' + line[1].y}`)
+          setLine((oldLine) => [{ x, y }, oldLine![1]])
+        }}
+        onResizeEnd={(event) => {
+          event.stopPropagation()
+        }}
         onResizeCancel={() => {}}
         outerStyle={{ top: line[0].y, left: line[0].x }}
         className='straight-line-resizer'/>
       <ResizerPoint
-        onResizeStart={() => {}}
-        onResizeMove={(e) => {}}
-        onResizeEnd={() => {}}
+        onResizeStart={(event) => {
+          event.stopPropagation()
+        }}
+        onResizeMove={(event) => {
+          event.stopPropagation()
+          const [x, y] = getCanvasCoordsFromEvent(modifiedCanvasRef.current!, event)
+          console.log(`setting line in SECOND handler to ${line[0].x + ' ' + line[0].y}, ${x + ' ' + y}`)
+          setLine((oldLine) => [oldLine![0], { x, y }])
+        }}
+        onResizeEnd={(event) => {
+          event.stopPropagation()
+        }}
         onResizeCancel={() => {}}
         outerStyle={{ top: line[1].y, left: line[1].x }}
         className='straight-line-resizer'/>
