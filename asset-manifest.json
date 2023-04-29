@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/paint/static/css/main.2229679b.css",
-    "main.js": "/paint/static/js/main.b6899533.js",
+    "main.css": "/paint/static/css/main.26df23f8.css",
+    "main.js": "/paint/static/js/main.af37b043.js",
     "static/media/color-input-icon.png": "/paint/static/media/color-input-icon.9832ed4e5e04118f5236.png",
     "static/media/paste.png": "/paint/static/media/paste.b2e3eedad2b999181739.png",
-    "static/media/crosshair-monochrome.svg": "/paint/static/media/crosshair-monochrome.3ff478141c097a373944.svg",
-    "static/media/pen_colorful.svg": "/paint/static/media/pen_colorful.069c196a14afd77418c7.svg",
-    "static/media/zoom_colorful.svg": "/paint/static/media/zoom_colorful.54ee3c9b3a26b6483549.svg",
-    "static/media/dropper_colorful.svg": "/paint/static/media/dropper_colorful.aa2069716070892c26fc.svg",
-    "static/media/zoom_monochrome.svg": "/paint/static/media/zoom_monochrome.9d7745a43d7c4ebc9591.svg",
-    "static/media/dropper_monochrome.svg": "/paint/static/media/dropper_monochrome.7dfc4452700d1eb642f0.svg",
-    "static/media/fill_colorful.svg": "/paint/static/media/fill_colorful.c229564639f3263b33e8.svg",
-    "static/media/eraser_colorful.svg": "/paint/static/media/eraser_colorful.0342f3369ff30ec93310.svg",
+    "static/media/crosshair-monochrome.svg": "/paint/static/media/crosshair-monochrome.c08f75fc8e5834ade755.svg",
+    "static/media/pen_colorful.svg": "/paint/static/media/pen_colorful.08ff890607b444275d5f.svg",
+    "static/media/zoom_colorful.svg": "/paint/static/media/zoom_colorful.7b1accb2f56621be1b08.svg",
+    "static/media/dropper_colorful.svg": "/paint/static/media/dropper_colorful.7e9745e7647ba13efc04.svg",
+    "static/media/zoom_monochrome.svg": "/paint/static/media/zoom_monochrome.0a9ce95f37bb55d76038.svg",
+    "static/media/dropper_monochrome.svg": "/paint/static/media/dropper_monochrome.5f8148514c198f73f862.svg",
+    "static/media/fill_colorful.svg": "/paint/static/media/fill_colorful.252c42823041905f92a2.svg",
+    "static/media/eraser_colorful.svg": "/paint/static/media/eraser_colorful.81c6dcb825dbe758a640.svg",
     "index.html": "/paint/index.html",
-    "main.2229679b.css.map": "/paint/static/css/main.2229679b.css.map",
-    "main.b6899533.js.map": "/paint/static/js/main.b6899533.js.map"
+    "main.26df23f8.css.map": "/paint/static/css/main.26df23f8.css.map",
+    "main.af37b043.js.map": "/paint/static/js/main.af37b043.js.map"
   },
   "entrypoints": [
-    "static/css/main.2229679b.css",
-    "static/js/main.b6899533.js"
+    "static/css/main.26df23f8.css",
+    "static/js/main.af37b043.js"
   ]
 }
