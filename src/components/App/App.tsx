@@ -15,7 +15,7 @@ import { save } from './save'
 import { CanvasResizer } from '../CanvasResizer/CanvasResizer'
 import { Color } from '../../common/Color'
 import { Pen } from '../instruments/Pen/Pen'
-import { Dropper } from '../instruments/Dropper/Dropper'
+import { ModernOrFallbackDropper } from '../instruments/Dropper/ModernOrFallbackDropper'
 import { Fill } from '../instruments/Fill/Fill'
 import { Eraser } from '../instruments/Eraser/Eraser'
 import { Selection, SelectionDetails } from '../instruments/Selection/Selection'
@@ -677,9 +677,12 @@ export const App = () => {
         onImageChange={updateCanvas} />
       break
     case 'dropper':
-      instrumentComponent = <Dropper
+      instrumentComponent = <ModernOrFallbackDropper
         onColorSelected={(color) => {
           setPrimaryColor(color)
+          setInstrument('pen')
+        }}
+        switchInstrument={() => {
           setInstrument('pen')
         }}
         image={mainCanvas}
