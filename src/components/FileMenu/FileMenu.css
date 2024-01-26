@@ -1,11 +1,6 @@
-.file-menu{
-  align-self: stretch;
-}
 .file-menu-button{
   background-color: #1979ca;
   color: white;
-  padding: 0.5em 1em;
-  border: none;
 }
 .file-menu-button:hover{
   background-color: #2f95e9;

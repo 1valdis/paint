@@ -28,6 +28,10 @@ import { Point } from '../../common/Point'
 import { ResizeSkewResult } from '../Image/ResizeSkew'
 import { Shape, Shapes, ShapeSettingValue } from '../Shapes/Shapes'
 import { ShapesInstrument } from '../instruments/Shapes/ShapesInstrument'
+import { TopPanel } from '../TopPanel/TopPanel'
+import { UndoRedo } from '../UndoRedo/UndoRedo'
+
+const historyLength = 50
 
 export const App = () => {
   const create = useCallback(() => {
@@ -40,6 +44,8 @@ export const App = () => {
   }, [])
 
   const [mainCanvas, setMainCanvas] = useState(create())
+  const [canvasHistory, setCanvasHistory] = useState([mainCanvas])
+  const [currentCanvasIndex, setCurrentCanvasIndex] = useState(0)
   const canvasOnDisplayRef = useRef<HTMLCanvasElement | null>(null)
 
   const [filename] = useState('pic.png')
@@ -100,14 +106,20 @@ export const App = () => {
     ctx.drawImage(mainCanvas, 0, 0)
   }, [mainCanvas])
 
-  const updateCanvas = (newCanvas: HTMLCanvasElement) => {
+  const updateCanvas = useCallback((newCanvas: HTMLCanvasElement) => {
     const canvas = document.createElement('canvas')
     canvas.width = newCanvas.width
     canvas.height = newCanvas.height
     const context = canvas.getContext('2d')!
     context.drawImage(newCanvas, 0, 0)
     setMainCanvas(canvas)
-  }
+    setCurrentCanvasIndex((index) => Math.min(index + 1, historyLength - 1))
+    if (canvasHistory.length === historyLength) {
+      setCanvasHistory((history) => [...history.slice(1), canvas])
+    } else {
+      setCanvasHistory((history) => [...history, canvas])
+    }
+  }, [canvasHistory])
 
   const addNewColor = (newColor: Color) => {
     if (colors.find(
@@ -220,7 +232,7 @@ export const App = () => {
       rectangle: { top: 0, left: 0, width: pastedImage.width, height: pastedImage.height }
     })
     setInstrument('selection')
-  }, [mainCanvas, secondaryColor, isSelectionTransparent])
+  }, [mainCanvas, secondaryColor, isSelectionTransparent, updateCanvas])
 
   const createSelectionDetailsFromRectangle = useCallback((rectangle: Rectangle) => {
     if (rectangle.width === 0 && rectangle.height === 0) {
@@ -480,7 +492,7 @@ export const App = () => {
     newCtx.drawImage(selectionDetails.background, 0, 0)
     selectInstrument('selection')
     updateCanvas(newCanvas)
-  }, [mainCanvas, selectionDetails])
+  }, [mainCanvas, selectionDetails, updateCanvas])
 
   const cut = useCallback(async () => {
     copy()
@@ -503,7 +515,7 @@ export const App = () => {
     newCtx.drawImage(mainCanvas, -selectionDetails.rectangle.left, -selectionDetails.rectangle.top)
     selectInstrument('selection')
     updateCanvas(newCanvas)
-  }, [mainCanvas, selectionDetails])
+  }, [mainCanvas, selectionDetails, updateCanvas])
 
   const selectZoneType = useCallback((type: SelectionZoneType) => {
     selectInstrument('selection')
@@ -611,7 +623,7 @@ export const App = () => {
         }
       })
     }
-  }, [mainCanvas, selectionDetails])
+  }, [mainCanvas, selectionDetails, updateCanvas])
 
   const handleResizeSkew = useCallback((resizeSkewSettings: ResizeSkewResult) => {
     const canvasToModify = selectionDetails?.image ?? mainCanvas
@@ -664,7 +676,7 @@ export const App = () => {
       context.fillRect(0, 0, transformedCanvas.width, transformedCanvas.height)
       updateCanvas(transformedCanvas)
     }
-  }, [mainCanvas, selectionDetails, secondaryColor])
+  }, [selectionDetails, mainCanvas, secondaryColor, updateCanvas])
   // #endregion
 
   let instrumentComponent = <></>
@@ -733,11 +745,27 @@ export const App = () => {
   }
 
   return <>
-    <FileMenu
-      onFileCreate={() => { setMainCanvas(create()); selectInstrument(instrument) }}
-      onFileOpen={open}
-      onDownload={() => save(mainCanvas, filename)}
-    ></FileMenu>
+    <TopPanel>
+      <FileMenu
+        onFileCreate={() => { setMainCanvas(create()); selectInstrument(instrument) }}
+        onFileOpen={open}
+        onDownload={() => save(mainCanvas, filename)}
+      ></FileMenu>
+      <UndoRedo
+        onUndo={() => {
+          if (currentCanvasIndex > 0) {
+            setCurrentCanvasIndex(currentCanvasIndex - 1)
+          }
+        }}
+        undoAvailable={currentCanvasIndex > 0}
+        onRedo={() => {
+          if (currentCanvasIndex < canvasHistory.length - 1) {
+            setCurrentCanvasIndex(currentCanvasIndex + 1)
+          }
+        }}
+        redoAvailable={currentCanvasIndex < canvasHistory.length - 1}
+      ></UndoRedo>
+    </TopPanel>
     <NavBar>
       <NavBarItem footer="Clipboard">
         <Clipboard

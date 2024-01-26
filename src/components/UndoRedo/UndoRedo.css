@@ -1,0 +1,11 @@
+.undo-redo:not(:disabled):hover {
+  background: var(--hover-background-color);
+  border: 1px solid var(--hover-border-color);
+}
+.undo-redo:not(:disabled):active {
+  background: var(--active-background-color);
+  border: 1px solid var(--active-border-color);
+}
+.undo-redo button:focus {
+  outline: none;
+}

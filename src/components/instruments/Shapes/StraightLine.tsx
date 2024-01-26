@@ -111,7 +111,6 @@ export const StraightLine: FunctionComponent<ShapesInstrumentProps> = ({
         onResizeMove={(event) => {
           event.stopPropagation()
           const [x, y] = getCanvasCoordsFromEvent(modifiedCanvasRef.current!, event)
-          console.log(`setting line in FIRST handler to ${x + ' ' + y}, ${line[1].x + ' ' + line[1].y}`)
           setLine((oldLine) => [{ x, y }, oldLine![1]])
         }}
         onResizeEnd={(event) => {
@@ -127,7 +126,6 @@ export const StraightLine: FunctionComponent<ShapesInstrumentProps> = ({
         onResizeMove={(event) => {
           event.stopPropagation()
           const [x, y] = getCanvasCoordsFromEvent(modifiedCanvasRef.current!, event)
-          console.log(`setting line in SECOND handler to ${line[0].x + ' ' + line[0].y}, ${x + ' ' + y}`)
           setLine((oldLine) => [oldLine![0], { x, y }])
         }}
         onResizeEnd={(event) => {
